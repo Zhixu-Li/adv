@@ -82,7 +82,7 @@
         min="0"
         :max="end"
       />
-      {{ timeFormat(time) }}/{{ timeformat(time) }}
+      {{ timeFormat(time) }}/{{ timeFormat(time) }}
     </div>
   </div>
 </template>
@@ -213,7 +213,7 @@ export default {
       this.audio = this.media.filter(this.isAudio)
       this.text = this.media.filter(this.isText)
     },
-    formatTime(seconds) {
+    timeFormat(seconds) {
     if (isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -309,7 +309,7 @@ export default {
   }
 
   ::range-track {
-    background: #3071a9;
+    background-color: #3071a9;
     height: 5px;
     cursor: pointer;
   }
