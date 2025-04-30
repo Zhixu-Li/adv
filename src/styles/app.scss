@@ -1,0 +1,102 @@
+.wizard {
+  .header {
+    width: 100%;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .footer {
+    width: 100%;
+    padding: 0 15px 0 15px;
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.modal-backdrop {
+  background-color:  rgba(0,0,0,.6);
+}
+
+.modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.card {
+  margin: 0.5rem;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-button {
+  width: 0px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  background: #aaaaaa;
+  border: 0px none #ffffff;
+  border-radius: 50px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9b9b9b;
+}
+::-webkit-scrollbar-thumb:active {
+  background: #979797;
+}
+::-webkit-scrollbar-track {
+  background: #ffffff;
+  border: 0px none #ffffff;
+  border-radius: 100px;
+}
+::-webkit-scrollbar-track:hover {
+  background: #dedede;
+}
+::-webkit-scrollbar-track:active {
+  background: #dedede;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.item-view {
+  overflow-y: auto;
+}
+
+.dropdown-item {
+  cursor: pointer;
+}
+
+.icon {
+  pointer-events: none;
+}
+.stats-box {
+  border-left: 1px solid rgba(0,0,0,0.125)!important;
+  height: 100px!important;
+  // align-items: center!important;
+  justify-content: center!important;
+  @media (max-width: 576px) {
+    height: 50px!important;
+  }
+}
+
+.img-fluid {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.stats-group {
+  flex-wrap: initial!important;
+}
+
+@import 'index-view.scss'
+
