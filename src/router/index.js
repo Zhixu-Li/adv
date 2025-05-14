@@ -496,6 +496,7 @@ const routes = [
   {
     path: '/campaigns',
     component: Campaigns,
+    name: 'campaigns',
     meta: { auth: true },
     children: [
       { path: ':campaignId', component: Campaign, name: 'campaign' }

@@ -11,8 +11,9 @@ import Notifications           from '@kyvg/vue3-notification'
 import CartPlugin              from './lib/cart/src/cart.js'
 import authPlugin              from './lib/auth/auth.js'
 
-import BootstrapVueNext from 'bootstrap-vue-next'
-import BootstrapVue3    from 'bootstrap-vue-3'
+// import BootstrapVueNext from 'bootstrap-vue-next'
+import { bootstrapPlugin } from 'bootstrap-vue-next';
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
@@ -43,6 +44,7 @@ import {
 
 import messages from '@/lang'
 import moment   from 'moment'
+
 
 // i18n Setup
 const i18n = createI18n({
@@ -82,12 +84,14 @@ const app = createApp(App)
 app.config.globalProperties.$axios = axios.create({
   baseURL: process.env.VUE_APP_API_ROOT + '/api'
 })
-
+app.config.compatConfig={
+  MODE:3
+}
 // Install plugins
 app.use(router)
 app.use(authPlugin, { router })
-app.use(BootstrapVueNext)
-app.use(BootstrapVue3)
+app.use(bootstrapPlugin)
+
 app.use(i18n)
 app.use(VueLazyload)
 app.use(Notifications)
@@ -100,6 +104,7 @@ app.component('LMap', LMap)
 app.component('LTileLayer', LTileLayer)
 app.component('LMarker', LMarker)
 app.component('font-awesome-icon', FontAwesomeIcon)
+
 
 // Mount
 app.mount('#app')

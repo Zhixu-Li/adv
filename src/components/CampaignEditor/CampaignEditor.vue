@@ -376,19 +376,22 @@ export default {
 
   },
   mounted () {
-    this.trigger++
-    this.previewMedia = this.campaign.media.data.map( c => {
-      c.duration = c.end - c.start
-      if (c.duration < 0)
-        c.duration = 0
-      return c
-    })
+  this.trigger++
 
-    this.resize()
-    this.fetchMedia()
-    window.addEventListener('resize', this.resize)
-  },
-  beforeUnmount () {
+  // — safe default to an empty array if media or data is undefined —
+  const mediaArray = this.campaign.media?.data ??[]
+
+  this.previewMedia = mediaArray.map(c => {
+    // compute duration
+    c.duration = Math.max(0, c.end - c.start)
+    return c
+  })
+
+  this.resize()
+  this.fetchMedia()
+  window.addEventListener('resize', this.resize)
+},
+reUnmount () {
     window.removeEventListener('resize', this.resize)
   },
   methods: {
