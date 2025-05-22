@@ -1,101 +1,106 @@
 <template>
-  <b-row class="h-100">
-    <b-modal
+  <BRow class="h-100">
+    <!-- Pin Confirmation Modal -->
+    <BModal
       id="pinconfirm"
       :title="selectedDisplay.name"
       size="md"
       hide-footer
     >
       <display-gallery :display-id="Number(selectedDisplay.displayId)" />
-      <b-card class="mt-1">
-        <b-table-simple
-          v-if="selectedDisplay"
-          borderless
-          fixed
-          small
-        >
-          <b-tr>
-            <b-th>
-              Daily
-            </b-th>
-            <b-th>
-              Weekly
-            </b-th>
-            <b-th>
-              Monthly
-            </b-th>
-          </b-tr>
-          <b-tr>
-            <b-td>
-              <!-- ${{((selectedDisplay.baselinePrice.price_per_second))*15*(86400/selectedDisplay.blockTime) | money}} -->
-               
+
+      <BCard class="mt-1">
+        <BTableSimple borderless fixed small>
+          <BTr>
+            <BTh>Daily</BTh>
+            <BTh>Weekly</BTh>
+            <BTh>Monthly</BTh>
+          </BTr>
+          <BTr>
+            <BTd>
               ${{ formatMoney((selectedDisplay.baselinePrice.price_per_second) * 15 * (86400 / selectedDisplay.blockTime)) }}
-            </b-td>
-            <b-td>
-              <!-- ${{((selectedDisplay.baselinePrice.price_per_second))*15*(86400*7/selectedDisplay.blockTime) | money}} -->
-              ${{ formatMoney((selectedDisplay.baselinePrice.price_per_second) * 15 * (86400*7/ selectedDisplay.blockTime)) }} 
-            </b-td>
-            <b-td>
-              <!-- ${{((selectedDisplay.baselinePrice.price_per_second))*15*(86400*30/selectedDisplay.blockTime) | money}} -->
-              ${{ formatMoney((selectedDisplay.baselinePrice.price_per_second) * 15 * (86400*30 / selectedDisplay.blockTime)) }}
-            </b-td>
-          </b-tr>
-        </b-table-simple>
+            </BTd>
+            <BTd>
+              ${{ formatMoney((selectedDisplay.baselinePrice.price_per_second) * 15 * (86400 * 7 / selectedDisplay.blockTime)) }}
+            </BTd>
+            <BTd>
+              ${{ formatMoney((selectedDisplay.baselinePrice.price_per_second) * 15 * (86400 * 30 / selectedDisplay.blockTime)) }}
+            </BTd>
+          </BTr>
+        </BTableSimple>
         <p>{{ selectedDisplay.description }}</p>
-        <hr>
+        <hr />
         <small>
-          <p><em>Display Contact: {{ selectedDisplay.contact_email }}</em> <br>
-            <em>Maximum Campaign Length: {{ selectedDisplay.maxTimePurchasable }}s</em></p>
+          <p>
+            <em>Display Contact: {{ selectedDisplay.contact_email }}</em><br>
+            <em>Maximum Campaign Length: {{ selectedDisplay.maxTimePurchasable }}s</em>
+          </p>
         </small>
-      </b-card>
-      <b-button
+      </BCard>
+
+      <BButton
         class="mt-1"
-        @click="$bvModal.hide('pinconfirm');$root.$children[0].$bvModal.show('login')"
+        @click="$bvModal.hide('pinconfirm'); $bvModal.show('login')"
       >
         Log in to Adverpost
-      </b-button>
-      <b-button
+      </BButton>
+      <BButton
         variant="primary"
         class="float-right mt-1"
-        @click="$bvModal.hide('pinconfirm');$root.$children[0].$bvModal.show('register')"
+        @click="$bvModal.hide('pinconfirm'); $bvModal.show('register')"
       >
         Register for Adverpost
-      </b-button>
-    </b-modal>
-    <b-col class="h-100 p-0">
+      </BButton>
+    </BModal>
+
+    <!-- Map Column -->
+    <BCol class="h-100 p-0">
       <l-map
         :zoom="mapSettings.zoom"
         :center="mapCenter"
         :options="mapSettings.options"
         @update:bounds="getDisplays"
-        @ready="mapCenter={lat: -34.98385,lng: 138.57395}"
+        @ready="mapCenter = { lat: -34.98385, lng: 138.57395 }"
       >
         <l-tile-layer
-          :options="{ maxZoom: 13 }"
           :url="mapSettings.url"
           :attribution="mapSettings.attribution"
+          :options="{ maxZoom: 13 }"
         />
         <l-marker
           v-for="display in displaysPrivate"
           :key="display.displayId"
           :icon="mapSettings.iconPrivate"
-          :lat-lng="{lat: display.latitude, lng: display.longitude}"
+          :lat-lng="{ lat: display.latitude, lng: display.longitude }"
           :z-index-offset="-10"
           opacity="0"
         />
         <l-marker
           v-for="display in displays"
           :key="display.displayId"
-          :icon="display.type==='LCD'&& display.pixelHeight===0 && display.pixelWidth===0 ? mapSettings.iconLcd : mapSettings.iconLed"
-          :lat-lng="{lat: display.latitude, lng: display.longitude}"
-          @click="selectedDisplay = display;$bvModal.show('pinconfirm')"
+          :icon="display.type==='LCD' && display.pixelHeight===0 && display.pixelWidth===0
+            ? mapSettings.iconLcd
+            : mapSettings.iconLed"
+          :lat-lng="{ lat: display.latitude, lng: display.longitude }"
+          @click="selectedDisplay = display; $bvModal.show('pinconfirm')"
         />
       </l-map>
-    </b-col>
-  </b-row>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
+import {
+  BRow,
+  BCol,
+  BModal,
+  BCard,
+  BTableSimple,
+  BTr,
+  BTh,
+  BTd,
+  BButton
+} from 'bootstrap-vue-next'
 import { latLng, icon } from 'leaflet'
 import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet'
 import DisplayGallery from '@/components/DisplayGallery.vue'
@@ -107,6 +112,15 @@ export default {
     LTileLayer,
     LMarker,
     DisplayGallery,
+     BRow,
+    BCol,
+    BModal,
+    BCard,
+    BTableSimple,
+    BTr,
+    BTh,
+    BTd,
+    BButton,
   },
   data() {
     return {

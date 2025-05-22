@@ -1,276 +1,209 @@
 <template lang="html">
-  <b-container>
-    <b-row class="pt-3">
-      <b-col
-        cols="6"
-        class="mb-3"
-      >
-        <b-card :header="$t('common.information')">
-          <b-card-text>
-            <b-form-group
-              :label="$t('common.name')"
-              label-for="teamName"
-            >
-              <b-form-input
-                id="teamName"
-                v-model="team.name"
-                :disabled="!hasAccess"
-              />
-            </b-form-group>
-            <b-form-group
-              :label="$t('teams.slug')"
-              label-for="teamSlug"
-            >
-              <b-form-input
-                id="teamSlug"
-                v-model="team.abbrev"
-                :disabled="!hasAccess"
-              />
-            </b-form-group>
-            <b-form-group
-              :label="$t('teams.description')"
-              label-for="teamDescription"
-            >
-              <b-form-input
-                id="teamDescription"
-                v-model="team.description"
-                :disabled="!hasAccess"
-              />
-            </b-form-group>
-            <b-form-group
+  <BContainer>
+    <BRow class="pt-3">
+      <!-- Team Info Card -->
+      <BCol cols="6" class="mb-3">
+        <BCard :header="$t('common.information')">
+          <BCardText>
+            <BFormGroup :label="$t('common.name')" label-for="teamName">
+              <BFormInput id="teamName" v-model="team.name" :disabled="!hasAccess" />
+            </BFormGroup>
+            <BFormGroup :label="$t('teams.slug')" label-for="teamSlug">
+              <BFormInput id="teamSlug" v-model="team.abbrev" :disabled="!hasAccess" />
+            </BFormGroup>
+            <BFormGroup :label="$t('teams.description')" label-for="teamDescription">
+              <BFormInput id="teamDescription" v-model="team.description" :disabled="!hasAccess" />
+            </BFormGroup>
+            <BFormGroup
               :label="$t('teams.email')"
               label-for="teamEmail"
               description="Email address is required for teams with public displays."
             >
-              <b-form-input
-                id="teamEmail"
-                v-model="team.email"
-                :disabled="!hasAccess"
-              />
-            </b-form-group>
+              <BFormInput id="teamEmail" v-model="team.email" :disabled="!hasAccess" />
+            </BFormGroup>
+
             <div class="pt-3">
               <a
-                v-if="!team.stripeConnected
-                  && ($auth.user.admin
-                    || $auth.user.hasAccessInTeam(team.teamId, 'owner')
-                    || $auth.user.hasAccessInTeam(team.teamId, 'thirdPartyKey'))"
+                v-if="!team.stripeConnected && ( $auth.user.admin ||
+                  $auth.user.hasAccessInTeam(team.teamId,'owner') ||
+                  $auth.user.hasAccessInTeam(team.teamId,'thirdPartyKey') )"
                 :href="stripeConnectLink"
                 class="stripe-connect light-blue"
               >
                 <span>{{ $t('stripe.toConnect') }}</span>
               </a>
-              <b-button
-                v-else
-                variant="primary"
-                @click="fetchDashboard"
-              >
+              <BButton v-else variant="primary" @click="fetchDashboard">
                 Stripe Dashboard
-              </b-button>
+              </BButton>
             </div>
 
-
-            <b-button
+            <BButton
               v-if="hasAccess"
               variant="primary"
               class="float-right"
               @click="updateTeam"
             >
               {{ $t('buttons.save') }}
-            </b-button>
-          </b-card-text>
-        </b-card>
-      </b-col>
-      <b-col
-        v-if="hasAccess"
-        cols="6"
-        class="mb-3"
-      >
-        <b-card :header="$t('teams.addUser')">
-          <b-card-text>
-            <b-form-group
+            </BButton>
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <!-- Add User Card -->
+      <BCol v-if="hasAccess" cols="6" class="mb-3">
+        <BCard :header="$t('teams.addUser')">
+          <BCardText>
+            <BFormGroup
               :label="$t('user.user')"
               label-for="user"
               description="Please ensure the user already exists."
             >
-              <b-form-input
+              <BFormInput
                 id="user"
                 v-model="user.user"
                 :placeholder="$t('user.usernameEmail')"
               />
-            </b-form-group>
-            <b-form-group
-              inline
-              :label="$t('permissions.permissions')"
-            >
-              <b-row>
-                <b-col cols="6">
-                  <b-form-group stacked>
-                    <b-form-checkbox
-                      id="owner"
-                      v-model="user.owner"
-                    >
+            </BFormGroup>
+
+            <BFormGroup inline :label="$t('permissions.permissions')">
+              <BRow>
+                <BCol cols="6">
+                  <BFormGroup stacked>
+                    <BFormCheckbox id="owner" v-model="user.owner">
                       {{ $t('permissions.owner') }}
-                    </b-form-checkbox>
-                    <b-form-checkbox
-                      id="display"
-                      v-model="user.display"
-                    >
+                    </BFormCheckbox>
+                    <BFormCheckbox id="display" v-model="user.display">
                       {{ $t('permissions.display') }}
-                    </b-form-checkbox>
-                    <b-form-checkbox
-                      id="pricing"
-                      v-model="user.pricing"
-                    >
+                    </BFormCheckbox>
+                    <BFormCheckbox id="pricing" v-model="user.pricing">
                       {{ $t('permissions.pricing') }}
-                    </b-form-checkbox>
-                    <b-form-checkbox
-                      id="campaign"
-                      v-model="user.campaign"
-                    >
+                    </BFormCheckbox>
+                    <BFormCheckbox id="campaign" v-model="user.campaign">
                       {{ $t('permissions.campaign') }}
-                    </b-form-checkbox>
-                  </b-form-group>
-                </b-col> <b-col cols="6">
-                  <b-form-group stacked>
-                    <b-form-checkbox
-                      id="media"
-                      v-model="user.media"
-                    >
+                    </BFormCheckbox>
+                  </BFormGroup>
+                </BCol>
+                <BCol cols="6">
+                  <BFormGroup stacked>
+                    <BFormCheckbox id="media" v-model="user.media">
                       {{ $t('permissions.media') }}
-                    </b-form-checkbox>
-                    <b-form-checkbox
-                      id="invoice"
-                      v-model="user.invoice"
-                    >
+                    </BFormCheckbox>
+                    <BFormCheckbox id="invoice" v-model="user.invoice">
                       {{ $t('permissions.invoice') }}
-                    </b-form-checkbox>
-                    <b-form-checkbox
-                      id="thirdPartyKey"
-                      v-model="user.thirdPartyKey"
-                    >
+                    </BFormCheckbox>
+                    <BFormCheckbox id="thirdPartyKey" v-model="user.thirdPartyKey">
                       {{ $t('permissions.thirdParty') }}
-                    </b-form-checkbox>
-                    <b-form-checkbox
-                      id="team"
-                      v-model="user.team"
-                    >
+                    </BFormCheckbox>
+                    <BFormCheckbox id="team" v-model="user.team">
                       {{ $t('permissions.team') }}
-                    </b-form-checkbox>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-            </b-form-group>
-            <b-button
+                    </BFormCheckbox>
+                  </BFormGroup>
+                </BCol>
+              </BRow>
+            </BFormGroup>
+
+            <BButton
               variant="primary"
               class="float-right pointer"
               @click="addUser"
             >
               {{ $t('buttons.add') }}
-            </b-button>
-          </b-card-text>
-        </b-card>
-      </b-col>
-      <b-col
-        cols="12"
-        class="mb-3"
-      >
-        <b-card :header="$t('user.users')">
-          <b-card-text>
-            <b-table-simple
-              v-if="hasAccess"
-              striped
-              responsive
-              hover
-            >
-              <b-thead>
-                <b-tr>
-                  <b-th />
-                  <b-th>{{ $t('permissions.display') }}</b-th>
-                  <b-th>{{ $t('permissions.pricing') }}</b-th>
-                  <b-th>{{ $t('permissions.campaign') }}</b-th>
-                  <b-th>{{ $t('permissions.media') }}</b-th>
-                  <b-th>{{ $t('permissions.invoice') }}</b-th>
-                  <b-th>{{ $t('permissions.thirdParty') }}</b-th>
-                  <b-th>{{ $t('permissions.team') }}</b-th>
-                  <b-th>{{ $t('permissions.owner') }}</b-th>
-                  <b-th />
-                </b-tr>
-              </b-thead>
-              <b-tbody>
-                <b-tr
-                  v-for="user in users"
-                  :key="user.userId"
-                >
-                  <b-td>{{ user.user }}</b-td>
-                  <b-td>
+            </BButton>
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <!-- Users List / Table -->
+      <BCol cols="12" class="mb-3">
+        <BCard :header="$t('user.users')">
+          <BCardText>
+            <BTableSimple v-if="hasAccess" striped responsive hover>
+              <BThead>
+                <BTr>
+                  <BTh/>
+                  <BTh>{{ $t('permissions.display') }}</BTh>
+                  <BTh>{{ $t('permissions.pricing') }}</BTh>
+                  <BTh>{{ $t('permissions.campaign') }}</BTh>
+                  <BTh>{{ $t('permissions.media') }}</BTh>
+                  <BTh>{{ $t('permissions.invoice') }}</BTh>
+                  <BTh>{{ $t('permissions.thirdParty') }}</BTh>
+                  <BTh>{{ $t('permissions.team') }}</BTh>
+                  <BTh>{{ $t('permissions.owner') }}</BTh>
+                  <BTh/>
+                </BTr>
+              </BThead>
+              <BTbody>
+                <BTr v-for="user in users" :key="user.userId">
+                  <BTd>{{ user.user }}</BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.displayAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.pricingAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.campaignAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.mediaAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.invoiceAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.thirdPartyKeyAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
+                      type="checkbox"
                       v-model="user.teamPermissions.teamAccess"
-                      type="checkbox"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <input
-                      v-model="user.owner"
                       type="checkbox"
+                      v-model="user.owner"
                       @change="updateUser(user)"
-                    >
-                  </b-td>
-                  <b-td>
+                    />
+                  </BTd>
+                  <BTd>
                     <span
                       class="badge badge-default badge-danger"
                       @click.stop="removeUser(teamId, user.userId, user.user)"
-                    >{{ $t('buttons.remove') }}</span>
-                  </b-td>
-                </b-tr>
-              </b-tbody>
-            </b-table-simple>
-            <ul
-              v-else
-              class="list-group"
-            >
+                    >
+                      {{ $t('buttons.remove') }}
+                    </span>
+                  </BTd>
+                </BTr>
+              </BTbody>
+            </BTableSimple>
+
+            <ul v-else class="list-group">
               <li
                 v-for="user in users"
                 :key="user.userId"
@@ -279,157 +212,160 @@
                 {{ user.user }}
               </li>
             </ul>
-          </b-card-text>
-        </b-card>
-      </b-col>
-      <b-col
-        v-if="thirdPartyKeyAccess"
-        cols="12"
-        class="mb-3"
-      >
-        <b-card :header="$t('permissions.thirdParty')">
-          <b-card-text>
-            <b-table-simple
-              v-if="keys.length > 0"
-              striped
-              responsive
-              hover
-            >
-              <b-thead>
-                <b-tr>
-                  <b-th>{{ $t('common.type') }}</b-th>
-                  <b-th>{{ $t('common.key') }}</b-th>
-                  <b-th />
-                </b-tr>
-              </b-thead>
-              <b-tbody>
-                <b-tr
-                  v-for="key in keys"
-                  :key="key.keyName"
-                >
-                  <b-td>{{ key.keyName }}</b-td>
-                  <b-td>{{ key.keyValue }}</b-td>
-                  <b-td>
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <!-- Third-Party Keys -->
+      <BCol v-if="thirdPartyKeyAccess" cols="12" class="mb-3">
+        <BCard :header="$t('permissions.thirdParty')">
+          <BCardText>
+            <BTableSimple v-if="keys.length" striped responsive hover>
+              <BThead>
+                <BTr>
+                  <BTh>{{ $t('common.type') }}</BTh>
+                  <BTh>{{ $t('common.key') }}</BTh>
+                  <BTh/>
+                </BTr>
+              </BThead>
+              <BTbody>
+                <BTr v-for="key in keys" :key="key.keyName">
+                  <BTd>{{ key.keyName }}</BTd>
+                  <BTd>{{ key.keyValue }}</BTd>
+                  <BTd>
                     <span
                       class="badge badge-default badge-danger"
                       @click.stop="deleteKey(key.keyId)"
-                    >{{ $t('buttons.delete') }}</span>
-                  </b-td>
-                </b-tr>
-              </b-tbody>
-            </b-table-simple>
-            <b-form inline>
-              <b-form-group
-                class="mr-2"
-                :label="$t('common.type')"
-                label-for="keyType"
-              >
-                <b-form-select
+                    >
+                      {{ $t('buttons.delete') }}
+                    </span>
+                  </BTd>
+                </BTr>
+              </BTbody>
+            </BTableSimple>
+
+            <BForm inline>
+              <BFormGroup class="mr-2" :label="$t('common.type')" label-for="keyType">
+                <BFormSelect
                   id="keyType"
                   v-model="newKey.name"
                   class="ml-2"
                   :options="keyTypes"
                 />
-              </b-form-group>
-              <b-form-group
-                class="mr-2"
-                :label="$t('common.key')"
-                label-for="key"
-              >
-                <b-form-input
-                  id="key"
-                  v-model="newKey.key"
-                  class="ml-2"
-                />
-              </b-form-group>
-              <b-button
-                variant="primary"
-                @click="addKey"
-              >
+              </BFormGroup>
+              <BFormGroup class="mr-2" :label="$t('common.key')" label-for="key">
+                <BFormInput id="key" v-model="newKey.key" class="ml-2" />
+              </BFormGroup>
+              <BButton variant="primary" @click="addKey">
                 {{ $t('buttons.addKey') }}
-              </b-button>
-            </b-form>
-          </b-card-text>
-        </b-card>
-      </b-col>
-      <b-col
-        v-if="showDisplays"
-        xs="12"
-        lg="6"
-        class="mb-3"
-      >
-        <b-card :header="$t('displays.displays')">
-          <b-card-text>
-            <div v-if="displays.length > 0">
-              <div
-                v-for="display in displays"
-                :key="display.displayId"
-              >
-                <!-- it's probably worth noting that this requires changing the activeTeam context.. -->
-                <b-link :to="{ name: 'display', params: { displayId: display.displayId } }">
+              </BButton>
+            </BForm>
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <!-- Displays List -->
+      <BCol v-if="showDisplays" xs="12" lg="6" class="mb-3">
+        <BCard :header="$t('displays.displays')">
+          <BCardText>
+            <div v-if="displays.length">
+              <div v-for="display in displays" :key="display.displayId">
+                <BLink :to="{ name:'display',params:{displayId:display.displayId} }">
                   {{ display.name }}
-                </b-link>
+                </BLink>
               </div>
             </div>
             <div v-else-if="team.displays">
-              <div
-                v-for="display in team.displays"
-                :key="display.displayId"
-              >
-                <b-link :to="{ name: 'display', params: { displayId: display.displayId } }">
+              <div v-for="display in team.displays" :key="display.displayId">
+                <BLink :to="{ name:'display',params:{displayId:display.displayId} }">
                   {{ display.name }}
-                </b-link>
+                </BLink>
               </div>
             </div>
             <div v-else>
               <span>{{ $t('message.noDisplay') }}</span>
             </div>
-          </b-card-text>
-        </b-card>
-      </b-col>
-      <b-col
-        v-if="showCampaigns"
-        xs="12"
-        lg="6"
-        class="mb-3"
-      >
-        <b-card :header="$t('campaigns.campaigns')">
-          <b-card-text>
-            <div v-if="campaigns.length > 0">
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <!-- Campaigns List -->
+      <BCol v-if="showCampaigns" xs="12" lg="6" class="mb-3">
+        <BCard :header="$t('campaigns.campaigns')">
+          <BCardText>
+            <div v-if="filteredCampaigns.length">
               <div
                 v-for="campaign in filteredCampaigns"
                 :key="campaign.campaignId"
               >
-                <b-link :to="{ name: 'campaign', params: { campaignId: campaign.campaignId } }">
+                <BLink :to="{ name:'campaign',params:{campaignId:campaign.campaignId} }">
                   {{ campaign.name }}
-                </b-link>
+                </BLink>
               </div>
             </div>
             <div v-else-if="team.campaigns">
-              <div
-                v-for="campaign in team.campaigns"
-                :key="campaign.campaignId"
-              >
-                <b-link :to="{ name: 'campaign', params: { campaignId: campaign.campaignId } }">
+              <div v-for="campaign in team.campaigns" :key="campaign.campaignId">
+                <BLink :to="{ name:'campaign',params:{campaignId:campaign.campaignId} }">
                   {{ campaign.name }}
-                </b-link>
+                </BLink>
               </div>
             </div>
             <div v-else>
               <span>{{ $t('message.noCampaigns') }}</span>
             </div>
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
+
 
 <script>
 
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BCard,
+  BCardText,
+  BFormGroup,
+  BFormInput,
+  BButton,
+  BFormCheckbox,
+  BForm,
+  BFormSelect,
+  BTableSimple,
+  BThead,
+  BTr,
+  BTh,
+  BTbody,
+  BTd,
+  BLink
+} from 'bootstrap-vue-next'
 
 export default {
   name: 'Team',
+  components:{
+    BContainer,
+    BRow,
+    BCol,
+    BCard,
+    BCardText,
+    BFormGroup,
+    BFormInput,
+    BButton,
+    BFormCheckbox,
+    BForm,
+    BFormSelect,
+    BTableSimple,
+    BThead,
+    BTr,
+    BTh,
+    BTbody,
+    BTd,
+    BLink,
+  },
   props: {
     teamId: {
       type: Number,

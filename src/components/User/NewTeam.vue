@@ -1,188 +1,152 @@
-<template lang="html">
+<template>
   <div>
-    <div
-      v-if="errors.length > 0"
-      class="alert alert-danger"
-    >
+    <div v-if="errors.length" class="alert alert-danger">
       <ul>
-        <li
-          v-for="(error, index) in errors"
-          :key="index"
-        >
+        <li v-for="(error, index) in errors" :key="index">
           {{ error }}
         </li>
       </ul>
     </div>
-    <div
-      v-if="!created"
-      @keyup.enter.prevent.stop="createTeam()"
-    >
+
+    <div v-if="!created" @keyup.enter.prevent.stop="createTeam()">
       <h5>{{ $t('common.information') }}</h5>
-      <b-form-group
-        :label="$t('common.name')"
-        label-for="teamName"
-      >
-        <b-form-input
-          id="teamName"
-          v-model="team.name"
-        />
-      </b-form-group>
-      <b-form-group
-        :label="$t('teams.slug')"
-        label-for="teamSlug"
-      >
-        <b-form-input
-          id="teamSlug"
-          v-model="slug"
-          disabled
-        />
-      </b-form-group>
-      <b-form-group
-        :label="$t('teams.description')"
-        label-for="teamDescription"
-      >
-        <b-form-input
-          id="teamDescription"
-          v-model="team.description"
-        />
-      </b-form-group>
-      <b-button
-        variant="primary"
-        class="right mt-2"
-        @click="createTeam"
-      >
+
+      <BFormGroup :label="$t('common.name')" label-for="teamName">
+        <BFormInput id="teamName" v-model="team.name" />
+      </BFormGroup>
+
+      <BFormGroup :label="$t('teams.slug')" label-for="teamSlug">
+        <BFormInput id="teamSlug" v-model="slug" disabled />
+      </BFormGroup>
+
+      <BFormGroup :label="$t('teams.description')" label-for="teamDescription">
+        <BFormInput id="teamDescription" v-model="team.description" />
+      </BFormGroup>
+
+      <BButton variant="primary" class="right mt-2" @click="createTeam">
         {{ $t('buttons.create') }}
-      </b-button>
+      </BButton>
     </div>
-    <b-row v-else>
-      <b-col
-        cols="12"
-        class="text-center"
-      >
+
+    <BRow v-else>
+      <BCol cols="12" class="text-center">
         <h3>{{ team.name }} {{ $t('message.wasCreated') }}</h3>
-        <hr>
-      </b-col>
-      <b-col
-        cols="6"
-        class="text-center"
-      >
+        <hr />
+      </BCol>
+
+      <BCol cols="6" class="text-center">
         <h4>{{ $t('stripe.toConnect') }}</h4>
-        <div class="">
+        <div>
           <span>{{ $t('message.stripeAccept') }}</span>
         </div>
-        <a
-          :href="stripeConnectLink"
-          class="stripe-connect light-blue"
-        ><span>{{ $t('stripe.toConnect') }}</span></a>
-      </b-col>
-      <b-col cols="6">
+        <a :href="stripeConnectLink" class="stripe-connect light-blue">
+          <span>{{ $t('stripe.toConnect') }}</span>
+        </a>
+      </BCol>
+
+      <BCol cols="6">
         <h4>{{ $t('teams.addUsers') }}</h4>
-        <b-row>
-          <b-col
-            cols="12"
-            class="align-items-center"
-          >
-            <b-form-input
+        <BRow>
+          <BCol cols="12" class="align-items-center">
+            <BFormInput
               id="user"
               v-model="user.user"
               :placeholder="$t('user.usernameEmail')"
             />
-          </b-col>
-          <b-col cols="12">
+          </BCol>
+
+          <BCol cols="12">
             <label>{{ $t('permissions.permissions') }}</label>
-          </b-col>
-          <b-col cols="6">
-            <b-form-group stacked>
-              <b-form-checkbox
-                id="newowner"
-                v-model="user.owner"
-              >
+          </BCol>
+
+          <BCol cols="6">
+            <BFormGroup stacked>
+              <BFormCheckbox id="newowner" v-model="user.owner">
                 {{ $t('permissions.owner') }}
-              </b-form-checkbox>
-              <b-form-checkbox
-                id="newdisplay"
-                v-model="user.display"
-              >
+              </BFormCheckbox>
+              <BFormCheckbox id="newdisplay" v-model="user.display">
                 {{ $t('permissions.display') }}
-              </b-form-checkbox>
-              <b-form-checkbox
-                id="newpricing"
-                v-model="user.pricing"
-              >
+              </BFormCheckbox>
+              <BFormCheckbox id="newpricing" v-model="user.pricing">
                 {{ $t('permissions.pricing') }}
-              </b-form-checkbox>
-              <b-form-checkbox
-                id="newcampaign"
-                v-model="user.campaign"
-              >
+              </BFormCheckbox>
+              <BFormCheckbox id="newcampaign" v-model="user.campaign">
                 {{ $t('permissions.campaign') }}
-              </b-form-checkbox>
-            </b-form-group>
-          </b-col>
-          <b-col cols="6">
-            <b-form-group stacked>
-              <b-form-checkbox
-                id="newmedia"
-                v-model="user.media"
-              >
+              </BFormCheckbox>
+            </BFormGroup>
+          </BCol>
+
+          <BCol cols="6">
+            <BFormGroup stacked>
+              <BFormCheckbox id="newmedia" v-model="user.media">
                 {{ $t('permissions.media') }}
-              </b-form-checkbox>
-              <b-form-checkbox
-                id="newinvoice"
-                v-model="user.invoice"
-              >
+              </BFormCheckbox>
+              <BFormCheckbox id="newinvoice" v-model="user.invoice">
                 {{ $t('permissions.invoice') }}
-              </b-form-checkbox>
-              <b-form-checkbox
-                id="newthirdPartyKey"
-                v-model="user.thirdPartyKey"
-              >
+              </BFormCheckbox>
+              <BFormCheckbox id="newthirdPartyKey" v-model="user.thirdPartyKey">
                 {{ $t('permissions.thirdParty') }}
-              </b-form-checkbox>
-              <b-form-checkbox
-                id="newteam"
-                v-model="user.team"
-              >
+              </BFormCheckbox>
+              <BFormCheckbox id="newteam" v-model="user.team">
                 {{ $t('permissions.team') }}
-              </b-form-checkbox>
-            </b-form-group>
-          </b-col>
-          <b-col
-            class="pt-2"
-            cols="12"
-          >
-            <b-button
-              variant="primary"
-              class="right"
-              @click="addUser"
-            >
+              </BFormCheckbox>
+            </BFormGroup>
+          </BCol>
+
+          <BCol cols="12" class="pt-2">
+            <BButton variant="primary" class="right" @click="addUser">
               {{ $t('buttons.add') }}
-            </b-button>
-          </b-col>
-        </b-row>
-        <hr>
+            </BButton>
+          </BCol>
+        </BRow>
+
+        <hr />
+
         <div>
           <label>{{ $t('user.users') }}:</label>
-          <b-list-group>
-            <b-list-group-item
+          <BListGroup>
+            <BListGroupItem
               v-for="user in users"
               :key="user.userId"
+              class="d-flex justify-content-between align-items-center"
             >
-              {{ user.user }} <span
+              {{ user.user }}
+              <span
                 class="badge badge-default badge-danger"
                 @click="removeUser(user.teamId, user.userId)"
-              >&#10006;</span>
-            </b-list-group-item>
-          </b-list-group>
+              >
+                &#10006;
+              </span>
+            </BListGroupItem>
+          </BListGroup>
         </div>
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
   </div>
 </template>
 
+
 <script>
+import {
+  BFormGroup,
+  BFormInput,
+  BButton,
+  BRow,
+  BCol,
+  BFormCheckbox,
+  BListGroup,
+  BListGroupItem
+} from 'bootstrap-vue-next'
 export default {
   components: {
+    BFormGroup,
+    BFormInput,
+    BButton,
+    BRow,
+    BCol,
+    BFormCheckbox,
+    BListGroup,
+    BListGroupItem,
   },
   props: {
     show: {

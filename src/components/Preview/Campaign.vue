@@ -50,7 +50,7 @@
         >
           {{ $t('campaigns.frameDuration') }}: 
           <!-- <b-form-input class="d-inline" min="0" max="9999" number required trim id="duration" type="number" v-model.number="selectedFrame.duration"></b-form-input> -->
-          <b-form-input
+          <BFormInput
             class="d-inline"
             min="0"
             max="9999"
@@ -75,7 +75,7 @@
           class="play-icon"
         />
       </div>
-      <b-input
+      <BFormInput
         v-model.number="time"
         class="seek-bar"
         type="range"
@@ -92,6 +92,7 @@ import VideoItem from './Video.vue'
 import ImageItem from './Image.vue'
 import AudioItem from './Audio.vue'
 import TextItem from './Text.vue'
+import {BFormInput} from 'bootstrap-vue-next'
 // import 'vue-awesome/icons/play'
 // import 'vue-awesome/icons/pause'
 
@@ -102,6 +103,7 @@ export default {
     ImageItem,
     AudioItem,
     TextItem,
+    BFormInput,
   },
   props: {
     media: {

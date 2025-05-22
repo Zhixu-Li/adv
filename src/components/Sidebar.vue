@@ -142,7 +142,7 @@ export default {
   transition: visibility 0s ease-out 0.3s, height ease-out 0.5s;
 }
 
-.accordion-menu .has-children input[type=checkbox]:checked + label + ul {
+.accordion-menu .has-children [type=checkbox]:checked + label + ul {
   visibility: visible;
   height: auto;
   transition: visibility 0s ease-in 0.3s, height ease-in 0.3s;

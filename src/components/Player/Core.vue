@@ -1,4 +1,4 @@
-<template>
+<template lang="html">
   <div
     :id="instance_id"
     ref="instance"
@@ -15,10 +15,7 @@
       >
         No Media
       </div>
-      <div
-        ref="custom"
-        class="custom"
-      />
+      <div ref="custom" class="custom" />
       <div
         ref="target"
         class="target"
@@ -26,12 +23,10 @@
       >
         <!-- render target -->
       </div>
+
       <template v-if="!hideControls">
-        <div
-          ref="controls"
-          class="player-controls"
-        >
-          <b-form-input
+        <div ref="controls" class="player-controls">
+          <BFormInput
             v-model="context_progress"
             class="player-slider"
             type="range"
@@ -40,10 +35,7 @@
             @mousedown="pause"
             @mouseup="resume"
           />
-          <div
-            ref="counter"
-            class="player-counter"
-          >
+          <div ref="counter" class="player-counter">
             {{ context_progress }}/{{ context_duration }}
           </div>
         </div>
@@ -53,9 +45,10 @@
 </template>
 
 <script>
-
+import {BFormInput} from 'bootstrap-vue-next'
 export default {
   components: {
+    BFormInput
   },
   props: {
     /* format of queue[] items:

@@ -1,185 +1,154 @@
 <template>
-  <b-container fluid>
-    <b-row>
-      <b-row
-        id="top-area"
-        class="p-2"
-      >
-        <b-col
-          cols="12"
-          class="head"
-        >
+  <BContainer fluid>
+    <BRow>
+      <!-- Top Area -->
+      <BRow id="top-area" class="p-2">
+        <BCol cols="12" class="head">
           <h2 class="d-none d-md-block">
             {{ $t('media.media') }}
           </h2>
-          <b-row>
-            <b-col md="10">
+          <BRow>
+            <BCol md="10">
               <p class="d-none d-md-block">
-                {{ $t('tutorial.mediaExample') }} {{ $t('tutorial.acceptedFileFormats') }}
+                {{ $t('tutorial.mediaExample') }}
+                {{ $t('tutorial.acceptedFileFormats') }}
               </p>
-            </b-col>
-            <b-col md="2">
-              <b-button
+            </BCol>
+            <BCol md="2">
+              <BButton
                 size="lg"
                 block
                 variant="primary"
-                @click="$bvModal.show('new-media-modal')"
+                v-b-modal:new-media-modal
               >
                 {{ $t('buttons.upload') }}
-              </b-button>
-            </b-col>
-          </b-row>
-        </b-col>
-        <b-col cols="12">
-          <b-row>
-            <b-col
-              xl="4"
-              lg="4"
-              md="4"
-              sm="12"
-              xs="12"
-            >
-              <b-button-group style="width: 100% !important">
-                <b-form-input
+              </BButton>
+            </BCol>
+          </BRow>
+        </BCol>
+
+        <!-- Filters -->
+        <BCol cols="12">
+          <BRow>
+            <BCol xl="4" lg="4" md="4" sm="12" xs="12">
+              <BButtonGroup style="width: 100% !important">
+                <BFormInput
                   id="searchbar"
                   v-model="debouncedSearch"
                   class="searchbar"
                   :placeholder="$t('actions.search')"
                 />
-                <b-dropdown
+                <BDropdown
                   id="mediatypeSort"
                   variant="outline-success"
                   :text="type"
                   no-caret
                 >
-                  <b-dropdown-item @click="resetView(); type = 'All'">
+                  <BDropdownItem @click="resetView(); type = 'All'">
                     {{ $t('buttons.all') }}
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="resetView(); type = 'Image'">
+                  </BDropdownItem>
+                  <BDropdownItem @click="resetView(); type = 'Image'">
                     {{ $t('buttons.image') }}
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="resetView(); type = 'Video'">
+                  </BDropdownItem>
+                  <BDropdownItem @click="resetView(); type = 'Video'">
                     {{ $t('buttons.video') }}
-                  </b-dropdown-item>
-                </b-dropdown>
-                <b-dropdown
+                  </BDropdownItem>
+                </BDropdown>
+                <BDropdown
                   id="mediaSort"
                   variant="outline-success"
-                  :text="button + (sortToggle === true ? '▲' : '▼')"
+                  :text="button + (sortToggle ? '▲' : '▼')"
                   no-caret
                 >
-                  <b-dropdown-item @click="resetView(); button = 'Date'; sortToggle = !sortToggle">
+                  <BDropdownItem @click="resetView(); button='Date'; sortToggle=!sortToggle">
                     {{ $t('buttons.date') }}
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="resetView(); button = 'Name'; sortToggle = !sortToggle">
+                  </BDropdownItem>
+                  <BDropdownItem @click="resetView(); button='Name'; sortToggle=!sortToggle">
                     {{ $t('buttons.name') }}
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="resetView(); button = 'Size'; sortToggle = !sortToggle">
+                  </BDropdownItem>
+                  <BDropdownItem @click="resetView(); button='Size'; sortToggle=!sortToggle">
                     {{ $t('buttons.size') }}
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="resetView(); button = 'Dimensions'; sortToggle = !sortToggle">
+                  </BDropdownItem>
+                  <BDropdownItem @click="resetView(); button='Dimensions'; sortToggle=!sortToggle">
                     {{ $t('buttons.dimensions') }}
-                  </b-dropdown-item>
-                </b-dropdown>
-              </b-button-group>
-            </b-col>
-            <b-col
-              cols="3"
-              xl="2"
-              lg="2"
-              md="auto"
-              sm="auto"
-              xs="12"
-            >
+                  </BDropdownItem>
+                </BDropdown>
+              </BButtonGroup>
+            </BCol>
+            <BCol cols="3" xl="2" lg="2" md="auto" sm="auto" xs="12">
               <button
                 type="button"
-                style="width: 100%"
-                class="btn btn-outline-success"
+                class="btn btn-outline-success w-100"
                 @click="toggleUsed()"
               >
-                {{ $t('buttons.used') }}
-                {{ used === true ? '☑' : '☐' }}
+                {{ $t('buttons.used') }} {{ used ? '☑' : '☐' }}
               </button>
-            </b-col>
-          </b-row>
-        </b-col>
-      </b-row>
+            </BCol>
+          </BRow>
+        </BCol>
+      </BRow>
 
-      <b-col
+      <!-- Content Area -->
+      <BCol
         id="content-area"
         cols="12"
         class="p-0 items"
-        @scroll="infinityScroll($event)"
+        @scroll="infinityScroll"
       >
-        <div
-          v-show="loading"
-          class="loader"
-        >
+        <div v-show="loading" class="loader">
           <div class="spinner" />
         </div>
-        <!-- <b-col xl="3" lg="3" md="4" sm="6" xs="12" class="pb-2 less-gutter" :key="item.mediaId" v-for="item in filteredMedia" @click="select(item)"> -->
-        <b-col
+
+        <BCol
           v-for="item in filteredMedia"
           :key="item.mediaId"
           :cols="viewportCols"
           class="pb-2 less-gutter"
           @click="select(item)"
         >
-          <b-card
+          <BCard
             class="item-card"
             :img-src="getThumbnail(item.hash)"
             img-alt="item.name"
-            :overlay="true"
-            :footer="item.name"
-            footer-class="cut-text"
+            overlay
             img-top
-            @click="showInfo(item)"
           >
-            <b-card-text>
+            <template #footer>{{ item.name }}</template>
+            <BCardText>
               <div class="float-right">
-                <b-badge
-                  v-if="item.campaign"
-                  variant="success"
-                >
-                  In Use
-                </b-badge> <b-badge variant="light">
+                <BBadge v-if="item.campaign" variant="success">In Use</BBadge>
+                <BBadge variant="light">
                   {{ item.width }} x {{ item.height }}
-                </b-badge>
+                </BBadge>
               </div>
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-col>
+            </BCardText>
+          </BCard>
+        </BCol>
+      </BCol>
 
-      <b-modal
-        id="delete-media-modal"
-        :title="$t('actions.delete')"
-        size="md"
-      >
+      <!-- Delete Media Modal -->
+      <BModal id="delete-media-modal" :title="$t('actions.delete')" size="md">
         {{ $t('message.mediaDelete') }}
-        <!-- <div slot="modal-footer">
-          <b-button variant="primary" class="float-left" @click="$bvModal.hide('delete-media-modal')">{{$t('answers.no')}}</b-button>
-          <b-button variant="warning" class="float-right ml-2" @click="deleteMedia()">{{$t('answers.yes')}}</b-button>
-        </div> -->
-        <template #modal-footer>
-          <b-button
+        <template #footer>
+          <BButton
             variant="primary"
             class="float-left"
             @click="$bvModal.hide('delete-media-modal')"
           >
             {{ $t('answers.no') }}
-          </b-button>
-          <b-button
+          </BButton>
+          <BButton
             variant="warning"
             class="float-right ml-2"
             @click="deleteMedia()"
           >
             {{ $t('answers.yes') }}
-          </b-button>
+          </BButton>
         </template>
-      </b-modal>
+      </BModal>
 
-      <b-modal
+      <!-- New Media Modal -->
+      <BModal
         id="new-media-modal"
         :title="$t('media.create')"
         size="md"
@@ -194,134 +163,85 @@
         <div v-else>
           Please select a team first.
         </div>
-      </b-modal>
+      </BModal>
 
-      <!-- possibly move this to a separate component in the future -->
-      <b-modal
+      <!-- Media Info Modal -->
+      <BModal
         id="media-info"
         :title="`Filename: ${selectedItem.name}`"
         size="lg"
         centered
         hide-footer
       >
-        <b-row class="item-details">
-          <b-col class="row no-gutters align-content-start">
-            <b-col
-              cols="12"
-              class="mb-3 text-right"
-            >
-              <em
-                v-if="selectedItem.campaign"
-                class="p-1"
-              >({{ $t('message.inUseDelete') }})</em>
-              <b-button
+        <BRow class="item-details">
+          <BCol class="row no-gutters align-content-start">
+            <BCol cols="12" class="mb-3 text-right">
+              <em v-if="selectedItem.campaign" class="p-1">
+                ({{ $t('message.inUseDelete') }})
+              </em>
+              <BButton
                 variant="danger"
                 :disabled="selectedItem.campaign"
-                @click="$bvModal.show('delete-media-modal')"
+                v-b-modal:delete-media-modal
               >
                 {{ $t('buttons.delete') }}
-              </b-button>
-              <b-card class="mt-2">
-                <b-card-text>
+              </BButton>
+              <BCard class="mt-2">
+                <BCardText>
                   <media-item :item="selectedItem" />
-                </b-card-text>
-              </b-card>
-            </b-col>
+                </BCardText>
+              </BCard>
+            </BCol>
 
-            <b-col
-              cols="12"
-              class="mb-3"
-            >
-              <b-card :header="$t('common.information')">
-                <b-card-text>
-                  <b-row>
+            <BCol cols="12" class="mb-3">
+              <BCard :header="$t('common.information')">
+                <BCardText>
+                  <BRow>
                     <span class="col-3"><strong>{{ $t('common.name') }}</strong></span>
-                    <span
-                      v-if="selectedItem.string"
-                      class="col-9"
-                    >{{ selectedItem.string }}</span>
-                    <span
-                      v-else
-                      class="col-9"
-                    >{{ selectedItem.name }}</span>
-                  </b-row>
-                  <b-row>
-                    <span
-                      v-if="selectedItem.mimeType"
-                      class="col-3"
-                    ><strong>{{ $t('media.mimeType') }}</strong></span>
-                    <span
-                      v-if="selectedItem.mimeType"
-                      class="col-9"
-                    >{{ selectedItem.mimeType }}</span>
-                  </b-row>
-                  <b-row>
-                    <span
-                      v-if="selectedItem.mimeType"
-                      class="col-3"
-                    ><strong>{{ $t('common.team') }}</strong></span>
-                    <span
-                      v-if="selectedItem.mimeType"
-                      class="col-9"
-                    >{{ activeTeam.name }}</span>
-                  </b-row>
-                </b-card-text>
-              </b-card>
-            </b-col>
-            <b-col
-              cols="12"
-              lg="6"
-              class="mb-3"
-            >
-              <b-card :header="$t('message.inUse')">
-                <b-card-text>
+                    <span class="col-9">
+                      {{ selectedItem.string || selectedItem.name }}
+                    </span>
+                  </BRow>
+                  <BRow v-if="selectedItem.mimeType">
+                    <span class="col-3"><strong>{{ $t('media.mimeType') }}</strong></span>
+                    <span class="col-9">{{ selectedItem.mimeType }}</span>
+                  </BRow>
+                  <BRow v-if="selectedItem.mimeType">
+                    <span class="col-3"><strong>{{ $t('common.team') }}</strong></span>
+                    <span class="col-9">{{ activeTeam.name }}</span>
+                  </BRow>
+                </BCardText>
+              </BCard>
+            </BCol>
+
+            <BCol cols="12" lg="6" class="mb-3">
+              <BCard :header="$t('message.inUse')">
+                <BCardText>
                   <div v-if="selectedItem.campaign">
-                    <ul
-                      v-for="campaign in selectedItem.campaign"
-                      :key="campaign.id"
-                    >
-                      <b-link :to="{ name: 'campaign', params: { campaignId: campaign.id } }">
-                        {{ campaign.name }}
-                      </b-link>
+                    <ul>
+                      <li
+                        v-for="campaign in selectedItem.campaign"
+                        :key="campaign.id"
+                      >
+                        <BLink
+                          :to="{ name: 'campaign', params: { campaignId: campaign.id } }"
+                        >
+                          {{ campaign.name }}
+                        </BLink>
+                      </li>
                     </ul>
                   </div>
                   <div v-else>
                     {{ $t('message.notUsed') }}
                   </div>
-                </b-card-text>
-              </b-card>
-            </b-col>
-          </b-col>
-
-          <!-- <b-col cols="12" lg="6" class="mb-3">
-              <b-card :header="$t('common.dimensions')">
-                <b-card-text>
-                  <b-row>
-                    <span class="col-3" v-if="selectedItem.size"><strong>{{$t('campaigns.size')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.size">{{ selectedItem.size | humanFileSize}}</span>
-                    <span class="col-3" v-if="selectedItem.height"><strong>{{$t('campaigns.height')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.height">{{ selectedItem.height }} px</span>
-                    <span class="col-3" v-if="selectedItem.width"><strong>{{$t('campaigns.width')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.width">{{ selectedItem.width }} px</span>
-                    <span class="col-3" v-if="selectedItem.duration"><strong>{{$t('dateTime.duration')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.duration">{{ selectedItem.duration }}
-                      {{$t('measurement.seconds')}}</span>
-                    <span class="col-3" v-if="selectedItem.fontFamily"><strong>{{$t('media.fontFamily')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.fontFamily">{{ selectedItem.fontFamily }}</span>
-                    <span class="col-3" v-if="selectedItem.fontSize"><strong>{{$t('media.fontSize')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.fontSize">{{ selectedItem.fontSize }}</span>
-                    <span class="col-3" v-if="selectedItem.fontStyle"><strong>{{$t('media.fontStyle')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.fontStyle">{{ selectedItem.fontStyle }}</span>
-                    <span class="col-3" v-if="selectedItem.fontWeight"><strong>{{$t('media.fontWeight')}}</strong></span>
-                    <span class="col-9" v-if="selectedItem.fontWeight">{{ selectedItem.fontWeight }}</span>
-                  </b-row>
-                </b-card-text>
-              </b-card>
-            </b-col> -->
-        </b-row>
-      </b-modal>
-    </b-row>
-  </b-container>
+                </BCardText>
+              </BCard>
+            </BCol>
+          </BCol>
+        </BRow>
+      </BModal>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
@@ -334,12 +254,42 @@ import _ from 'lodash'
 import teamContext from '@/mixins/teamContext'
 import autoResize from '@/mixins/autoResize'
 import extendedViewports from '@/mixins/extendedViewports'
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BButton,
+  BButtonGroup,
+  BFormInput,
+
+  BDropdown,
+  BDropdownItem,
+  BCard,
+  BCardText,
+  BBadge,
+  BModal,
+  BLink
+} from 'bootstrap-vue-next'
 
 export default {
   name: 'Media',
   components: {
     MediaItem,
     NewMedia,
+    BContainer,
+    BRow,
+    BCol,
+    BButton,
+    BButtonGroup,
+    BFormInput,
+  
+    BDropdown,
+    BDropdownItem,
+    BCard,
+    BCardText,
+    BBadge,
+    BModal,
+    BLink,
     // Thumbnail
   },
   mixins: [teamContext, autoResize, extendedViewports],

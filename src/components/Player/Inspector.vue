@@ -1,117 +1,116 @@
-<template>
+<template lang="html">
   <div>
-    <b-row>
-      <b-col
-        cols="6"
-        class="pb-4"
-      >
+    <BRow>
+      <BCol cols="6" class="pb-4">
         <div v-if="validSchedule">
-          <!-- <b-aspect :aspect="'1:1'"> -->
           <schedule-player
-            :width="'100%'"
-            :height="'20em'"
+            width="100%"
+            height="20em"
             :uri="uri"
             :params="e2v"
           />
-          <!-- </b-aspect> -->
         </div>
         <div v-else>
-          <b-skeleton-img
-            width="100%"
-            height="25vw"
+          <BPlaceholder
+            class="w-100"
+            style="height: 25vw;"
           />
         </div>
-      </b-col>
-      <b-col cols="6">
-        <b-row>
-          <b-col cols="12">
-            <b-col>
-              <h4>
-                E2V Stream Options
-                <b-button
-                  v-if="parametersLoaded !== true"
-                  variant="primary"
-                  disabled
-                >
-                  <b-spinner
-                    small
-                    type="grow"
-                  />
-                  {{ 'Retrieving parameter list' }}
-                </b-button>
-              </h4>
-              <div v-if="parameters.length == 0">
-                No parameters required.
-              </div>
-              <div
-                v-for="parameter in parameters"
-                :key="parameter.slug"
-              >
-                <div v-if="parameter.opts">
-                  <multiselect
-                    v-model="selector[parameter.slug]"
-                    placeholder="Select"
-                    :options="parameter.opts"
-                    track-by="id"
-                    label="name"
-                    :preselect-first="true"
-                    @select="(opt, id) => { e2v[parameter.slug] = opt.id }"
-                  />
-                  <b-form-text v-if="selectCheck=true">
-                    {{ parameter.desc }}
-                  </b-form-text>
-                </div>
-                <div v-else>
-                  <b-form-input
-                    :id="'e2v_'+parameter.slug"
-                    v-model="e2v[parameter.slug]"
-                    :state="validSchedule"
-                    :placeholder="parameter.name"
-                    aria-describedby="input-live-feedback"
-                    trim
-                  />
-                  <b-form-invalid-feedback id="input-live-feedback">
-                    {{ errors[parameter.slug] }}
-                  </b-form-invalid-feedback>
-                  <b-form-text :id="'e2v_'+parameter.slug">
-                    {{ parameter.desc }}
-                  </b-form-text>
-                </div>
-              </div>
-            </b-col>
-          </b-col>
-          <b-col cols="12">
-            <b-col>
-              <hr class="border">
-              <h4>Campaign Stats</h4>
-              <b-row>
-                <b-col>Matched Campaigns</b-col>
-                <b-col><label>{{ totalCampaigns }}</label></b-col>
-              </b-row>
-              <b-row>
-                <b-col>Shortest Campaign</b-col>
-                <b-col><label>{{ minimumDuration }} seconds</label></b-col>
-              </b-row>
-              <b-row>
-                <b-col>Longest Campaign</b-col>
-                <b-col><label>{{ maximumDuration }} seconds</label></b-col>
-              </b-row>
-            </b-col>
-            <b-col>
-              <hr class="border">
-              <!-- DEFAULT SLOT IS HERE -->
-              <slot />
-            </b-col>
-          </b-col>
-        </b-row>
-      </b-col>
-    </b-row>
+      </BCol>
 
-    <!-- :params='{"api_key": "e02189628c1b384fd99c3c8b4624dc1b", "duration": "10"}' -->
+      <BCol cols="6">
+        <BRow>
+          <BCol cols="12">
+            <h4>
+              E2V Stream Options
+              <BButton
+                v-if="parametersLoaded !== true"
+                variant="primary"
+                disabled
+              >
+                <BSpinner small type="grow" />
+                Retrieving parameter list
+              </BButton>
+            </h4>
+
+            <div v-if="parameters.length === 0">
+              No parameters required.
+            </div>
+
+            <div
+              v-for="parameter in parameters"
+              :key="parameter.slug"
+            >
+              <div v-if="parameter.opts">
+                <multiselect
+                  v-model="selector[parameter.slug]"
+                  placeholder="Select"
+                  :options="parameter.opts"
+                  track-by="id"
+                  label="name"
+                  :preselect-first="true"
+                  @select="(opt, id) => { e2v[parameter.slug] = opt.id }"
+                />
+                <BFormText v-if="selectCheck">
+                  {{ parameter.desc }}
+                </BFormText>
+              </div>
+              <div v-else>
+                <BFormInput
+                  :id="`e2v_${parameter.slug}`"
+                  v-model="e2v[parameter.slug]"
+                  :state="validSchedule"
+                  :placeholder="parameter.name"
+                  aria-describedby="input-live-feedback"
+                  trim
+                />
+                <BFormInvalidFeedback id="input-live-feedback">
+                  {{ errors[parameter.slug] }}
+                </BFormInvalidFeedback>
+                <BFormText :id="`e2v_${parameter.slug}`">
+                  {{ parameter.desc }}
+                </BFormText>
+              </div>
+            </div>
+          </BCol>
+
+          <BCol cols="12">
+            <hr class="border" />
+            <h4>Campaign Stats</h4>
+            <BRow>
+              <BCol>Matched Campaigns</BCol>
+              <BCol><label>{{ totalCampaigns }}</label></BCol>
+            </BRow>
+            <BRow>
+              <BCol>Shortest Campaign</BCol>
+              <BCol><label>{{ minimumDuration }} seconds</label></BCol>
+            </BRow>
+            <BRow>
+              <BCol>Longest Campaign</BCol>
+              <BCol><label>{{ maximumDuration }} seconds</label></BCol>
+            </BRow>
+
+            <hr class="border" />
+            <slot />
+          </BCol>
+        </BRow>
+      </BCol>
+    </BRow>
   </div>
 </template>
 
+
 <script>
+import {
+  BRow,
+  BCol,
+  BButton,
+  BSpinner,
+  BPlaceholder,
+  BFormText,
+  BFormInput,
+  BFormInvalidFeedback
+} from 'bootstrap-vue-next'
 /* eslint-disable no-unused-vars */
 /* eslint-disable vue/no-unused-components */
 /* eslint-disable no-mixed-spaces-and-tabs */
@@ -127,6 +126,14 @@ export default {
     components: {
       SchedulePlayer,
       Multiselect,
+      BRow,
+      BCol,
+      BButton,
+      BSpinner,
+      BPlaceholder,
+      BFormText,
+      BFormInput,
+      BFormInvalidFeedback,
     },
     props: {
       uri: {

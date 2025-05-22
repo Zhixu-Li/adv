@@ -4,178 +4,196 @@
       <h2>{{ $t('account.register') }}</h2>
       <p class="p-2">{{ $t('register.registerInfo') }}</p>
 
-      <div v-if="errors.length > 0">
-        <b-alert
-          v-for="(error, index) in errors"
-          :key="index"
-          show
-          variant="danger"
+      <div v-if="errors.length > 0" class="mb-3">
+        <div 
+          v-for="(error, index) in errors" 
+          :key="index" 
+          class="alert alert-danger" 
+          role="alert"
         >
           {{ error }}
-        </b-alert>
+        </div>
       </div>
 
-      <b-form novalidate @submit.prevent="submit()">
-        <b-form-group
-          :label="$t('register.registerName')"
-          class="m-2"
-          :description="$t('register.userNameDecs')"
-        >
-          <b-form-input
+      <form @submit.prevent="submit" novalidate>
+        <div class="mb-3">
+          <label for="username" class="form-label">{{ $t('register.registerName') }}</label>
+          <small class="form-text text-muted">{{ $t('register.userNameDecs') }}</small>
+          <input
             id="username"
             v-model="credentials.username"
-            required
             type="text"
             class="form-control"
+            :class="{'is-invalid': usernameInvalid}"
             :placeholder="$t('register.registerName')"
             autocomplete="username"
-            :state="credentials.username ? credentials.username.length < 32 : null"
-          />
-        </b-form-group>
-
-        <b-form-group style="display: none;">
-          <b-form-input
-            v-model="dateOfBirth"
             required
-            type="date"
-            class="form-control"
-            placeholder="dd/mm/yyyy"
+            maxlength="32"
           />
-        </b-form-group>
+          <div class="invalid-feedback" v-if="usernameInvalid">
+            {{ usernameInvalidMessage }}
+          </div>
+        </div>
 
-        <b-form-group
-          :label="$t('register.email')"
-          class="m-2"
-          :description="$t('register.emailDecs')"
-        >
-          <b-form-input
+        <!-- Hidden date of birth for bot prevention -->
+        <input 
+          v-model="dateOfBirth"
+          type="hidden"
+          autocomplete="off"
+        />
+
+        <div class="mb-3">
+          <label for="email" class="form-label">{{ $t('register.email') }}</label>
+          <small class="form-text text-muted">{{ $t('register.emailDecs') }}</small>
+          <input
             id="email"
             v-model="credentials.email"
-            required
-            type="text"
+            type="email"
             class="form-control"
+            :class="{'is-invalid': emailInvalid}"
             :placeholder="$t('register.email')"
             autocomplete="email"
+            required
           />
-        </b-form-group>
-
-        <hr />
-
-        <b-row class="p-2">
-          <b-col cols="6">
-            <b-form-group
-              :label="$t('register.password')"
-              :description="$t('register.pwdDecs')"
-            >
-              <b-form-input
-                id="password"
-                v-model="credentials.password"
-                required
-                type="password"
-                class="form-control"
-                :placeholder="$t('register.password')"
-                autocomplete="new-password"
-                :state="credentials.password ? credentials.password.length >= 8 : null"
-              />
-            </b-form-group>
-          </b-col>
-
-          <b-col cols="6">
-            <b-form-group
-              :label="$t('register.rePws')"
-              :description="$t('register.rePwsDecs')"
-            >
-              <b-form-input
-                id="passwordConfirm"
-                v-model="credentials.passwordConfirm"
-                required
-                type="password"
-                class="form-control"
-                :placeholder="$t('register.rePws')"
-                autocomplete="new-password"
-                :state="credentials.password && credentials.passwordConfirm && credentials.password.length >= 8 ? credentials.passwordConfirm===credentials.password : null"
-              />
-            </b-form-group>
-          </b-col>
-        </b-row>
-
-        <hr />
-
-        <b-collapse v-model="usecard" class="mt-2">
-          <b-card>
-            <label id="cardHelp" data-placement="top">
-              Payment Details <small>(what's this?)</small>
-              <font-awesome-icon icon="question-circle" />
-            </label>
-
-            <b-popover target="cardHelp" triggers="hover focus">
-              {{ $t('popover.registerWithCard') }}
-            </b-popover>
-
-            <a target="_blank" href="https://stripe.com">
-              <img class="p-2 float-right" src="/static/powered_by_stripe.png" />
-            </a>
-
-            <div class="p-2">
-              <stripe-credit-card
-                v-if="Object.keys(source).length === 0"
-                :submit-text="'Verify Card'"
-                @token-created="source = $event"
-              />
-              <div v-else>
-                <font-template-icon
-                  v-if="source.card.object === 'card'"
-                  :icon="['fab', 'cc-' + source.card.brand.toLowerCase()]"
-                  scale="1"
-                  class="mr-2"
-                  style="color: black;"
-                  size="lg"
-                />
-                <span> **** **** **** {{ source.card.last4 }}</span>
-              </div>
-            </div>
-          </b-card>
-        </b-collapse>
-
-        <!-- Action Buttons Aligned to Right -->
-        <div class="d-flex justify-content-between flex-wrap gap-2 mt-3">
-          <b-button
-            v-if="!usecard"
-            @click="usecard = !usecard"
-            variant="primary"
-          >
-            {{$t('register.addPay')}}
-          </b-button>
-
-          <b-button
-            v-else
-            @click="(usecard = !usecard); source = {}"
-            :variant="Object.keys(source).length > 0 ? 'danger' : 'primary'"
-          >
-            {{ Object.keys(source).length > 0 ? 'Remove Details' : 'Cancel Adding Payment Details' }}
-          </b-button>
-
-          <b-button
-            v-if="!usecard"
-            v-b-popover.hover.top="'Accounts created without payment details will require manual activation.'"
-            variant="primary"
-            type="submit"
-          >
-            {{$t('register.create')}}
-          </b-button>
-
-          <b-button
-            v-else-if="Object.keys(source).length > 0"
-            variant="primary"
-            type="submit"
-          >
-            {{$t('register.create')}}
-          </b-button>
+          <div class="invalid-feedback" v-if="emailInvalid">
+            Invalid Email
+          </div>
         </div>
-      </b-form>
+
+        <hr />
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="password" class="form-label">{{ $t('register.password') }}</label>
+            <small class="form-text text-muted">{{ $t('register.pwdDecs') }}</small>
+            <input
+              id="password"
+              v-model="credentials.password"
+              type="password"
+              class="form-control"
+              :class="{'is-invalid': passwordInvalid}"
+              :placeholder="$t('register.password')"
+              autocomplete="new-password"
+              required
+            />
+            <div class="invalid-feedback" v-if="passwordInvalid">
+              {{ passwordInvalidMessage }}
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label for="passwordConfirm" class="form-label">{{ $t('register.rePws') }}</label>
+            <small class="form-text text-muted">{{ $t('register.rePwsDecs') }}</small>
+            <input
+              id="passwordConfirm"
+              v-model="credentials.passwordConfirm"
+              type="password"
+              class="form-control"
+              :class="{'is-invalid': passwordConfirmInvalid}"
+              :placeholder="$t('register.rePws')"
+              autocomplete="new-password"
+              required
+            />
+            <div class="invalid-feedback" v-if="passwordConfirmInvalid">
+              Passwords do not match
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <div>
+          <div class="form-check mb-2">
+            <input
+              id="usecard"
+              type="checkbox"
+              v-model="usecard"
+              class="form-check-input"
+            />
+            <label for="usecard" class="form-check-label">
+              Payment Details <small>(what's this?)</small>
+              <i
+                class="fa fa-question-circle"
+                tabindex="0"
+                data-bs-toggle="popover"
+                data-bs-trigger="hover focus"
+                data-bs-content="{{ $t('popover.registerWithCard') }}"
+                aria-label="Payment info"
+              ></i>
+            </label>
+          </div>
+
+          <a target="_blank" href="https://stripe.com">
+            <img class="p-2 float-end" src="/static/powered_by_stripe.png" alt="Stripe" />
+          </a>
+
+          <div class="p-2" v-if="usecard">
+            <stripe-credit-card
+              v-if="Object.keys(source).length === 0"
+              :submit-text="'Verify Card'"
+              @token-created="source = $event"
+            />
+            <div v-else class="d-flex align-items-center">
+              <font-awesome-icon
+                v-if="source.card?.object === 'card'"
+                :icon="['fab', 'cc-' + source.card.brand.toLowerCase()]"
+                style="color: black; margin-right: 8px;"
+                size="lg"
+              />
+              <span> **** **** **** {{ source.card.last4 }}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-danger ms-3"
+                @click="removeCard"
+              >
+                Remove Details
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
+          <button
+            v-if="!usecard"
+            type="button"
+            class="btn btn-primary"
+            @click="usecard = true"
+          >
+            {{ $t('register.addPay') }}
+          </button>
+
+          <button
+            v-if="!usecard"
+            type="submit"
+            class="btn btn-primary"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="Accounts created without payment details will require manual activation."
+          >
+            {{ $t('register.create') }}
+          </button>
+
+          <button
+            v-if="usecard && Object.keys(source).length > 0"
+            type="submit"
+            class="btn btn-primary"
+          >
+            {{ $t('register.create') }}
+          </button>
+
+          <button
+            v-if="usecard && Object.keys(source).length === 0"
+            type="button"
+            class="btn btn-secondary"
+            @click="usecard = false"
+          >
+            Cancel Adding Payment Details
+          </button>
+        </div>
+      </form>
     </div>
 
-    <div v-if="registered">
+    <div v-else>
       <h2>{{ user.username }} {{ $t('register.registerSuc') }}</h2>
       <p v-if="Object.keys(source).length > 0">
         {{ $t('register.registerEmail') }} {{ user.email }}
@@ -190,19 +208,19 @@
 <script>
 import moment from 'moment'
 import StripeCreditCard from '@/components/StripeCreditCard.vue'
+import * as bootstrap from 'bootstrap'
 
 export default {
   components: {
     StripeCreditCard,
   },
-  data () {
+  data() {
     return {
       credentials: {
         username: '',
         email: '',
-        emailConfirm: '',
         password: '',
-        passwordConfirm: ''
+        passwordConfirm: '',
       },
       dateOfBirth: '',
       errors: [],
@@ -214,89 +232,114 @@ export default {
       usecard: false,
     }
   },
-  mounted () {
+  computed: {
+    usernameInvalid() {
+      return this.credentials.username.length === 0 || this.credentials.username.length > 32
+    },
+    usernameInvalidMessage() {
+      if (this.credentials.username.length === 0) return 'Username must be a minimum of 1 character'
+      if (this.credentials.username.length > 32) return 'Username must be a maximum of 32 characters'
+      return ''
+    },
+    emailInvalid() {
+      const emailRE = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      return !emailRE.test(this.credentials.email)
+    },
+    passwordInvalid() {
+      return this.credentials.password.length < 8
+    },
+    passwordInvalidMessage() {
+      if (this.credentials.password.length < 8) return 'Password must be a minimum of 8 characters'
+      return ''
+    },
+    passwordConfirmInvalid() {
+      return (
+        this.credentials.password.length >= 8 &&
+        this.credentials.passwordConfirm !== this.credentials.password
+      )
+    },
+  },
+  mounted() {
     this.timeAtLoad = moment()
+    // Enable Bootstrap tooltips and popovers
+    this.initBootstrapTooltips()
   },
   methods: {
-    submit () {
+    initBootstrapTooltips() {
+      // Bootstrap 5 tooltips and popovers init
+      const tooltipTriggerList = [...document.querySelectorAll('[data-bs-toggle="tooltip"]')]
+      tooltipTriggerList.forEach(tooltipTriggerEl => {
+        new bootstrap.Tooltip(tooltipTriggerEl)
+      })
+
+      const popoverTriggerList = [...document.querySelectorAll('[data-bs-toggle="popover"]')]
+      popoverTriggerList.forEach(popoverTriggerEl => {
+        new bootstrap.Popover(popoverTriggerEl)
+      })
+    },
+    submit() {
       this.timeAtSubmit = moment()
-      if (this.validateMe()) {
-        let credentials = {
-          username: this.credentials.username,
-          password: this.credentials.password,
-          email: this.credentials.email
-        }
-
-        if (this.source.id && this.usecard) {
-          credentials.stripeToken = this.source.id
-        }
-
-        this.$auth.register(this, credentials).then(
-          () => {},
-          () => {
-            this.source = {}
-          }
-        )
-      }
-    },
-    validateMe () {
       this.errors = []
-      let checkForm = this.validateForm()
-      let checkEmail = this.validateEmail()
-      let checkPassword = this.validatePassword()
-      let checkUsername = this.validateUsername()
 
-      return checkForm && checkEmail && checkUsername && checkPassword
-    },
-    validateForm () {
-      if (this.timeAtSubmit - this.timeAtLoad < 2500 || this.dateOfBirth !== '') {
+      if (!this.validateForm()) {
         this.errors.push('An error has occurred creating your account, please try again')
+        return
+      }
+      if (this.usernameInvalid) {
+        this.errors.push(this.usernameInvalidMessage)
+      }
+      if (this.emailInvalid) {
+        this.errors.push('Invalid Email')
+      }
+      if (this.passwordInvalid) {
+        this.errors.push(this.passwordInvalidMessage)
+      }
+      if (this.passwordConfirmInvalid) {
+        this.errors.push('Passwords do not match')
+      }
+
+      if (this.errors.length > 0) return
+
+      let credentials = {
+        username: this.credentials.username,
+        password: this.credentials.password,
+        email: this.credentials.email,
+      }
+
+      if (this.source.id && this.usecard) {
+        credentials.stripeToken = this.source.id
+      }
+
+      this.$auth.register(this, credentials).then(
+        () => {},
+        () => {
+          this.source = {}
+        }
+      )
+    },
+    validateForm() {
+      if (this.timeAtSubmit - this.timeAtLoad < 2500 || this.dateOfBirth !== '') {
         this.timeAtLoad = moment()
         return false
       }
       return true
     },
-    validateEmail () {
-      var emailRE = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      if (!emailRE.test(this.credentials.email)) {
-        this.errors.push('Invalid Email')
-        return false
-      }
-      return true
+    removeCard() {
+      this.source = {}
+      this.usecard = false
     },
-    validateUsername () {
-      if (this.credentials.username.length <= 0) {
-        this.errors.push('Username must be a minimum of 1 character')
-        return false
-      } else if (this.credentials.username.length > 32) {
-        this.errors.push('Username must be a maximum of 32 characters')
-        return false
-      }
-      return true
-    },
-    validatePassword () {
-      if (this.credentials.password.length < 8) {
-        this.errors.push('Password must be a minimum of 8 characters')
-        return false
-      }
-      if (this.credentials.password !== this.credentials.passwordConfirm) {
-        this.errors.push('Passwords do not match')
-        return false
-      }
-      return true
-    }
-  }
+  },
 }
 </script>
 
 <style scoped>
 @media (max-width: 576px) {
-  .d-flex.justify-content-between {
+  .d-flex.justify-content-end {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .d-flex.justify-content-between > div {
+  .d-flex.justify-content-end > * {
     margin-bottom: 0.5rem;
   }
 }

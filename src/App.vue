@@ -1,13 +1,14 @@
 <template>
   <div id="app" class="w-100 h-100">
-    <b-navbar
+    <!-- Navbar -->
+    <BNavbar
       id="navbar"
       toggleable="lg"
       :type="navText"
       :variant="navColour"
       class="fixed-top"
     >
-      <b-navbar-brand :href="publicUrl">
+      <BNavbarBrand :href="publicUrl">
         <img :src="`/static/${logoName}.svg`" height="34" />
         <i
           v-if="isTest"
@@ -16,81 +17,85 @@
           icon="exclamation-circle-fill"
           variant="warning"
           font-scale="1.5"
-        ></i>
-      </b-navbar-brand>
-      <b-navbar-toggle target="nav-collapse" />
-      <b-collapse id="nav-collapse" v-model="visible" is-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-item v-if="$auth.user.authenticated" right>
-            <b-nav-item-dropdown right>
+        />
+      </BNavbarBrand>
+
+      <BNavbarToggle target="nav-collapse" />
+
+      <BCollapse id="nav-collapse" v-model="visible" is-nav>
+        <BNavbarNav class="ml-auto">
+          <BNavItem v-if="$auth.user.authenticated" right>
+            <BNavItemDropdown right>
               <template #button-content>
                 <font-awesome-icon
-                  :icon="['fas', 'user']"
+                  :icon="['fas','user']"
                   scale="1.5"
                   class="icon"
                 />
                 {{ $auth.user.username }}
               </template>
-              <b-dropdown-item
-                @click="navigate({ path: '/account' })"
-              >{{ $t('account.my') }}</b-dropdown-item>
-              <b-dropdown-item @click="logout"
-              >{{ $t('account.logout') }}</b-dropdown-item>
-            </b-nav-item-dropdown>
-          </b-nav-item>
+              <BDropdownItem @click="navigate({ path: '/account' })">
+                {{ $t('account.my') }}
+              </BDropdownItem>
+              <BDropdownItem @click="logout">
+                {{ $t('account.logout') }}
+              </BDropdownItem>
+            </BNavItemDropdown>
+          </BNavItem>
 
-          <!-- Login/Logout Section -->
-          <b-nav-item v-if="!$auth.user.authenticated" right>
-            <a href="#" class="nav-link" @click.prevent="openLoginModal">
+          <BNavItem v-if="!$auth.user.authenticated" right>
+            <a class="nav-link" href="#" @click.prevent="openLoginModal">
               <font-awesome-icon
-                :icon="['fas', 'right-to-bracket']"
+                :icon="['fas','right-to-bracket']"
                 scale="1.5"
               />
               {{ $t('account.login') }}
             </a>
-          </b-nav-item>
-          <b-nav-item v-if="!$auth.user.authenticated" right>
-            <a href="#" class="nav-link" @click.prevent="openRegisterModal">
+          </BNavItem>
+
+          <BNavItem v-if="!$auth.user.authenticated" right>
+            <a class="nav-link" href="#" @click.prevent="openRegisterModal">
               <font-awesome-icon
-                :icon="['fas', 'user-plus']"
+                :icon="['fas','user-plus']"
                 scale="1.5"
               />
               {{ $t('account.register') }}
             </a>
-          </b-nav-item>
+          </BNavItem>
 
-          <b-nav-item right>
+          <BNavItem right>
             <a
-              target="_blank"
-              :href="supportUrl"
               class="nav-link"
+              :href="supportUrl"
+              target="_blank"
             >
               <font-awesome-icon
-                :icon="['fas', 'circle-question']"
+                :icon="['fas','circle-question']"
                 scale="1.5"
               />
               {{ $t('dashboard.common.support') }}
             </a>
-          </b-nav-item>
+          </BNavItem>
 
           <!-- Language Dropdown -->
-          <b-nav-item right>
-            <b-nav-item-dropdown right>
+          <BNavItem right>
+            <BNavItemDropdown right>
               <template #button-content>
                 <font-awesome-icon
-                  :icon="['fas', 'globe']"
-                />{{ languages[$i18n.locale] }}
+                  :icon="['fas','globe']"
+                />
+                {{ languages[$i18n.locale] }}
               </template>
-              <b-dropdown-item @click="lang('en')">English</b-dropdown-item>
-              <b-dropdown-item @click="lang('zh')">中文</b-dropdown-item>
-            </b-nav-item-dropdown>
-          </b-nav-item>
-        </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+              <BDropdownItem @click="lang('en')">English</BDropdownItem>
+              <BDropdownItem @click="lang('zh')">中文</BDropdownItem>
+            </BNavItemDropdown>
+          </BNavItem>
+        </BNavbarNav>
+      </BCollapse>
+    </BNavbar>
 
     <!-- Main Content -->
-    <b-container
+    <BContainer
       fluid
       class="pl-0 pb-0 pr-0 pt-5 main-content"
       @click="unDrop"
@@ -122,7 +127,7 @@
           </router-view>
         </div>
       </div>
-    </b-container>
+    </BContainer>
 
     <!-- Notifications -->
     <notifications />
@@ -131,7 +136,6 @@
     <BModal
       id="login"
       v-model="showLogin"
-      title=""
       hide-header
       no-fade
       hide-footer
@@ -143,7 +147,6 @@
     <BModal
       id="register"
       v-model="showRegister"
-      title=""
       centered
       hide-header
       no-fade
@@ -154,13 +157,25 @@
   </div>
 </template>
 
+
 <script>
 import { nextTick } from 'vue'
 import Sidebar from '@/components/Sidebar.vue'
 import Login from '@/lib/auth/components/Login.vue'
 import Register from '@/lib/auth/components/Register.vue'
 import TeamSelector from '@/components/TeamSelector.vue'
-import { BModal } from 'bootstrap-vue-next'
+import {
+  BNavbar,
+  BNavbarBrand,
+  BNavbarToggle,
+  BCollapse,
+  BNavbarNav,
+  BNavItem,
+  BNavItemDropdown,
+  BDropdownItem,
+  BContainer,
+  BModal
+} from 'bootstrap-vue-next'
 
 export default {
   name: 'App',
@@ -169,7 +184,17 @@ export default {
     Sidebar,
     Register,
     Login,
-    BModal
+    BModal,
+    BNavbar,
+    BNavbarBrand,
+    BNavbarToggle,
+    BCollapse,
+    BNavbarNav,
+    BNavItem,
+    BNavItemDropdown,
+    BDropdownItem,
+    BContainer,
+  
   },
   data() {
     return {

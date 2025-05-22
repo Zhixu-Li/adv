@@ -1,65 +1,82 @@
 <template>
-  <b-card :header="$t('event.log')">
-    <b-card-text style="responsive">
-      <div
-        v-show="loading"
-        class="loader"
-      >
+  <BCard :header="$t('event.log')">
+    <BCardText>
+      <div v-show="loading" class="loader">
         <div class="spinner" />
       </div>
       <div v-if="logs.length > 0">
-        <div>
-          <b-table-simple striped>
-            <b-thead>
-              <b-tr>
-                <b-th>{{ $t('dateTime.date') }}</b-th>
-                <b-th>{{ $t('event.ip') }}</b-th>
-                <b-th>{{ $t('event.action') }}</b-th>
-              </b-tr>
-            </b-thead>
-            <b-tbody>
-              <b-tr
-                v-for="log in logs"
-                :key="log.timestamp"
-              >
-                <b-td>{{ log.timestamp }}</b-td>
-                <b-td>{{ log.ip }}</b-td>
-                <b-td>{{ log.message }}</b-td>
-              </b-tr>
-            </b-tbody>
-          </b-table-simple>
-        </div>
+        <BTableSimple striped>
+          <BThead>
+            <BTr>
+              <BTh>{{ $t('dateTime.date') }}</BTh>
+              <BTh>{{ $t('event.ip') }}</BTh>
+              <BTh>{{ $t('event.action') }}</BTh>
+            </BTr>
+          </BThead>
+          <BTbody>
+            <BTr v-for="log in logs" :key="log.timestamp">
+              <BTd>{{ log.timestamp }}</BTd>
+              <BTd>{{ log.ip }}</BTd>
+              <BTd>{{ log.message }}</BTd>
+            </BTr>
+          </BTbody>
+        </BTableSimple>
       </div>
       <div v-else>
         <span>{{ $t('message.noLogs') }}</span>
       </div>
-    </b-card-text>
-    <div
-      v-if="logsMeta.totalPages > 1"
-      class="card-footer"
-    >
-      <b-button-group>
-        <b-button
-          v-if="logsMeta.totalPages > 1 && currentPage != 1"
+    </BCardText>
+
+    <div v-if="logsMeta.totalPages > 1" class="card-footer">
+      <BButtonGroup>
+        <BButton
+          v-if="currentPage > 1"
           variant="outline-secondary"
           @click="fetchLogs(logsMeta.previousPage)"
         >
           {{ $t('buttons.previous') }}
-        </b-button>
-        <b-button
-          v-if="logsMeta.totalPages > 1 && currentPage != logsMeta.totalPages"
+        </BButton>
+        <BButton
+          v-if="currentPage < logsMeta.totalPages"
           variant="outline-secondary"
           @click="fetchLogs(logsMeta.nextPage)"
         >
           {{ $t('buttons.next') }}
-        </b-button>
-      </b-button-group>
+        </BButton>
+      </BButtonGroup>
     </div>
-  </b-card>
+  </BCard>
 </template>
+
+
+
 <script>
+import {
+  BCard,
+  BCardText,
+  BTableSimple,
+  BThead,
+  BTr,
+  BTh,
+  BTbody,
+  BTd,
+  BButtonGroup,
+  BButton
+} from 'bootstrap-vue-next'
 export default{
   name: 'EventLog',
+  components: {
+    BCard,
+    BCardText,
+    BTableSimple,
+    BThead,
+    BTr,
+    BTh,
+    BTbody,
+    BTd,
+    BButtonGroup,
+    BButton
+  },
   props: {
     userId: {
       type: Number,

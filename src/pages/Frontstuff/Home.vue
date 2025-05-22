@@ -1,271 +1,194 @@
 <template>
   <div class="h-100 home-main">
-    <b-container>
-      <b-row class="top-margin">
-        <b-col
-          lg="7"
-          cols="12"
-        >
+    <BContainer>
+      <!-- Hero Section -->
+      <BRow class="top-margin">
+        <BCol lg="7" cols="12">
           <div class="float-middle">
             <h2>{{ $t('home.heroHeader') }}</h2>
             <p>{{ $t('home.heroText') }}</p>
-            <!-- <b-button
-              class="buttons button-red"
-              @click="$root.$children[0].$bvModal.show('register')"
-            >
-              {{ $t('home.signUp') }}
-            </b-button> -->
-                       <b-button
-            class="buttons button-red"
-            @click="showRegisterModal"
-          >
-            {{ $t('home.signUp') }}
-          </b-button>
-          <b-modal ref="registerModal" id="register" title="Register">
-            <Register />
-          </b-modal>
-          </div>
-        </b-col>
-        <b-col
-          lg="5"
-          cols="12"
-        >
-          <img
-            src="/static/ad02.jpg"
-            class="photo"
-            style="width:100%"
-          >
-        </b-col>
-      </b-row>
-      <div>
-        <h2>{{ $t('home.mapHeader') }}</h2>
-        <p>{{ $t('home.mapText') }}</p>
-        <b-col
-          cols="12"
-          md="12"
-          class="static-map pb-3 pt-3"
-        >
-          <static-map />
-        </b-col>
-        <p><span class="red-text">{{ $t('home.mapRed') }}</span>{{ $t('home.mapCaption') }}</p>
-      </div>
-      <div class="top-margin">
-        <h2>{{ $t('home.stepHeader') }}</h2>
-
-        <b-row>
-          <b-col
-            lg="6"
-            cols="12"
-          >
-            <div class="step-padding">
-              <img
-                src="/static/ad06.svg"
-                class="step-image"
-              >
-              <h5>{{ $t('home.step1Header') }}</h5>
-              <p class="small-text">
-                {{ $t('home.step1Text') }}
-              </p>
-            </div>
-          </b-col>
-          <b-col
-            lg="6"
-            cols="12"
-          >
-            <div class="step-padding right-padding">
-              <img
-                src="/static/ad05.svg"
-                class="step-image"
-              >
-              <h5>{{ $t('home.step2Header') }}</h5>
-              <p class="small-text">
-                {{ $t('home.step2Text') }}
-              </p>
-            </div>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col
-            lg="6"
-            cols="12"
-          >
-            <div class="step-padding">
-              <img
-                src="/static/ad04.svg"
-                class="step-image"
-              >
-              <h5>{{ $t('home.step3Header') }}</h5>
-              <p class="small-text">
-                {{ $t('home.step3Text') }}
-              </p>
-            </div>
-          </b-col>
-          <b-col
-            lg="6"
-            cols="12"
-          >
-            <div class="step-padding right-padding">
-              <img
-                src="/static/ad03.svg"
-                class="step-image"
-              >
-              <h5>{{ $t('home.step4Header') }}</h5>
-              <p class="small-text">
-                {{ $t('home.step4Text') }}
-              </p>
-            </div>
-          </b-col>
-        </b-row>
-      </div>
-
-      <div class="red-bar">
-        <b-row class="red-bar-contents">
-          <b-col
-            lg="9"
-            cols="12"
-          >
-            <h1>{{ $t('home.barHeader') }}</h1>
-            <p>{{ $t('home.barText') }}</p>
-          </b-col>
-          <b-col
-            lg="3"
-            cols="12"
-          >
-            <!-- <b-button
-              class="buttons button-white float-middle"
-              @click="$root.$children[0].$bvModal.show('register')"
-            >
-              {{ $t('home.signUp') }}
-            </b-button> -->
-            <b-button
-            class="buttons button-white float-middle"
-            @click="showRegisterModal"
-          >
-            {{ $t('home.signUp') }}
-          </b-button>
-          <b-modal ref="registerModal" id="register" title="Register">
-            <Register />
-          </b-modal>
-          </b-col>
-        </b-row>
-      </div>
-
-      <b-row class="top-margin">
-        <b-col
-          lg="7"
-          cols="12"
-        >
-          <div class="float-middle">
-            <h2>{{ $t('home.ownerHeader') }}</h2>
-            <p>{{ $t('home.ownerText') }}</p>
-                      <b-button
-            class="buttons button-red"
-            @click="showRegisterModal"
-          >
-            {{ $t('home.signUp') }}
-          </b-button>
-          <b-modal ref="registerModal" id="register" title="Register">
-            <Register />
-          </b-modal>
-
-
-            <!-- <b-button
-              class="buttons button-red"
-              @click="$root.$children[0].$bvModal.show('register')"
-            >
-              {{ $t('home.signUp') }}
-            </b-button> -->
-            <!-- <b-button
+            <BButton
               class="buttons button-red"
               @click="showRegisterModal"
             >
               {{ $t('home.signUp') }}
-            </b-button> -->
-
-            <!-- <b-modal ref="registerModal" id="register" title="Register">
+            </BButton>
+            <BModal
+              ref="registerModal"
+              id="register"
+              title="Register"
+            >
               <Register />
-            </b-modal> -->
-
-
-            
+            </BModal>
           </div>
-        </b-col>
-        <b-col
-          lg="5"
-          cols="12"
-        >
+        </BCol>
+        <BCol lg="5" cols="12">
+          <img src="/static/ad02.jpg" class="photo" style="width: 100%" />
+        </BCol>
+      </BRow>
+
+      <!-- Map Section -->
+      <div>
+        <h2>{{ $t('home.mapHeader') }}</h2>
+        <p>{{ $t('home.mapText') }}</p>
+        <BCol cols="12" md="12" class="static-map pb-3 pt-3">
+          <static-map />
+        </BCol>
+        <p>
+          <span class="red-text">{{ $t('home.mapRed') }}</span>
+          {{ $t('home.mapCaption') }}
+        </p>
+      </div>
+
+      <!-- Steps Section -->
+      <div class="top-margin">
+        <h2>{{ $t('home.stepHeader') }}</h2>
+        <BRow>
+          <BCol lg="6" cols="12">
+            <div class="step-padding">
+              <img src="/static/ad06.svg" class="step-image" />
+              <h5>{{ $t('home.step1Header') }}</h5>
+              <p class="small-text">{{ $t('home.step1Text') }}</p>
+            </div>
+          </BCol>
+          <BCol lg="6" cols="12">
+            <div class="step-padding right-padding">
+              <img src="/static/ad05.svg" class="step-image" />
+              <h5>{{ $t('home.step2Header') }}</h5>
+              <p class="small-text">{{ $t('home.step2Text') }}</p>
+            </div>
+          </BCol>
+        </BRow>
+        <BRow>
+          <BCol lg="6" cols="12">
+            <div class="step-padding">
+              <img src="/static/ad04.svg" class="step-image" />
+              <h5>{{ $t('home.step3Header') }}</h5>
+              <p class="small-text">{{ $t('home.step3Text') }}</p>
+            </div>
+          </BCol>
+          <BCol lg="6" cols="12">
+            <div class="step-padding right-padding">
+              <img src="/static/ad03.svg" class="step-image" />
+              <h5>{{ $t('home.step4Header') }}</h5>
+              <p class="small-text">{{ $t('home.step4Text') }}</p>
+            </div>
+          </BCol>
+        </BRow>
+      </div>
+
+      <!-- Call-to-Action Bar -->
+      <div class="red-bar">
+        <BRow class="red-bar-contents">
+          <BCol lg="9" cols="12">
+            <h1>{{ $t('home.barHeader') }}</h1>
+            <p>{{ $t('home.barText') }}</p>
+          </BCol>
+          <BCol lg="3" cols="12">
+            <BButton
+              class="buttons button-white float-middle"
+              @click="showRegisterModal"
+            >
+              {{ $t('home.signUp') }}
+            </BButton>
+            <BModal
+              ref="registerModal"
+              id="register"
+              title="Register"
+            >
+              <Register />
+            </BModal>
+          </BCol>
+        </BRow>
+      </div>
+
+      <!-- Owner Section -->
+      <BRow class="top-margin">
+        <BCol lg="7" cols="12">
+          <div class="float-middle">
+            <h2>{{ $t('home.ownerHeader') }}</h2>
+            <p>{{ $t('home.ownerText') }}</p>
+            <BButton
+              class="buttons button-red"
+              @click="showRegisterModal"
+            >
+              {{ $t('home.signUp') }}
+            </BButton>
+            <BModal
+              ref="registerModal"
+              id="register"
+              title="Register"
+            >
+              <Register />
+            </BModal>
+          </div>
+        </BCol>
+        <BCol lg="5" cols="12">
           <img
             src="/static/ad07.jpg"
             class="float-right photo"
-            style="width:100%"
-          >
-        </b-col>
-      </b-row>
-    </b-container>
+            style="width: 100%"
+          />
+        </BCol>
+      </BRow>
+    </BContainer>
 
-    <b-row class="footer">
-      <b-container>
-        <b-row class="mb-3">
-          <b-col
-            lg="4"
-            cols="12"
-          >
+    <!-- Footer -->
+    <BRow class="footer">
+      <BContainer>
+        <BRow class="mb-3">
+          <BCol lg="4" cols="12">
             <img
-              :src="'/static/' + 'adverpost' + '-white.svg'"
+              :src="'/static/adverpost-white.svg'"
               height="34"
               class="mb-3"
-            >
+            />
             <p>One World LED Pty Ltd ABN 33 161 705 068</p>
-          </b-col>
-          <b-col
-            lg="4"
-            cols="6"
-          >
+          </BCol>
+          <BCol lg="4" cols="6">
             <ul>
               <li>
-                <b-link :href="supportUrl">
+                <BLink :href="supportUrl">
                   {{ $t('home.footer.contact') }}
-                </b-link>
+                </BLink>
               </li>
               <li>
-                <b-link :href="supportUrl">
+                <BLink :href="supportUrl">
                   {{ $t('home.footer.support') }}
-                </b-link>
+                </BLink>
               </li>
               <li>
-                <b-link @click="$router.push({ path: '/owners' })">
+                <BLink @click="$router.push({ path: '/owners' })">
                   {{ $t('home.footer.owners') }}
-                </b-link>
+                </BLink>
               </li>
             </ul>
-          </b-col>
-          <b-col
-            lg="4"
-            cols="6"
-          >
+          </BCol>
+          <BCol lg="4" cols="6">
             <ul>
               <li>
-                <b-link @click="$router.push({ path: '/terms' })">
+                <BLink @click="$router.push({ path: '/terms' })">
                   {{ $t('home.footer.tos') }}
-                </b-link>
+                </BLink>
               </li>
               <li>
-                <b-link @click="$router.push({ path: '/privacy' })">
+                <BLink @click="$router.push({ path: '/privacy' })">
                   {{ $t('home.footer.privacy') }}
-                </b-link>
+                </BLink>
               </li>
               <li>
-                <b-link @click="$router.push({ path: '/ip' })">
+                <BLink @click="$router.push({ path: '/ip' })">
                   {{ $t('home.footer.ip') }}
-                </b-link>
+                </BLink>
               </li>
             </ul>
-          </b-col>
-        </b-row>
-      </b-container>
-    </b-row>
+          </BCol>
+        </BRow>
+      </BContainer>
+    </BRow>
   </div>
 </template>
+
 
 <script>
 // import 'vue-awesome/icons/user-plus'
@@ -280,13 +203,26 @@ import "@fontsource/poppins"
 
 import Register from '@/lib/auth/components/Register.vue'
 
-import {BModal} from 'bootstrap-vue-next'
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BButton,
+  BModal,
+  BLink
+} from 'bootstrap-vue-next'
+
 export default {
     name: 'Home',
     components: {
         StaticMap,
         Register,
-        BModal
+        BContainer,
+        BRow,
+        BCol,
+        BButton,
+        BModal,
+        BLink,
 
     },
     data: function () {

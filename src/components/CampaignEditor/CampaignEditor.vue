@@ -1,11 +1,7 @@
 <template lang="html">
-  <b-row>
-    <b-modal
-      id="preview"
-      centered
-      size="md"
-      hide-footer
-    >
+  <BRow>
+    <!-- Preview Modal -->
+    <BModal id="preview" centered size="md" hide-footer>
       <div
         class="p-2"
         :style="{ width: '100%', height: '30vh', resize: 'both' }"
@@ -16,36 +12,28 @@
           :style="{ width: '100%', height: '100%' }"
         />
       </div>
-    </b-modal>
-    <b-col
-      v-if="computedMobile"
-      cols="12"
-      class="text-center m-3"
-    >
-      <b-button
-        class="m-2"
-        variant="primary"
-        @click="isMediaLibrary(false)"
-      >
-        Playlist
-      </b-button>
-      <b-button
-        class="m-2"
-        variant="primary"
-        @click="isMediaLibrary(true)"
-      >
-        Media Library
-      </b-button>
-    </b-col>
+    </BModal>
 
-    <b-col
+    <!-- Mobile Toggle Buttons -->
+    <BCol v-if="computedMobile" cols="12" class="text-center m-3">
+      <BButton class="m-2" variant="primary" @click="isMediaLibrary(false)">
+        Playlist
+      </BButton>
+      <BButton class="m-2" variant="primary" @click="isMediaLibrary(true)">
+        Media Library
+      </BButton>
+    </BCol>
+
+    <!-- Media Library Column -->
+    <BCol
       v-if="showLibrary"
       id="mediaCol"
       cols="12"
       md="6"
       :style="computedMediaStyle"
     >
-      <b-modal
+      <!-- Upload Modal -->
+      <BModal
         id="upload"
         :title="$t('media.create')"
         no-close-on-backdrop
@@ -57,73 +45,67 @@
           @updated="fetchMedia"
           @finished="$bvModal.hide('upload')"
         />
-      </b-modal>
-      <b-row>
-        <b-col class="mx-auto text-center p-0 m-0 mb-1 pb-1">
+      </BModal>
+
+      <BRow>
+        <BCol class="mx-auto text-center p-0 m-0 mb-1 pb-1">
           <input
             v-model="searchComputed"
             type="text"
             :placeholder="$t('actions.search')"
-          >
-          <b-button
+            class="form-control d-inline-block w-auto"
+          />
+          <BButton
             class="ml-4"
             type="button"
             variant="primary"
             size="sm"
-            @click="$bvModal.show('upload')"
+            v-b-modal:upload
           >
             {{ $t('buttons.upload') }}
-          </b-button>
-        </b-col>
-      </b-row>
+          </BButton>
+        </BCol>
+      </BRow>
+
       <div class="media-index h-100 d-flex flex-wrap align-content-start border p-1">
+        <div v-if="loading" class="spinner" />
         <div
-          v-if="loading"
-          class="spinner"
-        />
-        <div
-          v-for="(mediaItem) in filteredMedia"
           v-else
-          :id="mediaItem.mediaId"
+          v-for="mediaItem in filteredMedia"
           :key="mediaItem.mediaId"
+          :id="mediaItem.mediaId"
           overlay
           class="w-25"
           @click="selectMedia(mediaItem)"
         >
-          <b-img
-            fluid-grow
+          <BImg
+            fluidGrow
             center
             :src="getThumbnail(mediaItem.hash, 's')"
             class="media-item"
             :title="makeTitle(mediaItem)"
           >
-            <div
-              v-if="mediaItem.videoId"
-              class="duration"
-            >
+            <div v-if="mediaItem.videoId" class="duration">
               <span>{{ formatTime(mediaItem.duration) }}</span>
             </div>
-          </b-img>
+          </BImg>
         </div>
       </div>
-    </b-col>
+    </BCol>
 
-    <b-col
-      v-if="showCampaignList"
-      cols="12"
-      md="6"
-      :style="computedMediaStyle"
-    >
-      <!-- the editor zone -->
+    <!-- Campaign List Column -->
+    <BCol v-if="showCampaignList" cols="12" md="6" :style="computedMediaStyle">
       <h6 class="text-center">
         Drag the arrow icon or thumbnail to re-order.
       </h6>
-      <b-list-group v-if="previewMedia.length == 0">
-        <b-list-group-item class="text-center">
+
+      <BListGroup v-if="previewMedia.length === 0">
+        <BListGroupItem class="text-center">
           No media added! try clicking on a thumbnail.
-        </b-list-group-item>
-      </b-list-group>
-      <b-list-group v-else>
+        </BListGroupItem>
+      </BListGroup>
+
+      <BListGroup v-else>
         <draggable
           tag="ul"
           :list="previewMedia"
@@ -131,52 +113,43 @@
           handle=".handle"
           ghost-class="ghost"
         >
-          <b-list-group-item
+          <BListGroupItem
             v-for="(mediaItem, index) in previewMedia"
             :key="index"
             class="pr-2"
           >
-            <!-- <b-badge variant="muted" rounded class="border-dark text-monospace m-1">{{ index + 1 }}</b-badge> -->
             <div class="d-flex align-items-center justify-content-between">
-              <div class="">
-                <div
-                  class="text-muted text-center"
-                  :title="mediaItem.name"
-                >
+              <div>
+                <div class="text-muted text-center" :title="mediaItem.name">
                   <small>{{ mediaItem.name }}</small>
                 </div>
                 <div class="d-flex align-items-center justify-content-center mt-2">
-                  <div class="">
-                    <b-img
+                  <div>
+                    <BImg
                       rounded
                       class="w-100 handle"
                       :src="getThumbnail(mediaItem.hash, 's')"
                       alt=""
                     />
-                    <!-- <b-img rounded class="w-100 handle" :src="getThumbnail(mediaItem.hash, 's')" alt="" @contextmenu.prevent></b-img> -->
                   </div>
                   <div class="ml-2">
                     <div class="d-flex justify-content-around ml-2 mr-2">
-                      <b-form-group
+                      <BFormGroup
                         invalid-feedback="duration can't be nothing!"
                         :state="parseInt(mediaItem.duration) > 0"
                       >
-                        <b-input-group
-                          class=""
-                          size="sm"
-                          prepend="play for"
-                          append="secs"
-                        >
-                          <b-form-input
+                        <BInputGroup size="sm" prepend="play for" append="secs">
+                          <BFormInput
                             :disabled="mediaItem.mimeType.includes('video')"
                             type="text"
                             :value="mediaItem.duration"
                             placeholder="duration:"
                             @input="setDuration(index, $event)"
                           />
-                        </b-input-group>
-                      </b-form-group>
-                      <b-button
+                        </BInputGroup>
+                      </BFormGroup>
+
+                      <BButton
                         variant="outline-danger"
                         size="sm"
                         squared
@@ -184,77 +157,68 @@
                         @click="deleteMedia(index)"
                       >
                         Delete
-                      </b-button>
-                      <!-- //<b-icon variant="muted" icon="arrows-move" class="m-2 ml-4 p-1 handle" scale=4></b-icon> -->
+                      </BButton>
+
                       <font-awesome-icon
-                        icon="arrows-up-down-left-right"
-                        class="text-muted m-2 ml-4 p-1 handle"
-                        size="2x"
-                      />
-                      <font-awesome-icon
-                        name="chevron-down"
                         icon="arrows-up-down-left-right"
                         class="text-muted m-2 ml-4 p-1 handle"
                         size="2x"
                       />
                     </div>
+
                     <div class="text-center ml-2 mr-2">
-                      <hr class="mb-0 mt-2 p-0">
-                      <small class="text-muted">file details:</small> 
-                      <!-- <b-badge v-if="mediaItem.mimeType.includes('image')" variant="light">image</b-badge>
-                      <b-badge v-else variant="light">video</b-badge> -->
-                      <b-badge
-                        variant="light"
-                        class="m-1"
-                      >
+                      <hr class="mb-0 mt-2 p-0" />
+                      <small class="text-muted">file details:</small>
+                      <BBadge variant="light" class="m-1">
                         {{ mediaItem.width }}x{{ mediaItem.height }}
-                      </b-badge>
-                      <!-- <b-badge variant="light" class="m-1">{{ mediaItem.size | humanFileSize }}</b-badge> -->
-                      <b-badge
-                        variant="light"
-                        class="m-1"
-                      >
+                      </BBadge>
+                      <BBadge variant="light" class="m-1">
                         {{ humanFileSize(mediaItem.size) }}
-                      </b-badge>
-                      <b-badge
+                      </BBadge>
+                      <BBadge
                         v-if="mediaItem.videoDuration"
                         variant="light"
                         class="m-1"
                       >
                         {{ mediaItem.videoDuration }} seconds
-                      </b-badge>
+                      </BBadge>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </b-list-group-item>
+          </BListGroupItem>
         </draggable>
-      </b-list-group>
+      </BListGroup>
+
       <div class="m-2">
-        <b-button
-          variant="success"
-          :disabled="computedInvalid"
-          @click="save()"
-        >
+        <BButton variant="success" :disabled="computedInvalid" @click="save()">
           {{ $t('buttons.saveCampaign') }}
-        </b-button>
-        <b-button
-          v-b-modal.preview
-          variant="danger"
-          class="ml-2"
-        >
+        </BButton>
+        <BButton v-b-modal:preview variant="danger" class="ml-2">
           Show Preview
-        </b-button>
+        </BButton>
       </div>
-    </b-col>
-  </b-row>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
 /* eslint-disable no-unused-vars */
 /* eslint-disable vue/no-unused-components */
-
+import {
+  BRow,
+  BCol,
+  BModal,
+  BButton,
+  BImg,
+  BListGroup,
+  BListGroupItem,
+  BFormGroup,
+  BInputGroup,
+  BFormInput,
+  BBadge
+} from 'bootstrap-vue-next'
 import Player from '@/components/Player/PropPlayer.vue'
 import _ from 'lodash'
 //import 'vue-awesome/icons/trash'
@@ -269,6 +233,17 @@ export default {
     NewMedia,
     Player,
     draggable,
+    BRow,
+    BCol,
+    BModal,
+    BButton,
+    BImg,
+    BListGroup,
+    BListGroupItem,
+    BFormGroup,
+    BInputGroup,
+    BFormInput,
+    BBadge,
   },
   mixins: [thumbnails],
   props: {

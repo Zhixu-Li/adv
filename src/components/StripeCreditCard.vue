@@ -1,46 +1,42 @@
 <template lang="html">
   <div>
     <div v-if="errors.length > 0">
-      <b-alert
+      <BAlert
         v-for="(error, index) in errors"
         :key="index"
         show
         variant="danger"
       >
         {{ error }}
-      </b-alert>
+      </BAlert>
     </div>
-    <b-form-group
-      label="Name"
-      label-for="name"
-    >
-      <b-form-input
+
+    <BFormGroup label="Name" label-for="name">
+      <BFormInput
         id="name"
         v-model="name"
         :placeholder="Name"
       />
-    </b-form-group>
-    <b-form-group
-      class="pt-1"
-      label="Credit Card"
-      label-for="card"
-    >
-      <div
-        id="card"
-        class="form-control"
-      />
-    </b-form-group>
-    <b-button
-      class="mt-2"
-      variant="warning"
-      @click="createToken"
-    >
+    </BFormGroup>
+
+    <BFormGroup class="pt-1" label="Credit Card" label-for="card">
+      <div id="card" class="form-control" />
+    </BFormGroup>
+
+    <BButton class="mt-2" variant="warning" @click="createToken">
       {{ submitText }}
-    </b-button>
+    </BButton>
   </div>
 </template>
 
+
 <script>
+import {
+  BAlert,
+  BFormGroup,
+  BFormInput,
+  BButton
+} from 'bootstrap-vue-next'
 var stripe = window.Stripe(process.env.VUE_APP_STRIPE_PUBLIC_KEY)
 var elements = stripe.elements()
 let options = {
@@ -65,6 +61,12 @@ let options = {
 var card = elements.create('card', options)
 
 export default {
+  components:{
+     BAlert,
+    BFormGroup,
+    BFormInput,
+    BButton,
+  },
   props: {
     submitText: {
       type: String,

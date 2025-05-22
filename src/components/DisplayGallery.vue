@@ -1,18 +1,8 @@
 <template lang="html">
   <div class="gallery">
-    <b-modal
-      id="addimage"
-      hide-footer
-      :title="$t('displays.addImage')"
-    >
-      <b-form>
-        <!-- <b-form-file
-          v-model="file"
-          accept="image/*"
-          :state="Boolean(file)"
-          placeholder="Choose an image or drop it here..."
-          drop-placeholder="Drop file here..."
-        /> -->
+    <!-- Add Image Modal -->
+    <BModal id="addimage" hide-footer :title="$t('displays.addImage')">
+      <BForm>
         <div
           class="mb-3 p-3 border rounded text-center"
           @dragover.prevent
@@ -34,106 +24,106 @@
             Choose an image or drop it here...
           </div>
 
-          <button class="btn btn-primary mt-2" @click="triggerFileSelect">
+          <BButton class="mt-2" variant="primary" @click="triggerFileSelect">
             Select Image
-          </button>
+          </BButton>
         </div>
-  
-        <b-button
+
+        <BButton
           class="float-right mt-1"
           variant="primary"
-          :disabled="file === null"
+          :disabled="!file"
           @click="uploadImages"
-        > 
-          Upload
-        </b-button>
-      </b-form>
-    </b-modal>
-    <div>
-      <template>
-        <b-carousel
-          v-if="!uploading"
-          id="display-gallery"
-          v-model="selected"
-          :interval="edit ? 0 : 4000"
-          :controls="imageIndex.length > 1"
-          :indicators="imageIndex.length > 1"
-          fade
-          img-height="300"
-          background="black"
         >
-          <div v-if="imageIndex.length > 0">
-            <b-carousel-slide
-              v-for="(image, index) in imageIndex"
-              :id="String(index)"
-              :key="index"
-            >
-              <template #img>
-                <b-img
-                  class="d-block"
-                  height="300"
-                  :src="toUrl(image.image)"
-                  center
-                />
-              </template>
-            </b-carousel-slide>
-          </div>
-          <b-carousel-slide
-            v-else
-            caption="No Image"
-            img-alt="No Images"
-            img-height="300"
+          Upload
+        </BButton>
+      </BForm>
+    </BModal>
+
+    <!-- Carousel -->
+    <div>
+      <BCarousel
+        v-if="!uploading"
+        id="display-gallery"
+        v-model="selected"
+        :interval="edit ? 0 : 4000"
+        :controls="imageIndex.length > 1"
+        :indicators="imageIndex.length > 1"
+        fade
+        img-height="300"
+        background="black"
+      >
+        <template v-if="imageIndex.length > 0">
+          <BCarouselSlide
+            v-for="(image, index) in imageIndex"
+            :key="index"
           >
-            <p>
-              Please add some images of your display if you intend to make it public.
-            </p>
             <template #img>
-              <b-img
+              <BImg
                 class="d-block"
                 height="300"
-                src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22300%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20%25%7Bw%7D%20%25%7Bh%7D%22%20preserveAspectRatio%3D%22none%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20style%3D%22fill%3Atransparent%3B%22%3E%3C%2Frect%3E%3C%2Fsvg%3E"
+                :src="toUrl(image.image)"
                 center
               />
             </template>
-          </b-carousel-slide>
-        </b-carousel>
-      </template>
-      <div>
-        <div
-          class="mt-1"
-          style="display: flex; justify-content: center;"
+          </BCarouselSlide>
+        </template>
+
+        <BCarouselSlide caption="No Image" img-alt="No Images" img-height="300">
+          <p>
+            Please add some images of your display if you intend to make it public.
+          </p>
+          <template #img>
+            <BImg
+              class="d-block"
+              height="300"
+              src="data:image/svg+xml;charset=UTF-8,..."
+              center
+            />
+          </template>
+        </BCarouselSlide>
+      </BCarousel>
+    </div>
+
+    <!-- Edit Buttons -->
+    <div class="mt-1" style="display: flex; justify-content: center;">
+      <BButtonGroup v-if="edit" class="mx-1" size="sm">
+        <BButton
+          v-if="imageIndex.length > 0"
+          variant="danger"
+          @click="deleteImage(imageIndex[selected])"
         >
-          <b-button-group
-            v-if="edit"
-            class="mx-1"
-            size="sm"
-          >
-            <b-button
-              v-if="imageIndex.length > 0"
-              variant="danger"
-              @click="deleteImage(imageIndex[selected])"
-            >
-              Delete
-            </b-button>
-            <b-button
-              variant="primary"
-              @click="$bvModal.show('addimage')"
-            >
-              {{ $t('displays.addImage') }}
-            </b-button>
-          </b-button-group>
-        </div>
-      </div>
+          Delete
+        </BButton>
+        <BButton variant="primary" v-b-modal:addimage>
+          {{ $t('displays.addImage') }}
+        </BButton>
+      </BButtonGroup>
     </div>
   </div>
 </template>
-
 <script>
 // import 'vue-awesome/icons/chevron-left'
 // import 'vue-awesome/icons/chevron-right'
-
+import {
+  BModal,
+  BForm,
+  BButton,
+  BButtonGroup,
+  BCarousel,
+  BCarouselSlide,
+  BImg
+} from 'bootstrap-vue-next' 
 export default {
-  components: {},
+  components: {
+    BModal,
+    BForm,
+    BButton,
+    BButtonGroup,
+    BCarousel,
+    BCarouselSlide,
+    BImg,
+  },
   props: {
     displayId: {
       type: Number,

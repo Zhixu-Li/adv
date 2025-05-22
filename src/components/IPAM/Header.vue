@@ -1,19 +1,25 @@
 <template lang="html">
-  <b-th>
+  <BTh>
     <div class="ipam-header text-center">
-      <b-link
+      <BLink
         class="text-dark"
         :to="{ name: 'display-view', params: { displayId: display.displayId } }"
       >
         {{ display.name }}
-      </b-link>
+      </BLink>
     </div>
-  </b-th>
+  </BTh>
 </template>
 
+
 <script>
+import { BTh, BLink } from 'bootstrap-vue-next'
 export default {
     name: 'IpamHeader',
+    components:{
+      BTh,
+      BLink
+    },
     props: {
         display: {
         type: Object,

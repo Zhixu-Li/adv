@@ -1,61 +1,57 @@
 <template>
   <div class="relative">
     <template v-if="queue.length > 0">
-      <!-- <h6 class="mx-auto text-center">total: {{ this.queue.length }}</h6> -->
       <div class="mx-auto text-center h4">
-        <b-button-group>
-          <b-badge
+        <BButtonGroup>
+          <BBadge
             v-for="c in displayedQueue"
             :key="c.campaignId"
             class="btn border btn-light butty font-weight-bold"
-            :variant="c.campaignId === context ? 'primary' : mediaDone(c) ? 'light' : 'danger'"
+            :variant="c.campaignId === context
+              ? 'primary'
+              : mediaDone(c)
+                ? 'light'
+                : 'danger'"
             @click="triggerJump(c.campaignId)"
           >
-            {{ String(c.campaignId).padStart(2, 0) }}
-          </b-badge>
-        </b-button-group>
+            {{ String(c.campaignId).padStart(2, '0') }}
+          </BBadge>
+        </BButtonGroup>
       </div>
     </template>
+
     <template v-if="isRealCampaign">
       <div class="mx-auto text-center h5">
         name: <em>{{ computedName }}</em>
-        <!-- id: <b>{{ availableQueue.find(q => q.campaignId == context).id }}</b> -->
       </div>
     </template>
-    <template>
-      <player-core
-        ref="player"
-        class="player-wrapper mx-auto m-4"
-        :style="{ width: width, height: height }"
-        :background="'#000'"
-        :hide-controls="!isRealCampaign"
-        :cache="availableCache"
-        :queue="availableQueue"
-        @setcontext="setContext"
-      />
-      <!-- <div class="mx-auto text-center mb-2">
-        <b-button @click="prevItem" variant="primary" class="m-1">Previous</b-button>
-        <b-button @click="nextItem" variant="primary" class="m-1">Next</b-button>
-      </div> -->
-    </template>
-    <div>
-      <div v-if="errored.length > 0">
-        failed to load:
-        <div
-          v-for="(uri, idx) in errored"
-          :key="idx"
-        >
-          {{ uri }}
-        </div>
+
+    <player-core
+      ref="player"
+      class="player-wrapper mx-auto m-4"
+      :style="{ width: width, height: height }"
+      background="#000"
+      :hide-controls="!isRealCampaign"
+      :cache="availableCache"
+      :queue="availableQueue"
+      @setcontext="setContext"
+    />
+
+    <div v-if="errored.length > 0">
+      failed to load:
+      <div v-for="(uri, idx) in errored" :key="idx">
+        {{ uri }}
       </div>
     </div>
   </div>
 </template>
 
+
 <script>
 /* eslint-disable no-unused-vars */
 /* eslint-disable vue/no-unused-components */
 /* eslint-disable no-mixed-spaces-and-tabs */
+import { BButtonGroup, BBadge } from 'bootstrap-vue-next'
 import axios from 'axios'
 import moment from 'moment'
 import PlayerCore from './Core.vue'
@@ -65,6 +61,8 @@ export default {
     components: {
         PlayerCore,
         Multiselect,
+        BButtonGroup,
+        BBadge
     },
     props: {
       width: {

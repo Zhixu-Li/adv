@@ -11,7 +11,7 @@ import Notifications           from '@kyvg/vue3-notification'
 import CartPlugin              from './lib/cart/src/cart.js'
 import authPlugin              from './lib/auth/auth.js'
 
-// import BootstrapVueNext from 'bootstrap-vue-next'
+import BootstrapVueNext from 'bootstrap-vue-next'
 import { bootstrapPlugin } from 'bootstrap-vue-next';
 
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -96,7 +96,7 @@ app.use(i18n)
 app.use(VueLazyload)
 app.use(Notifications)
 app.use(CartPlugin)
-
+app.use(BootstrapVueNext)
 // Register global components
 addIcons(FaUser, FaHome, FaCog)
 app.component('v-icon', OhVueIcon)

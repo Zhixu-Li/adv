@@ -1,97 +1,88 @@
 <template lang="html">
-  <b-card
-    class="mb-2"
-    :header="$t('sources.current')"
-  >
-    <b-card-text>
-      <b-list-group>
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+  <BCard class="mb-2" :header="$t('sources.current')">
+    <BCardText>
+      <BListGroup>
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.status') }}
-          <b-badge
-            :variant="statusType"
-            pill
-          >
+          <BBadge :variant="statusType" pill>
             {{ stats.status }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.latency') }}
-          <b-badge variant="success">
+          <BBadge variant="success">
             {{ stats.latency }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.APIVer') }}
-          <b-badge
-            variant="light"
-            pill
-          >
+          <BBadge variant="light" pill>
             {{ stats.version }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.campaign') }}
-          <b-badge
-            variant="light"
-            pill
-          >
+          <BBadge variant="light" pill>
             {{ stats.campaigns }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.author') }}
-          <b-badge
-            variant="light"
-            pill
-          >
+          <BBadge variant="light" pill>
             {{ stats.author }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.campany') }}
-          <b-badge
-            variant="light"
-            pill
-          >
+          <BBadge variant="light" pill>
             {{ stats.company }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.email') }}
-          <b-badge
-            variant="light"
-            pill
-          >
+          <BBadge variant="light" pill>
             {{ stats.email }}
-          </b-badge>
-        </b-list-group-item>
+          </BBadge>
+        </BListGroupItem>
 
-        <b-list-group-item class="d-flex justify-content-between align-items-center">
+        <BListGroupItem class="d-flex justify-content-between align-items-center">
           {{ $t('sources.phone') }}
-          <b-badge
-            variant="light"
-            pill
-          >
+          <BBadge variant="light" pill>
             {{ stats.phone }}
-          </b-badge>
-        </b-list-group-item>
-      </b-list-group>
+          </BBadge>
+        </BListGroupItem>
+      </BListGroup>
 
       <p class="text-right">
         <small>{{ $t('sources.update') }}</small>
       </p>
-    </b-card-text>
-  </b-card>
+    </BCardText>
+  </BCard>
 </template>
 
+
 <script>
+import {
+  BCard,
+  BCardText,
+  BListGroup,
+  BListGroupItem,
+  BBadge
+} from 'bootstrap-vue-next'
 export default {
+  components:{
+    BCard,
+    BCardText,
+    BListGroup,
+    BListGroupItem,
+    BBadge,
+  },
   props: {
     source: {
       type: Object,

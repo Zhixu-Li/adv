@@ -1,48 +1,38 @@
 <template>
   <div>
-    <b-modal
-      id="showteam"
-      size="xl"
-      hide-footer
-    >
+    <BModal id="showteam" size="xl" hide-footer>
       <team :team-id="teamId" />
-    </b-modal>
-    <b-modal
-      id="showleave"
-      :title="$t('actions.leave')"
-      size="md"
-    >
+    </BModal>
+
+    <BModal id="showleave" :title="$t('actions.leave')" size="md">
       {{ $t('message.leaveTeam') }} {{ team.name }}
       <template #modal-footer>
-        <b-button
+        <BButton
           type="button"
           variant="danger"
           class="mr-3"
           @click="leaveTeam(team.id)"
         >
           {{ $t('answers.yes') }}
-        </b-button>
-        <b-button
+        </BButton>
+        <BButton
           type="button"
           variant="primary"
           @click="$bvModal.hide('showleave')"
         >
           {{ $t('answers.no') }}
-        </b-button>
+        </BButton>
       </template>
-    </b-modal>
-    <b-modal
-      id="newteam"
-      :title="$t('teams.newTeam')"
-      size="lg"
-      hide-footer
-    >
+    </BModal>
+
+    <BModal id="newteam" :title="$t('teams.newTeam')" size="lg" hide-footer>
       <new-team />
-    </b-modal>
-    <b-card>
+    </BModal>
+
+    <BCard>
       <template #header>
         {{ $t('teams.teams') }}
-        <b-button
+        <BButton
           v-if="showCreate"
           variant="primary"
           size="sm"
@@ -50,13 +40,11 @@
           @click="$bvModal.show('newteam')"
         >
           &#10010;
-        </b-button>
+        </BButton>
       </template>
-      <b-card-text>
-        <div
-          v-show="loading"
-          class="loader"
-        >
+
+      <BCardText>
+        <div v-show="loading" class="loader">
           <div class="spinner" />
         </div>
         <div v-show="!loading">
@@ -70,45 +58,59 @@
               >
                 {{ team.name }}
                 <span
-                  class="badge badge-default badge-danger"
+                  class="badge badge-danger"
                   @click.stop="showLeaveTeam(team.name, team.teamId)"
-                >{{ $t('actions.leave') }}</span>
+                >
+                  {{ $t('actions.leave') }}
+                </span>
               </li>
             </ul>
-            <b-button-group class="mt-2">
-              <b-button
-                v-if="teamsMeta.totalPages > 1 && currentPage != 1"
+            <BButtonGroup class="mt-2">
+              <BButton
+                v-if="teamsMeta.totalPages > 1 && currentPage !== 1"
                 variant="outline-secondary"
                 @click="fetchTeams(teamsMeta.previousPage)"
               >
                 {{ $t('buttons.previous') }}
-              </b-button>
-              <b-button
-                v-if="teamsMeta.totalPages > 1 && currentPage != teamsMeta.totalPages"
+              </BButton>
+              <BButton
+                v-if="teamsMeta.totalPages > 1 && currentPage !== teamsMeta.totalPages"
                 variant="outline-secondary"
                 @click="fetchTeams(teamsMeta.nextPage)"
               >
                 {{ $t('buttons.next') }}
-              </b-button>
-            </b-button-group>
+              </BButton>
+            </BButtonGroup>
           </div>
           <div v-else>
             <span>{{ $t('message.noTeam') }}</span>
           </div>
         </div>
-      </b-card-text>
-    </b-card>
+      </BCardText>
+    </BCard>
   </div>
 </template>
 <script>
 import NewTeam from '@/components/User/NewTeam.vue'
 import Team from '@/components/User/Team.vue'
+import {
+  BModal,
+  BCard,
+  BCardText,
+  BButton,
+  BButtonGroup
+} from 'bootstrap-vue-next'
 
 export default{
   name: 'Teams',
   components: {
     NewTeam,
     Team,
+    BModal,
+    BCard,
+    BCardText,
+    BButton,
+    BButtonGroup,
   },
   props: {
     userId: {

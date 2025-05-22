@@ -1,5 +1,5 @@
-<template lang="html">
-  <b-td
+<template>
+  <BTd
     class="text-center"
     style="vertical-align: middle"
     @mouseover="mouseOver"
@@ -8,67 +8,67 @@
     <template v-if="loaded">
       <template v-if="filteredBookings.length > 0">
         <template v-if="content.cc.campaignId">
-          <b-button
+          <BButton
             size="sm"
             :variant="running ? 'success' : 'warning'"
-            @click="$emit('triggerModal', 'manageCampaign', content.cc, content.dc)"
+            @click="$emit('triggerModal','manageCampaign',content.cc,content.dc)"
           >
-            BOOKED <b-badge
-              v-if="filteredBookings.length > 1"
-              variant="light"
-            >
+            BOOKED
+            <BBadge v-if="filteredBookings.length > 1" variant="light">
               {{ filteredBookings.length }}
-            </b-badge>
-          </b-button>
+            </BBadge>
+          </BButton>
         </template>
         <template v-else>
-          <b-button
+          <BButton
             size="sm"
             :variant="running ? 'success' : 'warning'"
-            @click="$emit('triggerModal', 'manageSource', content.cc, content.dc)"
+            @click="$emit('triggerModal','manageSource',content.cc,content.dc)"
           >
-            CONNECTED <b-badge
-              v-if="filteredBookings.length > 1"
-              variant="light"
-            >
+            CONNECTED
+            <BBadge v-if="filteredBookings.length > 1" variant="light">
               {{ filteredBookings.length }}
-            </b-badge>
-          </b-button>
+            </BBadge>
+          </BButton>
         </template>
       </template>
       <template v-else-if="showButt">
-        <!-- ideally this emit would just return the ccid and dcid instead of wasting cpu passing around shit -->
         <template v-if="content.cc.campaignId">
-          <b-button
+          <BButton
             size="sm"
-            @click="$emit('triggerModal', 'addCampaign', content.cc, content.dc)"
+            @click="$emit('triggerModal','addCampaign',content.cc,content.dc)"
           >
             BOOK
-          </b-button>
+          </BButton>
         </template>
         <template v-else>
-          <b-button
+          <BButton
             size="sm"
-            @click="$emit('triggerModal', 'addSource', content.cc, content.dc)"
+            @click="$emit('triggerModal','addSource',content.cc,content.dc)"
           >
             CONNECT
-          </b-button>
+          </BButton>
         </template>
       </template>
     </template>
-  </b-td>
+  </BTd>
 </template>
+
 
 <script>
 // {{ booking.campaignId === content.cc.campaignId ? 'BOOKED' : '' }}
 // grey out column if display prop is offline
 
 import moment from 'moment'
+import { BTd, BButton, BBadge } from 'bootstrap-vue-next'
 
 
 export default {
     name: 'IpamCell',
     components: {
+      BTd,
+      BButton,
+      BBadge,
     },
     props: {
         content: {
