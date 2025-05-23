@@ -1,16 +1,16 @@
 <template>
-  <b-container fluid>
-    <b-row
+  <BContainer fluid>
+    <BRow
       id="top-area"
       class="header mt-3 pb-3 w-100"
       no-gutters
     >
-      <b-col class="d-none d-md-block">
+      <BCol class="d-none d-md-block">
         <h2>{{ $t('sources.sources') }}</h2>
         <p>{{ $t('tutorial.sources') }}</p>
-      </b-col>
-      <b-col class="d-md-none">
-        <multiselect
+      </BCol>
+      <BCol class="d-md-none">
+        <Multiselect
           :options="filtered"
           track-by="sourceId"
           label="name"
@@ -18,64 +18,46 @@
           :allow-empty="false"
           @select="selectSource"
         />
-      </b-col>
-      <b-col
+      </BCol>
+      <BCol
         align-self="center"
         cols="1"
         class="d-md-none pl-3"
       >
         <div v-b-modal.new-source>
-          <!-- <v-icon name="plus" scale="1.5" label="New Source"></v-icon> -->
           <font-awesome-icon
             icon="plus"
             size="lg"
             aria-label="New Source"
           />
         </div>
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
 
-    <b-row
-      v-if="loading"
-      id="content-area"
-    >
+    <BRow v-if="loading" id="content-area">
       <div class="spinner" />
-    </b-row>
+    </BRow>
 
-    <b-row
-      v-else
-      id="content-area"
-    >
-      <b-col
+    <BRow v-else id="content-area">
+      <BCol
         ref="sidebar"
         md="4"
         lg="2"
         class="d-none d-md-block h-100 overflow list"
       >
-        <b-form-input
+        <BFormInput
           id="search"
           v-model="search"
           class="search"
           :placeholder="$t('actions.search')"
         />
-        <div
-          v-b-modal.new-source
-          class="new-item item"
-        >
-          <!-- <v-icon name="plus" scale="1.5" label="New Source"></v-icon> -->
+        <div v-b-modal.new-source class="new-item item">
           <font-awesome-icon
             icon="plus"
             size="lg"
             aria-label="New Source"
           />
         </div>
-        <!-- 
-        <div v-bind:key="source.sourceId" v-for="source in filtered" @click="selectSource(source)"
-          :id="'s_'+source.sourceId"
-          class="pt-3 pb-3 item"
-          :class="{ selected: compSelected !== {} && compSelected.sourceId === source.sourceId }">
-          {{source.name}}
-        </div>  not sure this code is correct or not just make sure that comSelected is not empty-->
         <div
           v-for="source in filtered"
           :id="'s_' + source.sourceId"
@@ -86,21 +68,9 @@
         >
           {{ source.name }}
         </div>
-      </b-col>
+      </BCol>
 
-      <!-- <b-col cols="12" md="8" lg="10" class="h-100 overflow">
-        <transition name="fade">
-          <router-view v-if="!loading && $route.params.sourceId && compSelected !== {}" :activeTeam="activeTeam"
-            :source="compSelected" @update="fetchSources">
-          </router-view>
-        </transition>
-      </b-col> not sure this code is correct or not just make sure that comSelected is not empty -->
-      <b-col
-        cols="12"
-        md="8"
-        lg="10"
-        class="h-100 overflow"
-      >
+      <BCol cols="12" md="8" lg="10" class="h-100 overflow">
         <transition name="fade">
           <router-view
             v-if="!loading && $route.params.sourceId && compSelected?.sourceId"
@@ -109,23 +79,22 @@
             @update="fetchSources"
           />
         </transition>
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
 
-    <b-modal
+    <BModal
       id="new-source"
       size="lg"
-      title=""
       no-fade
       no-close-on-backdrop
       hide-footer
     >
-      <new-source
+      <NewSource
         :active-team="activeTeam"
         @refresh="fetchSources"
       />
-    </b-modal>
-  </b-container>
+    </BModal>
+  </BContainer>
 </template>
 
 <script>
@@ -135,13 +104,24 @@ import NewSource from '@/pages/Sources/NewSource.vue'
 import teamContext from '@/mixins/teamContext'
 import autoResize from '@/mixins/autoResize'
 import Multiselect from 'vue-multiselect'
-
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BFormInput,
+  BModal
+} from 'bootstrap-vue-next'
 
 export default {
   name: 'Sources',
   components: {
     NewSource,
     Multiselect,
+    BContainer,
+    BRow,
+    BCol,
+    BFormInput,
+    BModal,
   },
   mixins: [teamContext, autoResize],
   data () {

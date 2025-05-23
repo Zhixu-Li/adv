@@ -1,258 +1,213 @@
 <template lang="html">
   <div class="row row-flex row-flex-wrap">
-    <b-modal
+    <!-- Create Campaign Modal -->
+    <BModal
       id="create-campaign"
       size="lg"
       title="New Pricing Schedule"
       hide-footer
     >
-      <create-schedule @refresh="$emit('refresh')" />
-    </b-modal>
-    <b-modal
+      <CreateSchedule @refresh="$emit('refresh')" />
+    </BModal>
+
+    <!-- Delete Schedule Modal -->
+    <BModal
       id="delete-schedule"
       size="lg"
       title="Delete Schedule"
       hide-footer
     >
       <p>Do you want to delete the selected price schedule item?</p>
-      <b-button
+      <BButton
         id="hide-delete"
         variant="primary"
         @click="$bvModal.hide('delete-schedule')"
       >
         {{ $t('buttons.back') }}
-      </b-button>
-      <b-button
+      </BButton>
+      <BButton
         id="do-delete"
         variant="danger"
         class="float-right"
-        @click="deleteSchedule()"
+        @click="deleteSchedule"
       >
         {{ $t('buttons.delete') }}
-      </b-button>
-    </b-modal>
+      </BButton>
+    </BModal>
 
-    <b-modal
+    <!-- Pricing Calculator Modal -->
+    <BModal
       id="calculator-modal"
       size="lg"
       title="Pricing Calculator"
       hide-footer
     >
-      <pricing-calculator
+      <PricingCalculator
         v-model="selected.pricePerSecond"
         :block-time="display.blockTime"
         :max-time-purchasable="display.maxTimePurchasable"
         show-button
-        @close="$bvModal.hide('pricecalc')"
+        @close="$bvModal.hide('calculator-modal')"
       />
-    </b-modal>
+    </BModal>
 
-    <b-col
-      cols="12"
-      class="d-flex justify-content-between"
-    >
-      <b-button
-        id="backbutton"
-        variant="primary"
-        @click="$emit('finished', date)"
-      >
+    <!-- Header Row -->
+    <BCol cols="12" class="d-flex justify-content-between">
+      <BButton id="backbutton" variant="primary" @click="$emit('finished', date)">
         {{ $t('buttons.back') }}
-      </b-button>
+      </BButton>
       <h2>{{ formattedDate.format('dddd, MMMM Do YYYY') }}</h2>
-      <b-button
-        id="show-create"
-        variant="primary"
-        @click="$bvModal.show('create-campaign')"
-      >
+      <BButton id="show-create" variant="primary" @click="$bvModal.show('create-campaign')">
         {{ $t('buttons.create') }}
-      </b-button>
-    </b-col>
-    <b-col
-      cols="12"
-      class="hidden-lg-down"
-    >
-      <div>
-        <div>
-          <Grid-layout
-            :layout="convertedSchedules"
-            :col-num="24"
-            :row-height="1"
-            :is-draggable="true"
-            :is-resizable="true"
-            :vertical-compact="false"
-            :margin="[5, 5]"
-            :use-css-transforms="true"
-            :max-rows="100"
-          >
-            <Grid-item
-              v-for="(schedule, index) in convertedSchedules"
-              :key="index"
-              :x="schedule.x"
-              :y="schedule.y"
-              :w="schedule.w"
-              :h="5"
-              :i="schedule.i"
-              :min-h="5"
-              :max-h="5"
-              :max-w="24"
-              :min-w="schedule.default ? 24 : 1"
-              :style="{'background-color': stringToColor(schedule.i), 'text-align': 'center'}"
-              @click="schedule = 'test'"
-            >
-              {{ schedule.i }} {{ schedule.default ? '(default)' : '' }}
-            </Grid-item>
-          </Grid-layout>
-        </div>
-        <div class="d-flex justify-content-between">
-          <span
-            v-for="hour in 24"
-            :key="hour.id"
-            class="hour"
-          >{{ formatTime(hour -1) }}</span> 
-          <!-- {{ hour - 1 | formatTime}} -->
-          <span class="hour last">0:00</span>
-        </div>
-        <b-button
-          class="float-right"
-          name="button"
-          variant="primary"
-          @click="saveSchedules()"
+      </BButton>
+    </BCol>
+
+    <!-- Grid Layout on Large Screens -->
+    <BCol cols="12" class="hidden-lg-down">
+      <GridLayout
+        :layout="convertedSchedules"
+        :col-num="24"
+        :row-height="1"
+        :is-draggable="true"
+        :is-resizable="true"
+        :vertical-compact="false"
+        :margin="[5,5]"
+        :use-css-transforms="true"
+        :max-rows="100"
+      >
+        <GridItem
+          v-for="(sched, idx) in convertedSchedules"
+          :key="idx"
+          :x="sched.x" :y="sched.y" :w="sched.w" :h="5" :i="sched.i"
+          :min-h="5" :max-h="5" :max-w="24" :min-w="sched.default ? 24 : 1"
+          :style="{ backgroundColor: stringToColor(sched.i), textAlign: 'center' }"
         >
-          {{ $t('buttons.save') }}
-        </b-button>
+          {{ sched.i }} <span v-if="sched.default">(default)</span>
+        </GridItem>
+      </GridLayout>
+      <div class="d-flex justify-content-between">
+        <span v-for="hr in 24" :key="hr" class="hour">{{ formatTime(hr-1) }}</span>
+        <span class="hour last">0:00</span>
       </div>
-    </b-col>
-    <b-col
-      v-if="errors.length > 0"
-      cols="12"
-      class="12 alert alert-danger"
-    >
+      <BButton class="float-right" variant="primary" @click="saveSchedules">
+        {{ $t('buttons.save') }}
+      </BButton>
+    </BCol>
+
+    <!-- Errors -->
+    <BCol v-if="errors.length" cols="12" class="alert alert-danger">
       <ul>
-        <li
-          v-for="(error, index) in errors"
-          :key="index"
-        >
-          {{ error }}
-        </li>
+        <li v-for="(err, i) in errors" :key="i">{{ err }}</li>
       </ul>
-    </b-col>
-    <b-col
-      cols="12"
-      class="pt-2"
-    >
-      <b-card :header="$t('common.schedule')">
-        <b-card-text>
+    </BCol>
+
+    <!-- Schedule Selector & Editor -->
+    <BCol cols="12" class="pt-2">
+      <BCard :header="$t('common.schedule')">
+        <BCardText>
           <label for="schedules">{{ $t('displayPricing.pricingSchedule') }}</label>
-          <multiselect
+          <Multiselect
             v-model="selected"
             :options="pricingSchedules"
-            :placeholder="$t('displayPricing.select')"
+            placeholder="$t('displayPricing.select')"
             label="scheduleName"
           />
-          <div
-            v-if="typeof selected === 'object' && selected !== undefined && loaded"
-            @keyup.enter.prevent.stop="saveSchedule()"
-          >
-            <hr>
-            <b-form-group
-              :label="$t('common.name')"
-              label-for="name"
-            >
-              <b-form-input
+
+          <div v-if="selected && loaded" @keyup.enter.prevent.stop="saveSchedule">
+            <hr />
+            <BFormGroup :label="$t('common.name')" label-for="name">
+              <BFormInput
                 id="name"
                 v-model="selected.scheduleName"
                 :disabled="selected.displayDefault"
-                :placeholder="$t('common.name')"
               />
-            </b-form-group>
+            </BFormGroup>
+
             <label for="startDate">{{ $t('dateTime.sDate') }}</label>
             <flatpickr
               id="startDate"
               v-model="selected.startDate"
-              :placeholder="$t('dateTime.date')"
-              :disabled="selected.displayDefault"
               :options="startDateOptions"
+              :disabled="selected.displayDefault"
             />
+
             <label for="endDate">{{ $t('dateTime.eDate') }}</label>
             <flatpickr
               id="endDate"
               v-model="selected.endDate"
-              :placeholder="$t('dateTime.date')"
-              :disabled="selected.displayDefault"
               :options="endDateOptions"
+              :disabled="selected.displayDefault"
             />
+
             <label for="startTime">{{ $t('dateTime.sTime') }} {{ $t('dateTime.eDay') }}</label>
             <flatpickr
               id="startTime"
               v-model="selected.startTime"
-              :placeholder="$t('dateTime.time')"
-              :disabled="selected.displayDefault"
               :options="startTimeOptions"
+              :disabled="selected.displayDefault"
             />
+
             <label for="endTime">{{ $t('dateTime.eTime') }} {{ $t('dateTime.eDay') }}</label>
             <flatpickr
               id="endTime"
               v-model="selected.endTime"
-              :placeholder="$t('dateTime.time')"
-              :disabled="selected.displayDefault"
               :options="endTimeOptions"
+              :disabled="selected.displayDefault"
             />
-            <b-form-group
-              :label="$t('displayPricing.priority')"
-              label-for="priority"
-            >
-              <b-form-input
+
+            <BFormGroup :label="$t('displayPricing.priority')" label-for="priority">
+              <BFormInput
                 id="priority"
                 v-model="selected.priority"
                 type="number"
+                min="1" max="100"
                 :disabled="selected.displayDefault"
-                max="100"
-                min="1"
               />
-            </b-form-group>
-            <b-form-group
-              :label="$t('displayPricing.pps')"
-              label-for="pps"
-            >
-              <b-form-input
+            </BFormGroup>
+
+            <BFormGroup :label="$t('displayPricing.pps')" label-for="pps">
+              <BFormInput
                 id="pps"
                 v-model="selected.pricePerSecond"
                 type="number"
                 min="0"
               />
-            </b-form-group>
-            <b-button
-              id="show-calc"
-              class="mt-1"
-              variant="primary"
-              @click="$bvModal.show('calculator-modal')"
-            >
+            </BFormGroup>
+
+            <BButton id="show-calc" class="mt-1" variant="primary"
+              @click="$bvModal.show('calculator-modal')">
               {{ $t('buttons.pricingCal') }}
-            </b-button>
+            </BButton>
+
             <div class="mt-4 float-right">
-              <b-button
+              <BButton
                 v-if="!selected.displayDefault"
                 variant="danger"
                 class="mr-1"
                 @click="$bvModal.show('delete-schedule')"
               >
                 {{ $t('buttons.delete') }}
-              </b-button>
-              <b-button
-                variant="primary"
-                @click="saveSchedule()"
-              >
+              </BButton>
+              <BButton variant="primary" @click="saveSchedule">
                 {{ $t('buttons.save') }}
-              </b-button>
+              </BButton>
             </div>
           </div>
-        </b-card-text>
-      </b-card>
-    </b-col>
+        </BCardText>
+      </BCard>
+    </BCol>
   </div>
 </template>
-
 <script>
+import {
+  BModal,
+  BCol,
+  BButton,
+  BCard,
+  BCardText,
+  BFormGroup,
+  BFormInput
+} from 'bootstrap-vue-next'
 import PricingCalculator from "../Components/PricingCalculator.vue";
 import Multiselect from "vue-multiselect";
 import stringToColor from "../../../mixins/stringToColor.js";
@@ -271,7 +226,14 @@ export default {
     Flatpickr,
     Multiselect,
     CreateSchedule,
-    PricingCalculator
+    PricingCalculator,
+    BModal,
+    BCol,
+    BButton,
+    BCard,
+    BCardText,
+    BFormGroup,
+    BFormInput,
   },
   mixins: [stringToColor],
   props: {

@@ -1,35 +1,30 @@
-<template>
-  <b-container fluid>
-    <b-modal
+<template lang="html">
+  <BContainer fluid>
+    <BModal
       id="newdisplay"
       :title="$t('displays.newDisplay')"
       size="lg"
       hide-footer
     >
-      <new-display
-        v-if="activeTeam.id != 0"
+      <NewDisplay
+        v-if="activeTeam.id !== 0"
         :active-team="activeTeam"
         @refresh-displays="savedUpdate"
       />
-    </b-modal>
+    </BModal>
 
-    <b-row
+    <BRow
       id="top-area"
       class="header mt-3 pb-3 w-100"
       no-gutters
     >
-      <b-col class="d-none d-md-block">
+      <BCol class="d-none d-md-block">
         <h2>{{ $t('displays.displays') }}</h2>
         <p>{{ $t('tutorial.displaysExample') }}</p>
-      </b-col>
-      <!-- <b-col cols="12" class="d-md-none mb-1" >
-        <b-button variant="success" class="btn-block" @click="newDisplay()"><b-icon class="d-inline " icon="plus-circle-fill"></b-icon> Create Display</b-button>
-      </b-col> -->
-      <b-col
-        cols="11"
-        class="d-md-none"
-      >
-        <multiselect
+      </BCol>
+
+      <BCol cols="11" class="d-md-none">
+        <Multiselect
           :options="filtered"
           track-by="displayId"
           label="name"
@@ -37,14 +32,9 @@
           :allow-empty="false"
           @select="selectDisplay"
         />
-      </b-col>
-      <b-col
-        align-self="center"
-        cols="1"
-        class="d-md-none pl-3"
-      >
+      </BCol>
+      <BCol align-self="center" cols="1" class="d-md-none pl-3">
         <div @click="newDisplay()">
-          <!-- <v-icon name="plus" scale="1.5" label="New Display"></v-icon> -->
           <font-awesome-icon
             icon="plus"
             style="transform: scale(1.5);"
@@ -52,36 +42,27 @@
             class="text-dark"
           />
         </div>
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
 
-    <b-row
-      v-if="loading"
-      id="content-area"
-    >
+    <BRow v-if="loading" id="content-area">
       <div class="spinner" />
-    </b-row>
+    </BRow>
 
-    <b-row
-      v-else
-      id="content-area"
-    >
-      <b-col
+    <BRow v-else id="content-area">
+      <BCol
         ref="sidebar"
         md="4"
         lg="2"
         class="d-none d-md-block h-100 overflow list"
       >
-        <b-form-input
+        <BFormInput
           id="search"
           v-model="search"
           class="search"
           :placeholder="$t('actions.search')"
         />
-        <div
-          class="new-item item"
-          @click="newDisplay()"
-        >
+        <div class="new-item item" @click="newDisplay()">
           <font-awesome-icon
             icon="plus"
             style="transform: scale(1.5);"
@@ -91,57 +72,48 @@
         </div>
         <div
           v-for="display in filtered"
-          :id="'d_'+display.displayId"
-          :key="display.id"
+          :id="'d_' + display.displayId"
+          :key="display.displayId"
           class="pt-3 pb-3 item"
-          :title="clients[display.hardwareId] ? 'Online' : 'Offline (last connected: '+display.lastConnected+')'"
-          :class="{ selected: compSelected !== {} && compSelected.displayId === display.displayId }"
+          :title="clients[display.hardwareId]
+            ? 'Online'
+            : 'Offline (last connected: ' + display.lastConnected + ')'"
+          :class="{ selected: compSelected.displayId === display.displayId }"
           @click="selectDisplay(display)"
         >
           <p class="mb-0">
-            <template v-if="clients[display.hardwareId]">
-              <!-- <b-icon class="bg-white rounded-circle" animation="" variant="success" icon="emoji-smile"></b-icon> -->
-              <font-awesome-icon
-                icon="face-smile"
-                class="bg-white rounded-circle text-success"
-              />
-            </template>
-            <template v-else>
-              <!-- <b-icon class="bg-white rounded-circle" animation="" variant="danger" icon="emoji-frown"></b-icon> -->
-              <font-awesome-icon
-                icon="face-frown"
-                class="bg-white rounded-circle text-danger"
-              />
-            </template>
+            <font-awesome-icon
+              v-if="clients[display.hardwareId]"
+              icon="face-smile"
+              class="bg-white rounded-circle text-success"
+            />
+            <font-awesome-icon
+              v-else
+              icon="face-frown"
+              class="bg-white rounded-circle text-danger"
+            />
             {{ display.name }}
           </p>
           <div class="text-muted">
-            <small>{{ display.pixelWidth == 0 ? '(LCD native)' : `${display.pixelWidth}x${display.pixelHeight} px` }}</small>
+            <small>
+              {{ display.pixelWidth === 0
+                ? '(LCD native)'
+                : `${display.pixelWidth}x${display.pixelHeight} px` }}
+            </small>
           </div>
-          <div
-            v-if="$auth.user.admin"
-            class="text-muted"
-          >
+          <div v-if="$auth.user.admin" class="text-muted">
             <small>{{ display.hardwareId }}</small>
           </div>
-          <div
-            v-if="$auth.user.admin"
-            class="text-muted"
-          >
+          <div v-if="$auth.user.admin" class="text-muted">
             <small>{{ display.acid }}</small>
           </div>
         </div>
-      </b-col>
+      </BCol>
 
-      <b-col
-        cols="12"
-        md="8"
-        lg="10"
-        class="h-100 overflow"
-      >
+      <BCol cols="12" md="8" lg="10" class="h-100 overflow">
         <transition name="fade">
           <router-view
-            v-if="filtered.length > 0 && $route.params.displayId && compSelected !== {}"
+            v-if="filtered.length && $route.params.displayId && compSelected.displayId"
             class="h-100"
             :display="compSelected"
             :active-team="activeTeam"
@@ -149,15 +121,22 @@
             @refresh-displays="refreshDisplays"
           />
         </transition>
-      </b-col>
-    </b-row>
-  </b-container>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
 // import 'vue-awesome/icons/arrow-left'
 // import 'vue-awesome/icons/plus'
 import _ from 'lodash'
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BModal,
+  BFormInput
+} from 'bootstrap-vue-next'
 import Multiselect from 'vue-multiselect'
 import autoResize from '@/mixins/autoResize'
 import teamContext from '@/mixins/teamContext'
@@ -167,7 +146,12 @@ export default {
   name: 'Displays',
   components: {
     Multiselect,
-    newDisplay
+    newDisplay,
+    BContainer,
+    BRow,
+    BCol,
+    BModal,
+    BFormInput,
   },
   mixins: [teamContext, autoResize],
   data() {

@@ -1,17 +1,19 @@
 <template>
-  <b-container>
+  <BContainer>
     <h2>Coming Soon</h2>
-    <b-button @click="$router.push({ path: '/' })">
+    <BButton @click="$router.push({ path: '/' })">
       Back
-    </b-button>
-  </b-container>
+    </BButton>
+  </BContainer>
 </template>
 
 <script>
 
-
+import {BContainer, BButton} from 'bootstrap-vue-next'
 export default {
   components: {
+    BContainer,
+    BButton
 
 }
 }

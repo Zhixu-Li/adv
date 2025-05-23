@@ -1,221 +1,154 @@
 <template>
-  <b-row v-if="$auth.user.admin">
-    <b-col class="text-center mt-3">
+  <BRow v-if="$auth.user.admin">
+    <BCol class="text-center mt-3">
       <h2>{{ $t('schedule.adminSchedule') }}</h2>
-    </b-col>
-  </b-row>
-  <b-row
-    v-else
-    class="h-100"
-  >
-    <b-modal
+    </BCol>
+  </BRow>
+
+  <BRow v-else class="h-100">
+    <BModal
       id="pinconfirm"
       :title="selectedDisplay.name"
       size="md"
       hide-footer
     >
       <display-gallery :display-id="Number(selectedDisplay.displayId)" />
-      <b-card class="mt-1">
-        <b-table-simple
-          v-if="selectedDisplay && !searchedForBookings"
-          borderless
-          small
-        >
-          <b-tr>
-            <b-th>
-              Daily
-            </b-th>
-            <b-th>
-              Weekly
-            </b-th>
-            <b-th>
-              Monthly
-            </b-th>
-          </b-tr>
-          <b-tr>
-            <b-td>
-              <!-- ${{((selectedDisplay.baselinePrice.price_per_second))*15*(86400/selectedDisplay.blockTime) | money}} -->
-              ${{ moneyFormat(((selectedDisplay.baselinePrice.price_per_second))*15*(86400/selectedDisplay.blockTime)) }}
-            </b-td>
-            <b-td>
-              <!-- ${{((selectedDisplay.baselinePrice.price_per_second))*15*(86400*7/selectedDisplay.blockTime) | money}} -->
-              ${{ moneyFormat(((selectedDisplay.baselinePrice.price_per_second))*15*(86400*7/selectedDisplay.blockTime)) }}
-            </b-td>
-            <b-td>
-              <!-- ${{((selectedDisplay.baselinePrice.price_per_second))*15*(86400*30/selectedDisplay.blockTime) | money}} -->
-              ${{ moneyFormat(((selectedDisplay.baselinePrice.price_per_second))*15*(86400*30/selectedDisplay.blockTime)) }}
-            </b-td>
-          </b-tr>
-        </b-table-simple>
-        <strong v-else-if="selectedDisplay && searchedForBookings">{{ $t('map.costOfBooking') }}: <span
-          class="float-right"
-        >${{ formatMoney(selectedDisplay.price) }}</span></strong>
+
+      <BCard class="mt-1">
+        <BTableSimple v-if="selectedDisplay && !searchedForBookings" borderless small>
+          <BTr>
+            <BTh>Daily</BTh>
+            <BTh>Weekly</BTh>
+            <BTh>Monthly</BTh>
+          </BTr>
+          <BTr>
+            <BTd>${{ moneyFormat(selectedDisplay.baselinePrice.price_per_second * 15 * (86400 / selectedDisplay.blockTime)) }}</BTd>
+            <BTd>${{ moneyFormat(selectedDisplay.baselinePrice.price_per_second * 15 * (86400 * 7 / selectedDisplay.blockTime)) }}</BTd>
+            <BTd>${{ moneyFormat(selectedDisplay.baselinePrice.price_per_second * 15 * (86400 * 30 / selectedDisplay.blockTime)) }}</BTd>
+          </BTr>
+        </BTableSimple>
+
+        <strong v-else-if="selectedDisplay && searchedForBookings">
+          {{ $t('map.costOfBooking') }}:
+          <span class="float-right">${{ formatMoney(selectedDisplay.price) }}</span>
+        </strong>
+
         <p>{{ selectedDisplay.description }}</p>
-        <hr>
+        <hr />
         <small>
-          <p><em>Display Contact: {{ selectedDisplay.contact_email }}</em> <br>
-            <em>Maximum Campaign Length: {{ selectedDisplay.maxTimePurchasable }}s</em></p>
+          <p>
+            <em>Display Contact: {{ selectedDisplay.contact_email }}</em><br />
+            <em>Maximum Campaign Length: {{ selectedDisplay.maxTimePurchasable }}s</em>
+          </p>
         </small>
-      </b-card>
-      <b-collapse
-        v-model="modalDetails"
-        class="mt-1"
-      >
-        <b-card
-          v-if="searchedForBookings"
-          :header="$t('map.bookingDetails')"
-        >
-          <b-table-simple
-            borderless
-            small
-          >
-            <b-tr>
-              <b-th>
-                {{ $t('campaigns.campaign') }}
-              </b-th>
-              <b-td>
-                {{ selectedCampaign.name }}
-              </b-td>
-            </b-tr>
-            <b-tr>
-              <b-th v-if="daterange.search(' to ')>0">
-                {{ $t('dateTime.dateRange') }}
-              </b-th>
-              <b-th v-else>
-                {{ $t('dateTime.date') }}
-              </b-th>
-              <b-td>
-                {{ daterange }}
-              </b-td>
-            </b-tr>
-            <b-tr>
-              <b-th>
-                {{ $t('dateTime.dailyTimes') }}
-              </b-th>
-              <b-td v-if="times[0]==='00:00:00' && times[1]==='24:00:00'">
-                {{ $t('dateTime.allDay') }}
-              </b-td>
-              <b-td v-else>
-                {{ times[0] }} to {{ times[1] }}
-              </b-td>
-            </b-tr>
-          </b-table-simple>
-        </b-card>
-      </b-collapse>
-      <b-button
+      </BCard>
+
+      <BCollapse v-model="modalDetails" class="mt-1">
+        <BCard v-if="searchedForBookings" :header="$t('map.bookingDetails')">
+          <BTableSimple borderless small>
+            <BTr>
+              <BTh>{{ $t('campaigns.campaign') }}</BTh>
+              <BTd>{{ selectedCampaign.name }}</BTd>
+            </BTr>
+            <BTr>
+              <BTh v-if="daterange.includes(' to ')">{{ $t('dateTime.dateRange') }}</BTh>
+              <BTh v-else>{{ $t('dateTime.date') }}</BTh>
+              <BTd>{{ daterange }}</BTd>
+            </BTr>
+            <BTr>
+              <BTh>{{ $t('dateTime.dailyTimes') }}</BTh>
+              <BTd v-if="times[0]==='00:00:00' && times[1]==='24:00:00'">{{ $t('dateTime.allDay') }}</BTd>
+              <BTd v-else>{{ times[0] }} to {{ times[1] }}</BTd>
+            </BTr>
+          </BTableSimple>
+        </BCard>
+      </BCollapse>
+
+      <BButton
         v-if="searchedForBookings"
-        class="mt-1"
-        small
+        size="sm"
         variant="secondary"
+        class="mt-1"
         @click="modalDetails = !modalDetails"
       >
-        {{ modalDetails? 'Hide':'View' }} Booking Details
-      </b-button>
-      <b-button
+        {{ modalDetails ? 'Hide' : 'View' }} Booking Details
+      </BButton>
+
+      <BButton
         v-if="searchedForBookings"
-        class="float-right mt-1"
         variant="primary"
+        class="float-right mt-1"
         @click="addToCart(); $bvModal.hide('pinconfirm')"
       >
         {{ $t('map.addToCart') }}
-      </b-button>
-    </b-modal>
-    <b-col
-      cols="12"
-      md="8"
-      xl="9"
-      class="h-100 p-0"
-    >
+      </BButton>
+    </BModal>
+
+    <BCol cols="12" md="8" xl="9" class="h-100 p-0">
       <l-map
         :zoom="mapSettings.zoom"
         :center="mapCenter"
         :options="mapSettings.options"
         @update:bounds="getDisplays"
-        @ready="mapCenter={lat: -34.98385,lng: 138.57395}"
+        @ready="mapCenter = { lat: -34.98385, lng: 138.57395 }"
       >
         <l-tile-layer
           :options="{ maxZoom: 13 }"
           :url="mapSettings.url"
           :attribution="mapSettings.attribution"
         />
-        <div v-if="!loading">
-          <div v-if="!searchedForBookings && type=='All'">
+        <template v-if="!loading">
+          <template v-if="!searchedForBookings && type==='All'">
             <l-marker
               v-for="display in displaysPrivate"
               :key="display.displayId"
               :icon="mapSettings.iconPrivate"
-              :lat-lng="{lat: display.latitude, lng: display.longitude}"
+              :lat-lng="{ lat: display.latitude, lng: display.longitude }"
               :z-index-offset="-100"
             />
-          </div>
+          </template>
           <l-marker
             v-for="display in filteredDisplays"
             :key="display.displayId"
-            :icon="display.type==='LCD'&& display.pixelHeight===0 && display.pixelWidth===0 ? mapSettings.iconLcd : mapSettings.iconLed"
-            :lat-lng="{lat: display.latitude, lng: display.longitude}"
-            @click="selectedDisplay = display;$bvModal.show('pinconfirm')"
+            :icon="display.type==='LCD' && display.pixelHeight===0 && display.pixelWidth===0
+              ? mapSettings.iconLcd
+              : mapSettings.iconLed"
+            :lat-lng="{ lat: display.latitude, lng: display.longitude }"
+            @click="() => { selectedDisplay = display; $bvModal.show('pinconfirm') }"
           />
-        </div>
+        </template>
       </l-map>
-    </b-col>
-    <b-col
-      class="sidebar"
-      cols="12"
-      md="4"
-      xl="3"
-    >
-      <b-card
-        class="mt-3"
-        :title="$t('map.searchOptions')"
-      >
-        <b-card-text>
-          <b-form>
-            <b-form-group
-              id="type-group"
-              :label="$t('map.displayType')"
-              label-for="type"
-            >
-              <b-form-select
-                id="type"
-                v-model="type"
-                :options="typeOptions"
-                selected="All"
-                required
-              />
-            </b-form-group>
-          </b-form>
-        </b-card-text>
-      </b-card>
+    </BCol>
+
+    <BCol cols="12" md="4" xl="3" class="sidebar">
+      <BCard class="mt-3" :title="$t('map.searchOptions')">
+        <BCardText>
+          <BForm>
+            <BFormGroup id="type-group" :label="$t('map.displayType')" label-for="type">
+              <BFormSelect id="type" v-model="type" :options="typeOptions" selected="All" required />
+            </BFormGroup>
+          </BForm>
+        </BCardText>
+      </BCard>
+
       <div v-if="campaigns.length > 0 && !searchedForBookings">
-        <b-card
-          class="mt-3"
-          :title="$t('map.bookingOptions')"
-        >
-          <b-card-text>
-            <b-form>
-              <b-form-group
+        <BCard class="mt-3" :title="$t('map.bookingOptions')">
+          <BCardText>
+            <BForm>
+              <BFormGroup
                 id="campaign-group"
                 :label="$t('campaigns.campaignCap')"
                 label-for="campaign"
               >
-                <b-form-select
-                  id="campaign"
-                  v-model="selectedCampaign"
-                  :options="campaigns"
-                  required
-                />
-              </b-form-group>
-            </b-form>
+                <BFormSelect id="campaign" v-model="selectedCampaign" :options="campaigns" required />
+              </BFormGroup>
+            </BForm>
             <div class="mt-1">
-              <campaign
-                style="height: 18vh"
-                :media="previewMedia"
-                no-controls
-              />
+              <campaign style="height: 18vh" :media="previewMedia" no-controls />
             </div>
-            <hr class="mt-0">
-            <b-form>
-              <b-form-group
+            <hr class="mt-0" />
+            <BForm>
+              <BFormGroup
                 id="date-group"
                 :label="$t('map.date')"
                 label-for="dateRangePicker"
@@ -226,44 +159,31 @@
                   :options="flatpickrOptions"
                   :placeholder="$t('dateTime.dateSelect')"
                 />
-              </b-form-group>
-              <br>
-              <b-button-group
-                size="sm"
-                class="pb-3"
-              >
-                <b-button 
+              </BFormGroup>
+              <br />
+              <BButtonGroup size="sm" class="pb-3">
+                <BButton
                   v-for="(btn, idx) in buttons"
-                  v-show="btn.visible"
                   :key="idx"
+                  v-show="btn.visible"
                   v-model:pressed="btn.state"
                   :variant="btn.variant"
                   @mouseover="hover(true, btn)"
                   @mouseleave="hover(false, btn)"
                 >
                   {{ btn.value }}
-                </b-button>
-              </b-button-group>
-              <p><small>{{ dayCount ? dayCount : 'No' }} days selected.</small></p>
-              <b-form-group>
+                </BButton>
+              </BButtonGroup>
+              <p><small>{{ dayCount || 'No' }} days selected.</small></p>
+              <BFormGroup>
                 {{ $t('dateTime.weekSkip') }}
-                <b-dropdown
-                  size="sm"
-                  variant="outline-primary"
-                  :text="skippedWeeks"
-                >
-                  <b-dropdown-item @click="skippedWeeks = 'Do Not Skip'">
-                    Do Not Skip
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="skippedWeeks = 'Second Week'">
-                    Second Week
-                  </b-dropdown-item>
-                  <b-dropdown-item @click="skippedWeeks = 'Third Week'">
-                    Third Week
-                  </b-dropdown-item>
-                </b-dropdown>
-              </b-form-group>
-              <b-row class="mt-1">
+                <BDropdown size="sm" variant="outline-primary" :text="skippedWeeks">
+                  <BDropdownItem @click="skippedWeeks = 'Do Not Skip'">Do Not Skip</BDropdownItem>
+                  <BDropdownItem @click="skippedWeeks = 'Second Week'">Second Week</BDropdownItem>
+                  <BDropdownItem @click="skippedWeeks = 'Third Week'">Third Week</BDropdownItem>
+                </BDropdown>
+              </BFormGroup>
+              <BRow class="mt-1">
                 <p v-if="times[0]==='00:00:00' && times[1]==='24:00:00'">
                   {{ $t('checkout.dailyPlay') }}
                 </p>
@@ -271,118 +191,94 @@
                   {{ $t('checkout.daily') }} {{ times[0] }} to {{ times[1] }}
                 </p>
                 <slider v-model="times" />
-              </b-row>
-              <b-button
+              </BRow>
+              <BButton
                 :disabled="!ready"
                 variant="primary"
                 class="mt-1"
-                @click="searchedForBookings=true;filterDisplays()"
+                @click="() => { searchedForBookings = true; filterDisplays() }"
               >
                 {{ $t('map.findDisplays') }}
-              </b-button>
+              </BButton>
               <div v-if="cart.length">
-                <hr>
-                <b-button
-                  class="w-100"
-                  :to="{name: 'Checkout'}"
-                >
-                  <v-icon
-                    name="shopping-cart"
-                    class="icon"
-                  /> {{ $t('checkout.checkout') }} <b-badge
-                    class="ml-1"
-                    variant="primary"
-                  >
-                    {{ cart.length }}
-                  </b-badge>
-                </b-button>
+                <hr />
+                <BButton class="w-100" :to="{ name: 'Checkout' }">
+                  <v-icon name="shopping-cart" class="icon" />
+                  {{ $t('checkout.checkout') }}
+                  <BBadge class="ml-1" variant="primary">{{ cart.length }}</BBadge>
+                </BButton>
               </div>
-            </b-form>
-          </b-card-text>
-        </b-card>
+            </BForm>
+          </BCardText>
+        </BCard>
       </div>
-      <b-card
-        v-else-if="searchedForBookings"
-        per-page="5"
-        class="mt-3  mb-3"
-      >
-        <b-card-title>
+
+      <BCard v-else-if="searchedForBookings" per-page="5" class="mt-3 mb-3">
+        <BCardTitle>
           {{ $t('map.searchOptions') }}
-          <b-button
+          <BButton
             v-if="!loading"
-            class="float-right"
             size="sm"
             variant="primary"
-            @click="searchedForBookings=false; filterDisplays()"
+            class="float-right"
+            @click="() => { searchedForBookings = false; filterDisplays() }"
           >
-            <!-- <v-icon name="arrow-circle-left"> </v-icon> -->
             <font-awesome-icon icon="arrow-circle-left" />
             <span class="d-none d-xl-inline"> {{ $t('buttons.back') }}</span>
-          </b-button>
-        </b-card-title>
-        <b-card-text>
-          <div v-if="!loading">
-            <!-- <b-form>
-              <b-form-group class="mb-1" id="sort-group" label="Sort by:" label-for="sort">
-                <b-form-select id="sort" v-model="sort" :options="sortOptions" required></b-form-select>
-              </b-form-group>
-            </b-form> -->
+          </BButton>
+        </BCardTitle>
+        <BCardText>
+          <template v-if="!loading">
             <div class="list-view mb-3">
-              <b-list-group>
-                <b-list-group-item
+              <BListGroup>
+                <BListGroupItem
                   v-for="item in filteredDisplays"
                   :key="item.displayId"
                   button
-                  @click="selectedDisplay = item; $bvModal.show('pinconfirm')"
+                  @click="() => { selectedDisplay = item; $bvModal.show('pinconfirm') }"
                 >
+                  <p class="mb-0">{{ item.name }}</p>
                   <p class="mb-0">
-                    {{ item.name }}
-                  </p>
-                  <p class="mb-0">
-                    <b-badge
-                      :variant="item.type==='LCD'&& item.pixelHeight===0 && item.pixelWidth===0 ? 'success' :'danger' "
+                    <BBadge
                       pill
+                      :variant="item.type==='LCD' && item.pixelHeight===0 && item.pixelWidth===0 ? 'success' : 'danger'"
                     >
-                      <span v-if="item.type==='LCD'&& item.pixelHeight===0 && item.pixelWidth===0">LCD</span><span
-                        v-else
-                      >LED</span>
-                    </b-badge> <span class="float-right">${{ formatMoney(item.price) }}</span>
+                      {{ item.type==='LCD' ? 'LCD' : 'LED' }}
+                    </BBadge>
+                    <span class="float-right">${{ formatMoney(item.price) }}</span>
                   </p>
-                </b-list-group-item>
-              </b-list-group>
+                </BListGroupItem>
+              </BListGroup>
             </div>
-            <hr>
-            <b-button
-              v-if="cart.length"
-              class="w-100"
-              :to="{name: 'Checkout'}"
-            >
-              <!-- <v-icon name="shopping-cart" class="icon" />  -->
-              <font-awesome-icon
-                icon="shopping-cart"
-                class="icon"
-              />{{ $t('checkout.checkout') }} <b-badge
-                class="ml-1"
-                variant="primary"
-              >
-                {{ cart.length }}
-              </b-badge>
-            </b-button>
-          </div>
-          <div v-else>
+            <hr />
+            <BButton v-if="cart.length" class="w-100" :to="{ name: 'Checkout' }">
+              <font-awesome-icon icon="shopping-cart" class="icon" />
+              {{ $t('checkout.checkout') }}
+              <BBadge class="ml-1" variant="primary">{{ cart.length }}</BBadge>
+            </BButton>
+          </template>
+          <template v-else>
             <h4>{{ $t('map.preparingDisplays') }}</h4>
-            <b-spinner
-              style="width: 3rem; height: 3rem; margin-left: auto; margin-right: auto"
-              label="Large Spinner"
-            />
-          </div>
-        </b-card-text>
-      </b-card>
-    </b-col>
-  </b-row>
+            <BSpinner style="width:3rem; height:3rem; margin:0 auto" label="Loading" />
+          </template>
+        </BCardText>
+      </BCard>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
+import {
+  BRow, BCol,
+  BModal, BCard, BCardText, BCardTitle,
+  BTableSimple, BTr, BTh, BTd,
+  BCollapse,
+  BButton, BButtonGroup,
+  BForm, BFormGroup, BFormSelect,
+  BDropdown, BDropdownItem,
+  BListGroup, BListGroupItem,
+  BSpinner, BBadge
+} from 'bootstrap-vue-next'
 import { latLng, icon } from 'leaflet'
 import { LMap, LTileLayer, LMarker } from '@vue-leaflet/vue-leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -407,7 +303,16 @@ export default {
     Flatpickr,
     Campaign,
     DisplayGallery,
-    Slider
+    Slider,
+    BRow, BCol,
+    BModal, BCard, BCardText, BCardTitle,
+    BTableSimple, BTr, BTh, BTd,
+    BCollapse,
+    BButton, BButtonGroup,
+    BForm, BFormGroup, BFormSelect,
+    BDropdown, BDropdownItem,
+    BListGroup, BListGroupItem,
+  BSpinner, BBadge
   },
   props: {
     activeTeam: {

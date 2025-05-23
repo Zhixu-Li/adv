@@ -1,23 +1,22 @@
 <template lang="html">
   <div>
-    <b-modal
+    <!-- Create Schedule Modal -->
+    <BModal
       id="create"
-      hide-footer
-      size="lg"
       title="New Pricing Schedule"
+      size="lg"
+      hide-footer
     >
-      <create-schedule
+      <CreateSchedule
         :display="display"
         :default-schedule="defaultSchedule"
         @refresh="$emit('refresh')"
       />
-    </b-modal>
+    </BModal>
 
-    <b-form
-      inline
-      class="pb-2"
-    >
-      <b-form-input
+    <!-- Year/Month Selector and Create Button -->
+    <BForm inline class="pb-2">
+      <BFormInput
         v-model="year"
         type="number"
         step="1"
@@ -25,70 +24,78 @@
         max="2100"
       />
 
-      <b-form-select
-        id="month"
+      <BFormSelect
         v-model="monthValue"
         :options="months"
       />
-              
 
-      <b-button
+      <BButton
         class="flex-float-right"
         variant="primary"
         @click="$bvModal.show('create')"
       >
         {{ $t('buttons.create') }}
-      </b-button>
-    </b-form>
+      </BButton>
+    </BForm>
+
+    <!-- Calendar Grid -->
     <div class="month h-100">
+      <!-- Day headers -->
       <div
-        v-for="day in 7"
-        :key="day"
+        v-for="d in 7"
+        :key="d"
         class="day day-header"
       >
-        <!-- {{day-1 | dayString}} -->
-        {{ formatDay(day-1) }}
+        {{ formatDay(d - 1) }}
       </div>
+
+      <!-- Leading empty cells -->
       <div
-        v-for="day in firstDayOfMonth"
-        :key="day"
+        v-for="n in firstDayOfMonth"
+        :key="'pad-start-' + n"
         class="day padded"
-      >
-        <!-- this is warning about unused variable day -->
-        {{ day }}
-      </div>
+      />
+
+      <!-- Day cells with schedules -->
       <div
         v-for="day in days"
-        :key="day"
+        :key="'day-' + day"
         class="day"
-        @click="$emit('selected', { day: day, month: month, year: year })"
+        @click="$emit('selected', { day, month, year })"
       >
         <div class="mb-1 border-top-0">
           {{ day }}
         </div>
         <div
-          v-for="schedule in filteredSchedules(day)"
-          :key="schedule.scheduleId"
-          class=""
+          v-for="sched in filteredSchedules(day)"
+          :key="sched.scheduleId"
         >
           <div
             class="schedule"
-            :style="'background-color:' + stringToColor(schedule.scheduleName)"
+            :style="{ backgroundColor: stringToColor(sched.scheduleName) }"
           >
-            {{ schedule.scheduleName }}
+            {{ sched.scheduleName }}
           </div>
         </div>
       </div>
+
+      <!-- Trailing empty cells -->
       <div
-        v-for="day in endPadding"
-        :key="day"
+        v-for="n in endPadding"
+        :key="'pad-end-' + n"
         class="day padded"
       />
     </div>
   </div>
 </template>
-
 <script>
+import {
+  BModal,
+  BForm,
+  BFormInput,
+  BFormSelect,
+  BButton
+} from 'bootstrap-vue-next'
 import moment from 'moment'
 import stringToColor from '../../../mixins/stringToColor.js'
 import CreateSchedule from './CreateSchedule.vue'
@@ -97,7 +104,12 @@ import CreateSchedule from './CreateSchedule.vue'
 export default {
   name: 'MonthPricing',
   components: {
-    CreateSchedule
+    CreateSchedule,
+    BModal,
+    BForm,
+    BFormInput,
+    BFormSelect,
+    BButton,
   },
   filters: {
     dayString (value) {

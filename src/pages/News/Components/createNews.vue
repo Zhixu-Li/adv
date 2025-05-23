@@ -1,156 +1,154 @@
 <template lang="html">
-  <b-container>
+  <BContainer>
     <div class="newspage">
-      <b-modal
+      <BModal
         id="modal-xl"
         size="lg"
         :title="$t('actions.deleteNews') + selectedNews.title"
-        hide-footer
+        hideFooter
       >
         <template #header>
           <h2 class="text-center">
             {{ $t() }} {{ selectedNews.title }}
           </h2>
         </template>
-        <!-- <div slot="header">
-          <h2 class="text-center">{{$t()}} {{selectedNews.title}} </h2>
-        </div> -->
 
         {{ $t('message.newsDelete') }}
+
         <div>
-          <b-button
+          <BButton
             type="button"
             variant="danger"
             class="remove-button"
             @click="deleteNews(selectedNews); $bvModal.hide('modal-xl')"
           >
             {{ $t('answers.yes') }}
-          </b-button>
-          <b-button
+          </BButton>
+          <BButton
             type="button"
             variant="primary"
             @click="$bvModal.hide('modal-xl')"
           >
             {{ $t('answers.no') }}
-          </b-button>
+          </BButton>
         </div>
-      </b-modal>
-      <b-card
-        cols="12"
-        class="mb-3"
-      >
-        <h4 class="card-title">
-          {{ $t('admin.createNews') }}
-        </h4>
+      </BModal>
+
+      <BCard class="mb-3">
+        <h4 class="card-title">{{ $t('admin.createNews') }}</h4>
         {{ $t('admin.title') }}
-        <b-form-input
+        <BFormInput
           v-model="newNews.title"
-          class="form-control"
           placeholder="Title"
-        /> <!-- v-model="news.title"  -->
+          class="mb-2"
+        />
         {{ $t('admin.body') }}
-        <b-form-textarea
+        <BFormTextarea
           v-model="newNews.content"
-          class="form-control"
           placeholder="Body"
           rows="3"
-        /> <!-- v-model="news.title"  -->
-        <b-button
+          class="mb-2"
+        />
+        <BButton
           variant="primary"
-          type="submit"
-          class="btn btn-primary mt-3"
           @click="addNews()"
         >
           Submit
-        </b-button>
-      </b-card>
-      <b-card cols="12">
-        <div class="card-block">
-          <h4 class="card-title">
-            {{ $t('Current news list') }}
-          </h4>
-          <b-card-text>
-            <div v-if="loaded">
-              <div
-                v-for="newsItem in news"
-                :key="newsItem.id"
-                class="border-top mt-3 news"
-              >
-                <div v-if="editing === null">
-                  <h5>{{ newsItem.title }}</h5>
-                </div>
-                <p>
-                  <b-form-input
-                    v-if="editing === newsItem.id"
-                    v-model="newsItem.title"
-                    class="form-control border-bottom"
-                    style="margin-bottom: 0.5em;"
-                  />
-                  {{ $t('news.postedBy') }} {{ newsItem.author }} {{ $t('news.on') }} {{ $t(newsItem.postedDate) }} 
-                </p>
-                <p v-if="editing !== newsItem.id">
-                  {{ newsItem.content }}
-                </p>
-                <p>
-                  <b-form-textarea
-                    v-if="editing === newsItem.id"
-                    v-model="newsItem.content"
-                    class="form-control"
-                    style="margin-bottom: 0.5em;"
-                    rows="3"
-                  />
-                </p>
-                <b-button
-                  v-if="editing!==newsItem.id"
-                  type="button"
-                  variant="primary"
-                  @click="editing=newsItem.id"
-                >
-                  {{ $t('buttons.edit') }}
-                </b-button>
-                <div v-else-if="editing === newsItem.id">
-                  <b-button
-                    type="button"
-                    variant="primary"
-                    class="remove-button"
-                    @click="editing=null, updateNews(newsItem)"
-                  >
-                    {{ $t('Submit') }}
-                  </b-button>
-                  <b-button
-                    type="button"
-                    variant="warning"
-                    class="remove-button"
-                    @click="editing=null, fetchNews()"
-                  >
-                    {{ $t('Cancel') }}
-                  </b-button>
-                  <b-button
-                    v-b-modal.modal-xl
-                    type="button"
-                    variant="danger"
-                    class="remove-button"
-                    @click="selectedNews = newsItem"
-                  >
-                    {{ $t('actions.delete') }}
-                  </b-button> 
-                </div>
-              </div>
-            </div>
-            <div v-else>
-              {{ $t('dashboard.common.loading') }}
-            </div>
-          </b-card-text>
-        </div>
-      </b-card>
-    </div>
-  </b-container>
-</template>
+        </BButton>
+      </BCard>
 
+      <BCard>
+        <h4 class="card-title">{{ $t('Current news list') }}</h4>
+        <BCardText>
+          <div v-if="loaded">
+            <div
+              v-for="newsItem in news"
+              :key="newsItem.id"
+              class="border-top mt-3 news"
+            >
+              <div v-if="editing === null">
+                <h5>{{ newsItem.title }}</h5>
+              </div>
+              <p>
+                <BFormInput
+                  v-if="editing === newsItem.id"
+                  v-model="newsItem.title"
+                  class="form-control border-bottom mb-1"
+                />
+                {{ $t('news.postedBy') }} {{ newsItem.author }} {{ $t('news.on') }} {{ newsItem.postedDate }}
+              </p>
+              <p v-if="editing !== newsItem.id">{{ newsItem.content }}</p>
+              <p>
+                <BFormTextarea
+                  v-if="editing === newsItem.id"
+                  v-model="newsItem.content"
+                  rows="3"
+                  class="form-control mb-1"
+                />
+              </p>
+
+              <BButton
+                v-if="editing !== newsItem.id"
+                variant="primary"
+                @click="editing = newsItem.id"
+              >
+                {{ $t('buttons.edit') }}
+              </BButton>
+              <template v-else>
+                <BButton
+                  variant="primary"
+                  class="remove-button"
+                  @click="editing = null; updateNews(newsItem)"
+                >
+                  {{ $t('Submit') }}
+                </BButton>
+                <BButton
+                  variant="warning"
+                  class="remove-button"
+                  @click="editing = null; fetchNews()"
+                >
+                  {{ $t('Cancel') }}
+                </BButton>
+                <BButton
+                  variant="danger"
+                  class="remove-button"
+                  v-b-modal.modal-xl
+                  @click="selectedNews = newsItem"
+                >
+                  {{ $t('actions.delete') }}
+                </BButton>
+              </template>
+            </div>
+          </div>
+          <div v-else>
+            {{ $t('dashboard.common.loading') }}
+          </div>
+        </BCardText>
+      </BCard>
+    </div>
+  </BContainer>
+</template>
 <script>
 import moment from 'moment'
-
+import {
+  BContainer,
+  BCard,
+  BCardText,
+  BModal,
+  BButton,
+  BFormInput,
+  BFormTextarea
+} from 'bootstrap-vue-next'
 export default {
+  components:{
+  BContainer,
+  BCard,
+  BCardText,
+  BModal,
+  BButton,
+  BFormInput,
+  BFormTextarea
+  },
   props: {
   },
   data () {

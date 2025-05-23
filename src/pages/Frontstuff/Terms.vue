@@ -1,6 +1,6 @@
 <template>
   <div class="h-100 terms-main">
-    <b-container>
+    <BContainer>
       <h2>ADVERPOST TERMS AND CONDITIONS</h2>
       <h3>Welcome to Adverpost!</h3>
       <p>
@@ -218,16 +218,17 @@
         will not be liable for any loss or damage of any nature. In case of paid services, you agree that our liability
         is limited to refund of the unused portion of service charges.
       </p>
-    </b-container>
+    </BContainer>
   </div>
 </template>
 
 
 <script>
 
-
+import {BContainer} from 'bootstrap-vue-next'
 export default {
   components: {
+    BContainer
 
 }
 }

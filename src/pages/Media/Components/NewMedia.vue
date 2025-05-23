@@ -8,151 +8,139 @@ some implementation notes:
  - nerkmid supports multiple files per "job" but we are not doing that yet
 -->
 <template lang="html">
-  <b-row>
-    <b-col cols="12">
-      <b-row>
-        <b-col class="text-center">
+  <BRow>
+    <BCol cols="12">
+      <BRow>
+        <BCol class="text-center">
           Active Team: <em>{{ activeTeam.name }}</em>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="12">
-          <b-form-file
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol cols="12">
+          <BFormFile
             v-model="files"
             multiple
             :disabled="queue.length > 0"
             accept="audio/*, image/*, video/*"
             placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
-            :file-name-formatter="formatNames"
+            dropPlaceholder="Drop file here..."
+            :fileNameFormatter="formatNames"
           />
-          <h5
-            v-if="files.length > 0"
-            class="m-2"
-          >
-            Selected Files:
-          </h5>
-          <b-list-group class="mt-2">
-            <b-list-group-item
+          <h5 v-if="files.length > 0" class="m-2">Selected Files:</h5>
+          <BListGroup class="mt-2">
+            <BListGroupItem
               v-for="file in files"
               :key="file.name"
               class="d-flex align-items-center"
             >
-              <b-avatar
-                v-if="status[file.name] == 'pending'"
+              <BAvatar
+                v-if="status[file.name] === 'pending'"
                 variant="light"
                 icon="clock"
               />
-              <b-avatar
-                v-else-if="status[file.name] == 'completed'"
+              <BAvatar
+                v-else-if="status[file.name] === 'completed'"
                 variant="success"
                 icon="check-square"
               />
-              <b-avatar
-                v-else-if="status[file.name] == 'error'"
+              <BAvatar
+                v-else-if="status[file.name] === 'error'"
                 variant="danger"
                 icon="x-circle"
               />
-              <b-avatar
-                v-else-if="status[file.name] == 'uploading'"
+              <BAvatar
+                v-else-if="status[file.name] === 'uploading'"
                 variant="light"
               >
-                <!-- <b-icon variant="primary" animation="cylon-vertical" icon="cloud-arrow-up" class="h3 align-bottom pt-1"></b-icon> -->
                 <font-awesome-icon
                   icon="cloud-arrow-up"
                   class="text-primary h3 align-bottom pt-1 cylon-vertical"
-                />   
-              </b-avatar>
-              <b-avatar
-                v-else-if="status[file.name] == 'processing'"
+                />
+              </BAvatar>
+              <BAvatar
+                v-else-if="status[file.name] === 'processing'"
                 variant="light"
               >
-                <!-- <b-icon variant="primary" animation="spin" icon="arrow-clockwise" class="h3"></b-icon> -->
                 <font-awesome-icon
                   icon="arrow-rotate-right"
                   class="text-primary h3"
                   spin
                 />
-              </b-avatar>
-              <b-col cols="9">
-                <div>
-                  {{ file.name }}
-                </div>
-                <template v-if="status[file.name] == 'error'">
+              </BAvatar>
+
+              <BCol cols="9">
+                <div>{{ file.name }}</div>
+                <template v-if="status[file.name] === 'error'">
                   <em>an error occurred when uploading :(</em>
                 </template>
                 <template v-else>
-                  <b-progress
-                    v-if="status[file.name] == 'uploading' || status[file.name] == 'pending'"
+                  <BProgress
+                    v-if="status[file.name] === 'uploading' || status[file.name] === 'pending'"
                     :value="progress[file.name]"
                     max="100"
                     class="mb-2 mt-1"
                   />
-                  <b-progress
-                    v-else-if="status[file.name] == 'processing'"
+                  <BProgress
+                    v-else-if="status[file.name] === 'processing'"
                     variant="danger"
                     :value="remote[file.name]"
                     max="100"
                     class="mb-2 mt-1"
                   />
                 </template>
-              </b-col>
-              <b-col
-                cols="1"
-                class="m-0 p-0"
-              >
-                <div>
-                  ({{ parseFloat((file.size / 1024 / 1024).toFixed(1)) }}MB)
-                </div>
-                <b-badge
-                  v-if="status[file.name] == 'uploading'"
+              </BCol>
+
+              <BCol cols="1" class="m-0 p-0">
+                <div>({{ (file.size / 1024 / 1024).toFixed(1) }}MB)</div>
+                <BBadge
+                  v-if="status[file.name] === 'uploading'"
                   href="#"
                   variant="warning"
                   pill
                   @click="cancelFile(file.name)"
                 >
                   CANCEL
-                </b-badge>
-                <b-badge
-                  v-else-if="status[file.name] == 'completed'"
+                </BBadge>
+                <BBadge
+                  v-else-if="status[file.name] === 'completed'"
                   href="#"
                   variant="dark"
                   pill
                   @click="removeFile(file.name)"
                 >
                   REMOVE
-                </b-badge>
-                <b-badge
-                  v-else-if="status[file.name] == 'processing'"
+                </BBadge>
+                <BBadge
+                  v-else-if="status[file.name] === 'processing'"
                   href="#"
                   variant="dark"
                   pill
                 />
-                <b-badge
-                  v-else-if="Object.keys(queue).length == 0"
+                <BBadge
+                  v-else-if="!queue.length"
                   href="#"
                   variant="danger"
                   pill
                   @click="removeFile(file.name)"
                 >
                   REMOVE
-                </b-badge>
-              </b-col>
-            </b-list-group-item>
-          </b-list-group>
-          <b-button
-            :disabled="Object.keys(queue).length > 0"
+                </BBadge>
+              </BCol>
+            </BListGroupItem>
+          </BListGroup>
+
+          <BButton
+            :disabled="queue.length > 0"
             variant="success"
-            value="Upload"
             class="mt-4 col-3 btn-block mx-auto"
             @click="upload"
           >
             Upload
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-col>
-  </b-row>
+          </BButton>
+        </BCol>
+      </BRow>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
@@ -163,8 +151,30 @@ some implementation notes:
 // import 'vue-awesome/icons/upload'
 import teamContext from '@/mixins/teamContext'
 import axios from 'axios'
-
+import {
+  BRow,
+  BCol,
+  BFormFile,
+  BListGroup,
+  BListGroupItem,
+  BAvatar,
+  BProgress,
+  BBadge,
+  BButton
+} from 'bootstrap-vue-next'
 export default {
+  components: {
+    BRow,
+    BCol,
+    BFormFile,
+    BListGroup,
+    BListGroupItem,
+    BAvatar,
+    BProgress,
+    BBadge,
+    BButton,
+    
+  },
   mixins: [teamContext],
   data () {
     return {

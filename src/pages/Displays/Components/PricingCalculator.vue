@@ -1,108 +1,98 @@
-<template lang="html">
-  <b-container>
-    <b-row>
-      <b-col>
-        <b-form-group
-          label="Expected Campaign Duration"
-          label-for="duration"
-        >
-          <b-input-group
-            id="duration"
-            append="sec"
-          >
-            <b-form-input
+<template>
+  <BContainer>
+    <BRow>
+      <BCol>
+        <BFormGroup label="Expected Campaign Duration" label-for="duration">
+          <BInputGroup id="duration" append="sec">
+            <BFormInput
               v-model="durationEstimate"
               type="number"
               step="1"
               :max="maxTimePurchasable"
               min="0"
             />
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-      <b-col>
-        <b-form-group
-          label="Per Day"
-          label-for="day"
-        >
-          <b-input-group
-            id="day"
-            prepend="$"
-          >
-            <b-form-input
+          </BInputGroup>
+        </BFormGroup>
+      </BCol>
+      <BCol>
+        <BFormGroup label="Per Day" label-for="day">
+          <BInputGroup id="day" prepend="$">
+            <BFormInput
               v-model="perDay"
               type="number"
               step="0.1"
               min="0"
             />
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-    </b-row>
-    <b-row class="mt-3">
-      <b-col>
-        <b-form-group
-          label="Price Per Second"
-          label-for="pricePerSecond"
-        >
-          <b-input-group
-            id="pricePerSecond"
-            append="¢"
-          >
-            <b-form-input
+          </BInputGroup>
+        </BFormGroup>
+      </BCol>
+    </BRow>
+
+    <BRow class="mt-3">
+      <BCol>
+        <BFormGroup label="Price Per Second" label-for="pricePerSecond">
+          <BInputGroup id="pricePerSecond" append="¢">
+            <BFormInput
               disabled
               :value="centsPerSecond"
             />
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-      <b-col>
-        <b-form-group
-          label="Per Week"
-          label-for="week"
-        >
-          <b-input-group
-            id="week"
-            prepend="$"
-          >
-            <b-form-input
+          </BInputGroup>
+        </BFormGroup>
+      </BCol>
+      <BCol>
+        <BFormGroup label="Per Week" label-for="week">
+          <BInputGroup id="week" prepend="$">
+            <BFormInput
               disabled
-              :value="centsPerSecond == 0 ? 0 : (Math.round((perDay * 7 ) * 10) / 10)"
+              :value="centsPerSecond === 0 ? 0 : Math.round(perDay * 7 * 10) / 10"
             />
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-      <b-col>
-        <b-form-group
-          label="Per Month"
-          label-for="month"
-        >
-          <b-input-group
-            id="month"
-            prepend="$"
-          >
-            <b-form-input
+          </BInputGroup>
+        </BFormGroup>
+      </BCol>
+      <BCol>
+        <BFormGroup label="Per Month" label-for="month">
+          <BInputGroup id="month" prepend="$">
+            <BFormInput
               disabled
-              :value="centsPerSecond == 0 ? 0 : (Math.round((perDay * 30 ) * 10) / 10)"
+              :value="centsPerSecond === 0 ? 0 : Math.round(perDay * 30 * 10) / 10"
             />
-          </b-input-group>
-        </b-form-group>
-      </b-col>
-    </b-row>
-    <b-button
+          </BInputGroup>
+        </BFormGroup>
+      </BCol>
+    </BRow>
+
+    <BButton
       v-if="showButton"
       class="float-right mt-3"
-      name="button"
       variant="primary"
-      @click="close()"
+      @click="close"
     >
       {{ $t('buttons.close') }}
-    </b-button>
-  </b-container>
+    </BButton>
+  </BContainer>
 </template>
 
 <script>
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BFormGroup,
+  BInputGroup,
+  BFormInput,
+  BButton
+} from 'bootstrap-vue-next'
+
 export default {
+  components: {
+    BContainer,
+    BRow,
+    BCol,
+    BFormGroup,
+    BInputGroup,
+    BFormInput,
+    BButton
+  },
   props: {
     value: {
       required: true

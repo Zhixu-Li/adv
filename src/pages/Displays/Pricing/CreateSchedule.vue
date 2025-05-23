@@ -1,169 +1,140 @@
 <template lang="html">
-  <div>
-    <div
-      v-if="errors.length > 0"
-      class="col-12 alert alert-danger"
-    >
+  <div @keyup.enter.prevent.stop="createSchedule">
+    <!-- Errors -->
+    <BAlert v-if="errors.length" variant="danger" show class="col-12">
       <ul>
-        <li
-          v-for="(error, index) in errors"
-          :key="index"
-        >
-          {{ error }}
-        </li>
+        <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
       </ul>
-    </div>
-    <div @keyup.enter.prevent.stop="createSchedule()">
-      <b-row>
-        <b-col>
-          <b-form-group
-            :label="$t('common.name')"
-            label-for="name"
+    </BAlert>
+
+    <!-- Name & Priority -->
+    <BRow>
+      <BCol>
+        <BFormGroup :label="$t('common.name')" label-for="name">
+          <BFormInput
+            id="name"
+            v-model="newSchedule.scheduleName"
+            :placeholder="$t('common.name')"
           >
-            <b-form-input
-              id="name"
-              v-model="newSchedule.scheduleName"
-              :placeholder="$t('common.name')"
-            />
-          </b-form-group>
-        </b-col>
-        <b-col lg="2">
-          <b-form-group
-            :label="$t('displayPricing.priority')"
-            label-for="priority"
-          >
-            <b-form-input
-              id="priority"
-              v-model="newSchedule.priority"
-              type="number"
-              max="100"
-              min="1"
-            />
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col md="6">
-          <b-card
-            class="mb-3 mt-3"
-            header="Schedule Duration"
-          >
-            <b-card-text>
-              <b-form-group
-                :label="$t('dateTime.sDate')"
-                label-for="startDate"
+        </BFormInput>
+        </BFormGroup>
+      </BCol>
+      <BCol lg="2">
+        <BFormGroup :label="$t('displayPricing.priority')" label-for="priority">
+          <BFormInput
+            id="priority"
+            v-model="newSchedule.priority"
+            type="number"
+            min="1"
+            max="100"
+          />
+        </BFormGroup>
+      </BCol>
+    </BRow>
+
+    <!-- Dates & Times -->
+    <BRow>
+      <!-- Schedule Duration -->
+      <BCol md="6">
+        <BCard class="mb-3 mt-3" header="Schedule Duration">
+          <BCardText>
+            <BFormGroup :label="$t('dateTime.sDate')" label-for="startDate">
+              <flatpickr
+                id="startDate"
+                v-model="newSchedule.startDate"
+                :placeholder="$t('dateTime.date')"
+                :options="flatpickrOptions.dateDefaults"
+              />
+            </BFormGroup>
+            <BFormGroup :label="$t('dateTime.eDate')" label-for="endDate">
+              <flatpickr
+                id="endDate"
+                v-model="newSchedule.endDate"
+                :placeholder="$t('dateTime.date')"
+                :options="flatpickrOptions.dateDefaults"
+              />
+            </BFormGroup>
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <!-- Daily Price Times -->
+      <BCol cols="6">
+        <BCard class="mb-3 mt-3" header="Daily Price Times">
+          <BCardText>
+            <BFormGroup :label="$t('dateTime.sTime')" label-for="startTime">
+              <BDropdown
+                id="startTime"
+                ref="startDropdown"
+                no-caret
+                class="w-100"
+                variant="outline-secondary"
               >
-                <flatpickr
-                  id="startDate"
-                  v-model="newSchedule.startDate"
-                  :placeholder="$t('dateTime.date')"
-                  :options="flatpickrOptions.dateDefaults"
-                />
-              </b-form-group>
-              <b-form-group
-                :label="$t('dateTime.eDate')"
-                label-for="endDate"
-              >
-                <flatpickr
-                  id="endDate"
-                  v-model="newSchedule.endDate"
-                  :placeholder="$t('dateTime.date')"
-                  :options="flatpickrOptions.dateDefaults"
-                />
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
-        <b-col cols="6">
-          <b-card
-            class="mb-3 mt-3"
-            header="Daily Price Times"
-          >
-            <b-card-text>
-              <b-form-group
-                :label="$t('dateTime.sTime')"
-                label-for="startTime"
-              >
-                <b-dropdown
-                  id="startTime"
-                  ref="startDropdown"
-                  no-caret
-                  class="w-100"
-                  variant="outline-secondary"
+                <template #button-content>
+                  <div class="text-left">{{ newSchedule.startTime }}</div>
+                </template>
+                <BButtonGroup
+                  v-for="block in 4"
+                  :key="'sb-'+block"
+                  size="sm"
+                  class="ml-2 mr-2"
                 >
-                  <template #button-content>
-                    <div class="text-left">
-                      {{ newSchedule.startTime }}
-                    </div>
-                  </template>
-                  <b-button-group
-                    v-for="n in 4"
-                    :key="n.id"
-                    size="sm"
-                    class="ml-2 mr-2"
+                  <BButton
+                    v-for="slot in 6"
+                    :key="block+'-'+slot"
+                    class="timebutton"
+                    @click="setStartTime(block, slot)"
                   >
-                    <b-button
-                      v-for="i in 6"
-                      :key="i.id"
-                      class="timebutton"
-                      @click="newSchedule.startTime=(((n-1)*6)+(i-1)).toString().padStart(2,'0')+':00:00';$refs.startDropdown.hide(true)"
-                    >
-                      {{ ((n-1)*6)+(i-1) }}:00
-                    </b-button>
-                  </b-button-group>
-                </b-dropdown>
-              </b-form-group>
-              <b-form-group
-                :label="$t('dateTime.eTime')"
-                label-for="endTime"
+                    {{ ((block-1)*6)+(slot-1) }}:00
+                  </BButton>
+                </BButtonGroup>
+              </BDropdown>
+            </BFormGroup>
+
+            <BFormGroup :label="$t('dateTime.eTime')" label-for="endTime">
+              <BDropdown
+                id="endTime"
+                ref="endDropdown"
+                no-caret
+                class="w-100"
+                variant="outline-secondary"
               >
-                <b-dropdown
-                  id="endTime"
-                  ref="endDropdown"
-                  no-caret
-                  class="w-100"
-                  variant="outline-secondary"
+                <template #button-content>
+                  <div class="text-left">{{ newSchedule.endTime }}</div>
+                </template>
+                <BButtonGroup
+                  v-for="block in 4"
+                  :key="'eb-'+block"
+                  size="sm"
+                  class="ml-2 mr-2"
                 >
-                  <template #button-content>
-                    <div class="text-left">
-                      {{ newSchedule.endTime }}
-                    </div>
-                  </template>
-                  <b-button-group
-                    v-for="m in 4"
-                    :key="m.id"
-                    size="sm"
-                    class="ml-2 mr-2"
+                  <BButton
+                    v-for="slot in 6"
+                    :key="block+'e-'+slot"
+                    class="timebutton"
+                    @click="setEndTime(block, slot)"
                   >
-                    <b-button
-                      v-for="o in 6"
-                      :key="o.id"
-                      class="timebutton"
-                      @click="newSchedule.endTime=(((m-1)*6)+(o)).toString().padStart(2,'0')+':00:00';$refs.endDropdown.hide(true)"
-                    >
-                      {{ ((m-1)*6)+(o) }}:00
-                    </b-button>
-                  </b-button-group>
-                </b-dropdown>
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
-      <hr>
-      <pricing-calculator
-        v-model="newSchedule.pricePerSecond"
-        :block-time="display.blockTime"
-        :max-time-purchasable="display.maxTimePurchasable"
-      />
-      <b-button
-        class="float-right mt-1"
-        variant="primary"
-        @click="createSchedule()"
-      >
-        {{ $t('buttons.save') }}
-      </b-button>
-    </div>
+                    {{ ((block-1)*6)+slot }}:00
+                  </BButton>
+                </BButtonGroup>
+              </BDropdown>
+            </BFormGroup>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
+
+    <!-- Pricing Calculator -->
+    <pricing-calculator
+      v-model="newSchedule.pricePerSecond"
+      :block-time="display.blockTime"
+      :max-time-purchasable="display.maxTimePurchasable"
+    />
+
+    <!-- Save Button -->
+    <BButton class="float-right mt-1" variant="primary" @click="createSchedule">
+      {{ $t('buttons.save') }}
+    </BButton>
   </div>
 </template>
 
@@ -171,11 +142,32 @@
 import moment from 'moment'
 import Flatpickr from '@/components/Flatpickr.vue'
 import PricingCalculator from "../Components/PricingCalculator.vue";
-
+import {
+  BAlert,
+  BRow,
+  BCol,
+  BFormGroup,
+  BFormInput,
+  BDropdown,
+  BButtonGroup,
+  BButton,
+  BCard,
+  BCardText
+} from 'bootstrap-vue-next'
 export default {
   components: {
     Flatpickr,
-    PricingCalculator
+    PricingCalculator,
+    BAlert,
+    BRow,
+    BCol,
+    BFormGroup,
+    BFormInput,
+    BDropdown,
+    BButtonGroup,
+    BButton,
+    BCard,
+    BCardText,
   },
   props: {
     display: {

@@ -1,6 +1,6 @@
 <template>
   <div class="h-100 privacy-main">
-    <b-container>
+    <BContainer>
       <h2>Adverpost Privacy Policy</h2>
       <p>
         At Adverpost, accessible from Adverpost.com, one of our main priorities is the privacy of our users and
@@ -151,17 +151,17 @@
         If you think that your child provided this kind of information on our website, we strongly encourage you to
         contact us immediately and we will do our best efforts to promptly remove such information from our records.
       </p>
-    </b-container>
+    </BContainer>
   </div>
 </template>
 
 
 <script>
 
-
+import {BContainer} from 'bootstrap-vue-next'
 export default {
   components: {
-
+    BContainer
 }
 }
 </script>

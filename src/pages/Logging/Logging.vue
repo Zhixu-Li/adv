@@ -1,23 +1,13 @@
 <template>
-  <b-container
-    fluid
-    class="h-100"
-  >
-    <b-row
-      id="top-area"
-      class="header mt-3 pb-3 w-100"
-      no-gutters
-    >
-      <b-col
-        class="d-none d-md-block"
-        cols="3"
-        md="12"
-      >
+  <BContainer fluid class="h-100">
+    <!-- Header -->
+    <BRow id="top-area" class="header mt-3 pb-3 w-100" no-gutters>
+      <BCol cols="3" md="12" class="d-none d-md-block">
         <h2>{{ $t('index.logging') }}</h2>
         <p>{{ $t('tutorial.loggingExample') }}</p>
-      </b-col>
-      <b-col class="d-md-none">
-        <multiselect
+      </BCol>
+      <BCol class="d-md-none">
+        <Multiselect
           :options="filteredBookings"
           track-by="id"
           :custom-label="labelGenerator"
@@ -26,74 +16,65 @@
           :allow-empty="false"
           @select="selectBooking"
         />
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
 
-    <b-row
-      v-if="loading"
-      id="content-area"
-    >
+    <!-- Loading Spinner -->
+    <BRow v-if="loading" id="content-area">
       <div class="spinner" />
-    </b-row>
+    </BRow>
 
-    <b-row
-      v-else
-      id="content-area"
-    >
-      <b-col
+    <!-- Content -->
+    <BRow v-else id="content-area">
+      <!-- Sidebar -->
+      <BCol
         ref="sidebar"
         md="4"
         lg="2"
         class="d-none d-md-block h-100 overflow list"
       >
-        <b-form-input
+        <BFormInput
           id="search"
           v-model="search"
           class="search"
           :placeholder="$t('actions.search')"
         />
-        <button
-          type="button"
-          style="width: 100%"
-          class="btn btn-outline-success"
+
+        <BButton
+          block
+          variant="outline-success"
           @click="togglePaid()"
         >
-          {{ $t('buttons.paidOnly') }}
-          {{ paid === true ? '☑' : '☐' }}
-        </button>
+          {{ $t('buttons.paidOnly') }} {{ paid ? '☑' : '☐' }}
+        </BButton>
+
         <div
           v-for="booking in filteredBookings"
-          :id="'l_' + booking.id"
           :key="booking.id"
+          :id="`l_${booking.id}`"
           class="pt-3 pb-3 item"
           :class="{ selected: compSelected.id === booking.id }"
           @click="selectBooking(booking)"
         >
           <p class="mb-0">
-            <span class="font-weight-bold">{{ booking.campaignName }}</span> on
+            <strong>{{ booking.campaignName }}</strong> on
           </p>
-          <p class="mb-0 font-weight-bold">
-            {{ booking.displayName }}
-          </p>
+          <p class="mb-0 font-weight-bold">{{ booking.displayName }}</p>
           <p>Start: {{ booking.startDate }}</p>
         </div>
-      </b-col>
+      </BCol>
 
-      <b-col
-        cols="12"
-        md="8"
-        lg="10"
-        class="h-100 overflow"
-      >
+      <!-- Main area -->
+      <BCol cols="12" md="8" lg="10" class="h-100 overflow">
         <transition name="fade">
-          <router-view
-            v-if="compSelected !== {} && filteredBookings.length > 0"
+          <RouterView
+            v-if="compSelected.id && filteredBookings.length"
             :booking="compSelected"
           />
         </transition>
-      </b-col>
-    </b-row>
-  </b-container>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
@@ -103,12 +84,24 @@ import moment from 'moment'
 import teamContext from '@/mixins/teamContext'
 import autoResize from '@/mixins/autoResize'
 import Multiselect from 'vue-multiselect'
-
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BFormInput,
+  BButton
+} from 'bootstrap-vue-next'
 
 export default {
   name: 'Logging',
   components: {
     Multiselect,
+    BContainer,
+    BRow,
+    BCol,
+    BFormInput,
+    BButton,
+
   },
   mixins: [teamContext, autoResize],
   data() {

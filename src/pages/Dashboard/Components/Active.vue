@@ -1,375 +1,298 @@
 <template>
-  <div v-show="filteredBookings.length">
-    <b-card
-      class=""
-      :title="$t('dashboard.common.current')"
-    >
-      <b-card-text>
-        <div v-if="!loading">
-          <!-- <b-table id="activeTable" :items="filteredBookings" :per-page="10" v-model:sort-by="sortBy v-model:sort-desc="sortDesc" :current-page="currentPage" :fields="fields" responsive stacked="md" borderless small sort-icon-left> -->
-            
-          <b-table
-            id="activeTable"
-            v-model:sort-by="sortBy"
-            v-model:sort-desc="sortDesc"
-            :items="filteredBookings"
-            :fields="fields"
-            :per-page="10"
-            :current-page="currentPage"
-            responsive
-stacked="md" borderless small sort-icon-left
-          >
-            <template #cell(buttons)="row">
-              <template v-if="row.detailsShowing">
-                <b-button
-                  size="sm"
-                  class="border border-muted text-dark"
-                  variant="light"
-                  @click="row.toggleDetails"
-                >
-                  <b-icon icon="arrow-up" /> Close
-                </b-button>
-              </template>
-              <template v-else>
-                <b-button
-                  size="sm"
-                  class="border border-muted text-dark"
-                  variant="light"
-                  @click="row.toggleDetails"
-                >
-                  <b-icon icon="arrow-down" /> Expand
-                </b-button>
-              </template>
-            </template>
-
-            <template #cell(paidStatus)="paid">
-              <b-badge
-                v-if="paid.item.displayTeamId !== paid.item.advertiserId"
-                variant="success"
-              >
-                {{ $t('currency.symbol') }}
-              </b-badge>
-            </template>
-
-            <template #cell(displayName)="display">
-              <b-link
-                class="text-dark"
-                :to="{ name: 'display-view', params: { displayId: display.item.displayId } }"
-              >
-                {{ display.item.displayName }}
-              </b-link>
-            </template>
-
-            <template #cell(campaignName)="campaign">
-              <b-link
-                class="text-dark"
-                :to="{ name: 'campaign', params: { campaignId: campaign.item.campaignId } }"
-              >
-                {{ campaign.item.campaignName }}
-              </b-link>
-            </template>
-
-            <template #cell(endDate)="booking">
-              <p v-if="booking.item.endDate >= '2037-01-01'">
-                <b-icon-arrow-repeat /> No End Date
-              </p>
-              <p v-else>
-                {{ booking.item.endDate }}
-              </p>
-            </template>
-
-            <template #row-details="row">
-              <b-row class="m-0 p-0">
-                <b-col>
-                  <campaign
-                    style="height: 18vh"
-                    :media="campaigns.find(c => c.value.campaignId == row.item.campaignId).value.media.data"
-                    no-controls
-                  />
-                </b-col>
-                <b-col>
-                  <b-table-simple
-                    small
-                    borderless
-                  >
-                    <b-tr>
-                      <b-th>Start Time</b-th>
-                      <b-td>{{ row.item.startTime }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                      <b-th>End Time</b-th>
-                      <b-td>{{ row.item.endTime }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                      <b-th>Duration</b-th>
-                      <b-td>{{ row.item.duration }} {{ $t('seconds') }}</b-td>
-                    </b-tr>
-                    <b-tr>
-                      <b-th>Days Enabled</b-th>
-                      <b-td>
-                        <div class="btn-group">
-                          <div 
-                            v-for="(day, index) in ['M','T','W','T','F','S','S']"
-                            :key="index"
-                            class="d-inline-block border text-light p-1 pl-2 pr-2"
-                            :class="row.item.daysEnabled & (2 ** index) ? 'bg-dark' : 'bg-light'"
-                            :style="{fontWeight:'bold', width:'2em', fontSize:'90%'}"
-                          >
-                            {{ day }}
-                          </div>
-                        </div>
-                      </b-td>
-                    </b-tr>
-                    <b-tr v-if="row.item.displayTeamId === row.item.advertiserId">
-                      <b-th>Actions</b-th>
-                      <b-td>
-                        <div v-if="row.item.approval === 'approved'">
-                          <b-button
-                            variant="warning"
-                            class="ml-0 mr-1"
-                            size="sm"
-                            @click="working=row.item;$bvModal.show('replace-modal')"
-                          >
-                            {{ $t('dashboard.current.replace') }}
-                          </b-button>
-                          <b-button
-                            variant="danger"
-                            class="ml-1"
-                            size="sm"
-                            @click="working=row.item;$bvModal.show('cancel-modal')"
-                          >
-                            {{ $t('dashboard.current.cancel') }}
-                          </b-button>
-                        </div>
-                        <b-badge
-                          v-else
-                          :variant="row.item.startDate > currentDate ? 'warning' : 'danger'"
-                        >
-                          {{ $t('Pending Approval') }}
-                        </b-badge>
-                      </b-td>
-                    </b-tr>
-                    <b-tr v-else>
-                      <b-th>Advertiser</b-th>
-                      <b-td>
-                        {{ row.item.advertiser }} <em>{{ row.item.advertiserContact }}</em>
-                      </b-td>
-                    </b-tr>
-                  </b-table-simple>
-                </b-col>
-              </b-row>
-            </template>
-            
+  <div>
+    <!-- Active Bookings Table -->
+    <BRow v-show="filteredBookings.length">
+      <BCard :title="$t('dashboard.common.current')">
+        <BCardText>
+          <div v-if="!loading">
+            <BTable
+              id="activeTable"
+              v-model:sort-by="sortBy"
+              v-model:sort-desc="sortDesc"
+              :items="filteredBookings"
+              :fields="fields"
+              :per-page="10"
+              :current-page="currentPage"
+              responsive
+              stacked="md"
+              borderless
+              small
+              sort-icon-left
             >
-          </b-table>
-          <b-pagination
-            v-if="rows > 10"
-            v-model="currentPage"
-            hide-goto-end-buttons
-            hide-ellipsis
-            align="center"
-            :total-rows="rows"
-            :per-page="perPage"
-            aria-controls="activeTable"
-          />
-        </div>
-        <div
-          v-else
-          class="loader"
-        >
-          <b-spinner label="Loading" />
-        </div>
-      </b-card-text>
-    </b-card>
+              <!-- Expand/Collapse Button Column -->
+              <template #cell(buttons)="row">
+                <BButton
+                  size="sm"
+                  variant="light"
+                  class="border border-muted text-dark"
+                  @click="row.toggleDetails"
+                >
+                  <BIcon :icon="row.detailsShowing ? 'arrow-up' : 'arrow-down'" />
+                  {{ row.detailsShowing ? 'Close' : 'Expand' }}
+                </BButton>
+              </template>
 
-    <b-modal
-      id="cancel-modal"
-      :title="$t('actions.cancel')"
-      size="md"
-    >
+              <!-- Paid Status Badge -->
+              <template #cell(paidStatus)="paid">
+                <BBadge v-if="paid.item.displayTeamId !== paid.item.advertiserId" variant="success">
+                  {{ $t('currency.symbol') }}
+                </BBadge>
+              </template>
+
+              <!-- Display Name Link -->
+              <template #cell(displayName)="display">
+                <BLink
+                  class="text-dark"
+                  :to="{ name:'display-view', params:{ displayId: display.item.displayId } }"
+                >
+                  {{ display.item.displayName }}
+                </BLink>
+              </template>
+
+              <!-- Campaign Name Link -->
+              <template #cell(campaignName)="campaign">
+                <BLink
+                  class="text-dark"
+                  :to="{ name:'campaign', params:{ campaignId: campaign.item.campaignId } }"
+                >
+                  {{ campaign.item.campaignName }}
+                </BLink>
+              </template>
+
+              <!-- End Date Column -->
+              <template #cell(endDate)="booking">
+                <p v-if="booking.item.endDate >= '2037-01-01'">
+                  <BIcon icon="arrow-repeat" /> No End Date
+                </p>
+                <p v-else>{{ booking.item.endDate }}</p>
+              </template>
+
+              <!-- Row Details -->
+              <template #row-details="row">
+                <BRow class="m-0 p-0">
+                  <BCol>
+                    <campaign
+                      style="height:18vh"
+                      :media="campaigns.find(c => c.value.campaignId === row.item.campaignId).value.media.data"
+                      no-controls
+                    />
+                  </BCol>
+                  <BCol>
+                    <BTableSimple small borderless>
+                      <BTr>
+                        <BTh>Start Time</BTh><BTd>{{ row.item.startTime }}</BTd>
+                      </BTr>
+                      <BTr>
+                        <BTh>End Time</BTh><BTd>{{ row.item.endTime }}</BTd>
+                      </BTr>
+                      <BTr>
+                        <BTh>Duration</BTh><BTd>{{ row.item.duration }} {{ $t('seconds') }}</BTd>
+                      </BTr>
+                      <BTr>
+                        <BTh>Days Enabled</BTh>
+                        <BTd>
+                          <div class="btn-group">
+                            <div
+                              v-for="(day,i) in ['M','T','W','T','F','S','S']"
+                              :key="i"
+                              class="d-inline-block border text-light p-1"
+                              :class="row.item.daysEnabled & (2**i) ? 'bg-dark' : 'bg-light'"
+                              style="font-weight:bold;width:2em;font-size:90%"
+                            >
+                              {{ day }}
+                            </div>
+                          </div>
+                        </BTd>
+                      </BTr>
+                      <BTr v-if="row.item.displayTeamId === row.item.advertiserId">
+                        <BTh>Actions</BTh>
+                        <BTd>
+                          <div v-if="row.item.approval === 'approved'">
+                            <BButton
+                              variant="warning"
+                              size="sm"
+                              class="me-1"
+                              @click="working = row.item; $bvModal.show('replace-modal')"
+                            >
+                              {{ $t('dashboard.current.replace') }}
+                            </BButton>
+                            <BButton
+                              variant="danger"
+                              size="sm"
+                              @click="working = row.item; $bvModal.show('cancel-modal')"
+                            >
+                              {{ $t('dashboard.current.cancel') }}
+                            </BButton>
+                          </div>
+                          <BBadge
+                            v-else
+                            :variant="row.item.startDate > currentDate ? 'warning' : 'danger'"
+                          >
+                            {{ $t('Pending Approval') }}
+                          </BBadge>
+                        </BTd>
+                      </BTr>
+                      <BTr v-else>
+                        <BTh>Advertiser</BTh>
+                        <BTd>
+                          {{ row.item.advertiser }} <em>{{ row.item.advertiserContact }}</em>
+                        </BTd>
+                      </BTr>
+                    </BTableSimple>
+                  </BCol>
+                </BRow>
+              </template>
+            </BTable>
+            <BPagination
+              v-if="rows > 10"
+              v-model="currentPage"
+              hide-goto-end-buttons
+              hide-ellipsis
+              align="center"
+              :total-rows="rows"
+              :per-page="perPage"
+              aria-controls="activeTable"
+            />
+          </div>
+          <div v-else class="loader">
+            <BSpinner label="Loading" />
+          </div>
+        </BCardText>
+      </BCard>
+    </BRow>
+
+    <!-- Cancel Modal -->
+    <BModal id="cancel-modal" :title="$t('actions.cancel')" size="md">
       <p>{{ $t('message.paidCancel') }}</p>
-      <b-table-simple
-        v-if="working.campaign"
-        outlined
-        small
-      >
-        <b-tr>
-          <b-th>
-            {{ $t('dashboard.campaigns.name') }}
-          </b-th>
-          <b-td>
-            {{ working.campaign.data.name }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            {{ $t('dashboard.campaigns.display') }}
-          </b-th>
-          <b-td>
-            {{ working.displayName }}
-          </b-td>
-        </b-tr>
-        <b-tr v-if="working.startDate === working.endDate">
-          <b-th>
-            {{ $t('dateTime.date') }}
-          </b-th>
-          <b-td>
-            {{ working.startDate }}
-          </b-td>
-        </b-tr>
-        <b-tr v-else>
-          <b-th>
-            {{ $t('dateTime.dateRange') }}
-          </b-th>
-          <b-td>
-            {{ working.startDate }} to {{ working.endDate }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            {{ $t('dateTime.dailyTimes') }}
-          </b-th>
-          <b-td v-if="working.startTime==='00:00:00' && working.endTime==='23:59:59'">
+      <BTableSimple outlined small>
+        <BTr>
+          <BTh>{{ $t('dashboard.campaigns.name') }}</BTh>
+          <BTd>{{ working.campaign.data.name }}</BTd>
+        </BTr>
+        <BTr>
+          <BTh>{{ $t('dashboard.campaigns.display') }}</BTh>
+          <BTd>{{ working.displayName }}</BTd>
+        </BTr>
+        <BTr v-if="working.startDate === working.endDate">
+          <BTh>{{ $t('dateTime.date') }}</BTh><BTd>{{ working.startDate }}</BTd>
+        </BTr>
+        <BTr v-else>
+          <BTh>{{ $t('dateTime.dateRange') }}</BTh>
+          <BTd>{{ working.startDate }} to {{ working.endDate }}</BTd>
+        </BTr>
+        <BTr>
+          <BTh>{{ $t('dateTime.dailyTimes') }}</BTh>
+          <BTd v-if="working.startTime==='00:00:00' && working.endTime==='23:59:59'">
             {{ $t('dateTime.allDay') }}
-          </b-td>
-          <b-td v-else>
-            {{ working.startTime }} to {{ working.endTime }}
-          </b-td>
-        </b-tr>
-      </b-table-simple>
+          </BTd>
+          <BTd v-else>{{ working.startTime }} to {{ working.endTime }}</BTd>
+        </BTr>
+      </BTableSimple>
       <p><em>{{ $t('message.paidCancelNote') }}</em></p>
-      <!-- <div slot="modal-footer">
-        <b-button variant="primary" class="float-left" @click="$bvModal.hide('cancel-modal')">{{$t('answers.no')}}
-        </b-button>
-        <b-button variant="danger" class="float-right ml-2" @click="removeCampaign(working.id,working.displayId)">
-          {{$t('actions.cancel')}}
-        </b-button>
-      </div> -->
       <template #modal-footer>
-        <b-button
-          variant="primary"
-          class="float-left"
-          @click="$bvModal.hide('cancel-modal')"
-        >
+        <BButton variant="primary" class="me-2" @click="$bvModal.hide('cancel-modal')">
           {{ $t('answers.no') }}
-        </b-button>
-        <b-button
-          variant="danger"
-          class="float-right ml-2"
-          @click="removeCampaign(working.id, working.displayId)"
-        >
+        </BButton>
+        <BButton variant="danger" @click="removeCampaign(working.id, working.displayId)">
           {{ $t('actions.cancel') }}
-        </b-button>
+        </BButton>
       </template>
-    </b-modal>
+    </BModal>
 
-    <b-modal
-      id="replace-modal"
-      :title="$t('actions.replace')"
-      size="md"
-    >
+    <!-- Replace Modal -->
+    <BModal id="replace-modal" :title="$t('actions.replace')" size="md">
       <p>{{ $t('message.replaceBooking') }}</p>
-      <b-form>
-        <b-form-group
-          id="campaign-group"
-          label-for="campaign"
-        >
-          <b-form-select
+      <BForm>
+        <BFormGroup label-for="campaign-group">
+          <BFormSelect
             id="campaign"
             v-model="selectedCampaign"
             :options="campaigns"
             required
           />
-        </b-form-group>
-      </b-form>
+        </BFormGroup>
+      </BForm>
       <div class="mt-1">
-        <campaign
-          style="height: 18vh"
-          :media="previewMedia"
-          no-controls
-        />
+        <campaign style="height:18vh" :media="previewMedia" no-controls />
       </div>
-      <b-table-simple small>
-        <b-tr>
-          <b-th />
-          <b-th>
-            Current Campaign
-          </b-th>
-          <b-th>
-            Selected Campaign
-          </b-th>
-        </b-tr>
-        <!-- <b-tr>
-          <b-th>
-            Name
-          </b-th>
-          <b-td>
-            Current Name
-          </b-td>
-          <b-td>
-            Selected Name
-          </b-td>
-        </b-tr> -->
-        <b-tr>
-          <b-th>
-            Duration
-          </b-th>
-          <b-td>
-            {{ working.duration }}s
-          </b-td>
-          <b-td>
-            {{ selectedDuration }}s
-          </b-td>
-        </b-tr>
-      </b-table-simple>
+      <BTableSimple small>
+        <BTr>
+          <BTh />
+          <BTh>Current Campaign</BTh>
+          <BTh>Selected Campaign</BTh>
+        </BTr>
+        <BTr>
+          <BTh>Duration</BTh><BTd>{{ working.duration }}s</BTd><BTd>{{ selectedDuration }}s</BTd>
+        </BTr>
+      </BTableSimple>
       <h4>
-        Suitability for replacement: <b-badge :variant="suitable">
-          {{ $t('dashboard.current.variantActions.' + suitable) }}
-        </b-badge>
+        {{ $t('dashboard.current.variantActions.' + suitable) }}
+        <BBadge :variant="suitable">{{ suitable }}</BBadge>
       </h4>
-      <p v-if="suitable == 'danger'">
-        <em>{{ $t('message.replaceLong') }}</em>
-      </p>
-      <p v-else-if="suitable != 'success'">
-        <em>{{ $t('message.replaceShort') }}</em>
-      </p>
-      <!-- <p><em>{{$t('message.replaceNote')}}</em></p> -->
-      <!-- <div slot="modal-footer">
-        <b-button variant="secondary" class="float-left" @click="$bvModal.hide('cancel-modal')">
-          {{$t('dashboard.current.cancel')}}
-        </b-button>
-        <b-button variant="primary" :disabled="suitable=='danger'" class="float-right ml-2"
-          @click="replaceCampaign(working.id,working.displayId,selectedCampaign.campaignId)">
-          {{$t('actions.replace')}}
-        </b-button> -->
+      <p v-if="suitable==='danger'"><em>{{ $t('message.replaceLong') }}</em></p>
+      <p v-else-if="suitable!=='success'"><em>{{ $t('message.replaceShort') }}</em></p>
       <template #modal-footer>
-        <b-button
-          variant="secondary"
-          class="float-left"
-          @click="$bvModal.hide('cancel-modal')"
-        >
+        <BButton variant="secondary" class="me-2" @click="$bvModal.hide('replace-modal')">
           {{ $t('dashboard.current.cancel') }}
-        </b-button>
-        <b-button
+        </BButton>
+        <BButton
           variant="primary"
-          :disabled="suitable === 'danger'"
-          class="float-right ml-2"
+          :disabled="suitable==='danger'"
           @click="replaceCampaign(working.id, working.displayId, selectedCampaign.campaignId)"
         >
           {{ $t('actions.replace') }}
-        </b-button>
+        </BButton>
       </template>
-    </b-modal>
+    </BModal>
   </div>
 </template>
-
 <script>
+import {
+  BRow,
+  BCard,
+  BCardText,
+  BTable,
+  BTr,
+  BTh,
+  BTd,
+  BButton,
+  BLink,
+  BIcon,
+  BPagination,
+  BSpinner,
+  BTableSimple,
+  BForm,
+  BFormGroup,
+  BFormSelect,
+  BModal,
+  BBadge,
+  
+} from 'bootstrap-vue-next'
 import moment from 'moment'
 import Campaign from '@/components/Player/PropPlayer.vue'
 
 export default {
   components: {
-    Campaign
+    Campaign,
+    BRow,
+    BCard,
+    BCardText,
+    BTable,
+    BTr,
+    BTh,
+    BTd,
+    BButton,
+    BLink,
+    BIcon,
+    BPagination,
+    BSpinner,
+    BTableSimple,
+    BForm,
+    BFormGroup,
+    BFormSelect,
+    BModal,
+    BBadge,
+    
   },
   props: {
     activeTeam: {

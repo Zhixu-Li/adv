@@ -1,159 +1,124 @@
 <template>
   <div>
-    <b-card :title="'Payment Status'">
-      <b-card-text>
+    <BCard title="Payment Status">
+      <BCardText>
         <div>
           <h5>
             Overall Status:
-            <b-badge
-              v-if="status"
-              variant="success"
-            >
-              Good
-            </b-badge>
+            <BBadge v-if="status" variant="success">Good</BBadge>
             <span v-else>
-              <b-badge variant="danger">Bad</b-badge>
-              <label
-                id="badHelp"
-                class="ml-1"
-                data-placement="top"
-              >
+              <BBadge variant="danger">Bad</BBadge>
+              <label id="badHelp" class="ms-1" data-placement="top">
                 <v-icon name="question-circle" />
               </label>
-              <b-popover
-                target="badHelp"
-                triggers="hover focus"
-              >
+              <BPopover target="badHelp" triggers="hover focus">
                 {{ $t('popover.badHelp') }}
-              </b-popover>
+              </BPopover>
             </span>
           </h5>
-          <b-row>
-            <b-col cols="6">
+
+          <BRow>
+            <BCol cols="6">
               <h5>Team</h5>
-              <b-table-simple
-                small
-                borderless
-              >
-                <b-tr>
-                  <b-td>
-                    Team Contact
-                  </b-td>
-                  <b-td v-if="team.email">
-                    <b-badge variant="success">
-                      {{ team.email }}
-                    </b-badge>
-                  </b-td>
-                  <b-td v-else>
-                    <b-badge
-                      :to="{ name: 'team', params: { teamId: team.teamId } }"
+              <BTableSimple small borderless>
+                <BTr>
+                  <BTd>Team Contact</BTd>
+                  <BTd v-if="team.email">
+                    <BBadge variant="success">{{ team.email }}</BBadge>
+                  </BTd>
+                  <BTd v-else>
+                    <BBadge
                       variant="danger"
-                    >
-                      Not Set
-                    </b-badge>
-                  </b-td>
-                </b-tr>
-                <b-tr>
-                  <b-td>
-                    Stripe Account
-                  </b-td>
-                  <b-td v-if="team.stripeConnected">
-                    <b-badge variant="success">
-                      Connected
-                    </b-badge>
-                  </b-td>
-                  <b-td v-else>
-                    <b-badge
-                      :to="{ name: 'team', params: { teamId: team.teamId } }"
+                      :to="{ name:'team', params:{ teamId:team.teamId } }"
+                    >Not Set</BBadge>
+                  </BTd>
+                </BTr>
+                <BTr>
+                  <BTd>Stripe Account</BTd>
+                  <BTd v-if="team.stripeConnected">
+                    <BBadge variant="success">Connected</BBadge>
+                  </BTd>
+                  <BTd v-else>
+                    <BBadge
                       variant="danger"
-                    >
-                      Not Connected
-                    </b-badge>
-                  </b-td>
-                </b-tr>
-                <!-- <b-tr>
-                  <b-td>
-                    Stripe Standing
-                  </b-td>
-                  <b-td v-if="team">
-                    <b-badge variant="success">Connected</b-badge>
-                  </b-td>
-                  <b-td>
-                    <b-badge variant="danger">Not Connected</b-badge>
-                  </b-td>
-                </b-tr> -->
-              </b-table-simple>
-            </b-col>
-            <b-col cols="6">
+                      :to="{ name:'team', params:{ teamId:team.teamId } }"
+                    >Not Connected</BBadge>
+                  </BTd>
+                </BTr>
+              </BTableSimple>
+            </BCol>
+
+            <BCol cols="6">
               <h5>Public Displays</h5>
-              <b-table-simple
-                v-if="filteredDisplays.length > 0"
-                small
-                borderless
-              >
-                <b-tr
+              <BTableSimple v-if="filteredDisplays.length" small borderless>
+                <BTr
                   v-for="display in filteredDisplays"
                   :key="display.id"
                 >
-                  <b-td>
-                    {{ display.name }}
-                  </b-td>
-                  <b-td>
-                    <b-badge
-                      v-if="display.approval && display.blockTime > 0 && display.maxTimePurchasable > 0 && display.baselinePrice !== null"
+                  <BTd>{{ display.name }}</BTd>
+                  <BTd>
+                    <BBadge
+                      v-if="display.approval && display.blockTime>0 && display.maxTimePurchasable>0 && display.baselinePrice!==null"
                       variant="success"
-                    >
-                      Ready
-                    </b-badge>
-                    <b-badge
+                    >Ready</BBadge>
+                    <BBadge
                       v-if="!display.approval"
-                      class="mr-1"
                       variant="warning"
-                    >
-                      Pending Approval
-                    </b-badge>
-                    <b-badge
-                      v-if="display.blockTime <= 0"
-                      :to="{ name: 'display-pricing', params: { displayId: display.displayId } }"
-                      class="mr-1"
+                      class="me-1"
+                    >Pending Approval</BBadge>
+                    <BBadge
+                      v-if="display.blockTime<=0"
                       variant="danger"
-                    >
-                      Block Time
-                    </b-badge>
-                    <b-badge
-                      v-if="display.maxTimePurchasable <= 0"
-                      :to="{ name: 'display-pricing', params: { displayId: display.displayId } }"
-                      class="mr-1"
+                      class="me-1"
+                      :to="{ name:'display-pricing', params:{ displayId:display.displayId } }"
+                    >Block Time</BBadge>
+                    <BBadge
+                      v-if="display.maxTimePurchasable<=0"
                       variant="danger"
-                    >
-                      Max Time
-                    </b-badge>
-                    <b-badge
-                      v-if="display.baselinePrice === null"
-                      :to="{ name: 'display-pricing', params: { displayId: display.displayId } }"
-                      class="mr-1"
+                      class="me-1"
+                      :to="{ name:'display-pricing', params:{ displayId:display.displayId } }"
+                    >Max Time</BBadge>
+                    <BBadge
+                      v-if="display.baselinePrice===null"
                       variant="danger"
-                    >
-                      Baseline Price
-                    </b-badge>
-                  </b-td>
-                </b-tr>
-              </b-table-simple>
-              <p v-else>
-                No public displays
-              </p>
-            </b-col>
-          </b-row>
+                      class="me-1"
+                      :to="{ name:'display-pricing', params:{ displayId:display.displayId } }"
+                    >Baseline Price</BBadge>
+                  </BTd>
+                </BTr>
+              </BTableSimple>
+              <p v-else>No public displays</p>
+            </BCol>
+          </BRow>
         </div>
-      </b-card-text>
-    </b-card>
+      </BCardText>
+    </BCard>
   </div>
 </template>
 
 <script>
-
+import {
+  BCard,
+  BCardText,
+  BRow,
+  BCol,
+  BTableSimple,
+  BTr,
+  BTd,
+  BBadge,
+  BPopover
+} from 'bootstrap-vue-next'
 export default {
   components: {
+    BCard,
+    BCardText,
+    BRow,
+    BCol,
+    BTableSimple,
+    BTr,
+    BTd,
+    BBadge,
+    BPopover,
   },
   props: {
     activeTeam: {

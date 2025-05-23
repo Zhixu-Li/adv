@@ -1,26 +1,27 @@
 <template>
-  <b-container fluid>
-    <b-modal
+  <BContainer fluid>
+    <BModal
       id="newteam"
       :title="$t('teams.newTeam')"
       size="lg"
       hide-footer
     >
-      <new-team @refresh="fetchTeams()" />
-    </b-modal>
-    <b-row
+      <NewTeam @refresh="fetchTeams()" />
+    </BModal>
+
+    <BRow
       id="top-area"
       class="header mt-3 pb-3 w-100"
-      align-h="between"
+      justify="between"
       no-gutters
     >
-      <b-col class="d-none d-md-block">
+      <BCol class="d-none d-md-block">
         <h2>{{ $t('teams.teams') }}</h2>
         <p>{{ $t('tutorial.teamExample') }}</p>
-      </b-col>
+      </BCol>
 
-      <b-col class="d-md-none">
-        <multiselect
+      <BCol class="d-md-none">
+        <Multiselect
           :options="filteredTeams"
           track-by="teamId"
           label="name"
@@ -28,14 +29,14 @@
           :allow-empty="false"
           @select="selectTeam"
         />
-      </b-col>
-      <b-col
+      </BCol>
+
+      <BCol
         align-self="center"
         cols="1"
         class="d-md-none pl-3"
       >
         <div @click="$bvModal.show('newteam')">
-          <!-- <v-icon name="plus" scale="1.5" label="New Team"></v-icon> -->
           <font-awesome-icon
             icon="plus"
             style="transform: scale(1.5);"
@@ -43,36 +44,27 @@
             class="text-dark"
           />
         </div>
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
 
-    <b-row
-      v-if="loading"
-      id="content-area"
-    >
+    <BRow v-if="loading" id="content-area">
       <div class="spinner" />
-    </b-row>
+    </BRow>
 
-    <b-row
-      v-else
-      id="content-area"
-    >
-      <b-col
+    <BRow v-else id="content-area">
+      <BCol
         md="4"
         lg="2"
         class="d-none d-md-block h-100 overflow list"
       >
-        <b-form-input
+        <BFormInput
           id="search"
           v-model="search"
           class="search"
           :placeholder="$t('actions.search')"
         />
-        <div
-          class="new-item item"
-          @click="$bvModal.show('newteam')"
-        >
-          <!-- <v-icon name="plus" scale="1.5" label="New Team"></v-icon> -->
+
+        <div class="new-item item" @click="$bvModal.show('newteam')">
           <font-awesome-icon
             icon="plus"
             class="text-dark"
@@ -80,6 +72,7 @@
             title="New Team"
           />
         </div>
+
         <div
           v-for="team in filteredTeams"
           :key="team.teamId"
@@ -87,32 +80,29 @@
           :class="{ selected: compSelected.teamId === team.teamId }"
           @click="selectTeam(team)"
         >
-          {{ team.name }} <b-badge variant="light">
+          {{ team.name }}
+          <BBadge variant="light" class="ml-2">
             {{ team.users.data.length }}
-          </b-badge>
+          </BBadge>
           <div class="text-muted">
             <small>{{ team.description }}</small>
           </div>
         </div>
-      </b-col>
+      </BCol>
 
-      <b-col
-        cols="12"
-        md="8"
-        lg="10"
-        class="h-100 overflow"
-      >
+      <BCol cols="12" md="8" lg="10" class="h-100 overflow">
         <transition name="fade">
           <router-view
-            v-if="filteredTeams.length > 0 && $route.params.teamId && compSelected !== {}"
+            v-if="filteredTeams.length > 0 && $route.params.teamId"
             :team="compSelected"
             @delete="deletePerformed"
           />
         </transition>
-      </b-col>
-    </b-row>
-  </b-container>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
+
 
 <script>
 import NewTeam from '@/components/User/NewTeam.vue'
@@ -121,13 +111,27 @@ import _ from 'lodash'
 // import 'vue-awesome/icons/plus'
 import verge from 'verge'
 import Multiselect from 'vue-multiselect'
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BModal,
+  BFormInput,
+  BBadge
+} from 'bootstrap-vue-next'
 
 
 export default {
   name: 'Teams',
   components: {
     NewTeam,
-    Multiselect
+    Multiselect,
+    BContainer,
+    BRow,
+    BCol,
+    BModal,
+    BFormInput,
+    BBadge,
   },
   data() {
     return {

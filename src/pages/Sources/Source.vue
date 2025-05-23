@@ -1,16 +1,10 @@
 <template>
   <div class="row mt-2">
-    <b-modal
+    <BModal
       id="delete-modal"
       :title="$t('actions.delete') + ' ' + source.name"
     >
       {{ $t('message.sourceDelete') }}
-      <!-- <div slot="modal-footer">
-      <button type="button" class="btn delete-button btn-primary left" @click="deleteSource(); $bvModal.hide('delete-modal')">
-      {{$t('answers.yes')}}</button>
-      <button type="button" class="btn delete-button btn-primary right" @click="$bvModal.hide('delete-modal')">
-      {{$t('answers.no')}}</button>
-    </div> -->
       <template #modal-footer>
         <button
           type="button"
@@ -19,7 +13,6 @@
         >
           {{ $t('answers.yes') }}
         </button>
-
         <button
           type="button"
           class="btn delete-button btn-primary right"
@@ -28,8 +21,9 @@
           {{ $t('answers.no') }}
         </button>
       </template>
-    </b-modal>
-    <b-modal
+    </BModal>
+
+    <BModal
       id="edit-modal"
       size="xl"
       hide-footer
@@ -39,139 +33,106 @@
           v-model="editSource.name"
           class="modal-title h4"
           :placeholder="$t('sources.sourceNamePH')"
-        >
+        />
       </template>
-      <div
-        v-if="errors.length > 0"
-        class="alert alert-danger"
-      >
+      <div v-if="errors.length" class="alert alert-danger">
         <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
-            {{ error }}
-          </li>
+          <li v-for="(error, i) in errors" :key="i">{{ error }}</li>
         </ul>
       </div>
-    </b-modal>
-    <b-col
-      cols="12"
-      class="source-nav"
-    >
-      <b-row>
-        <b-col>
-          <h1 class="source-name">
-            {{ source.name }}
-          </h1>
-        </b-col>
-        <b-col class="text-right">
-          <b-button
-            variant="danger"
-            @click="$bvModal.show('delete-modal')"
-          >
-            {{ $t('buttons.delete') }}
-          </b-button>
-          &nbsp; <!-- is there a better way to do this? -->
-          <b-button
-            variant="primary"
-            @click="updateSource()"
-          >
-            {{ $t('buttons.save') }}
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-col>
-    <b-col
-      cols="12"
-      class="h-100 source-main"
-    >
-      <div
-        v-if="errors.length > 0"
-        class="mt-2 mb-2 alert alert-danger"
-      >
-        <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
-            {{ error }}
-          </li>
-        </ul>
-      </div>
-      <!-- main content -->
-      <b-row class="mt-3">
-        <b-col cols="12">
-          <inspector :uri="editSource.uri" />
+    </BModal>
 
-        <!-- <schedule-player
-          :width=""
-          :uri="'https://api.carswap.me/e2v/themoviedb.php'"
-          :params='{"api_key": "e02189628c1b384fd99c3c8b4624dc1b", "duration": "10"}'
-        ></schedule-player> -->
-        </b-col>
-        <b-col cols="6">
-          <b-card
-            class="mb-2"
-            :header="$t('sources.editDetail')"
-          >
-            <b-card-text>
-              <b-form-group
+    <BCol cols="12" class="source-nav">
+      <BRow>
+        <BCol>
+          <h1 class="source-name">{{ source.name }}</h1>
+        </BCol>
+        <BCol class="text-right">
+          <BButton variant="danger" @click="$bvModal.show('delete-modal')">
+            {{ $t('buttons.delete') }}
+          </BButton>
+          &nbsp;
+          <BButton variant="primary" @click="updateSource()">
+            {{ $t('buttons.save') }}
+          </BButton>
+        </BCol>
+      </BRow>
+    </BCol>
+
+    <BCol cols="12" class="h-100 source-main">
+      <div v-if="errors.length" class="mt-2 mb-2 alert alert-danger">
+        <ul>
+          <li v-for="(error, i) in errors" :key="i">{{ error }}</li>
+        </ul>
+      </div>
+      <BRow class="mt-3">
+        <BCol cols="12">
+          <Inspector :uri="editSource.uri" />
+        </BCol>
+        <BCol cols="6">
+          <BCard class="mb-2" :header="$t('sources.editDetail')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('sources.name')"
                 :description="$t('sources.nameDesc')"
               >
-                <b-form-input
-                  v-model="editSource.name"
-                  required
-                />
-              </b-form-group>
-              <b-form-group
+                <BFormInput v-model="editSource.name" required />
+              </BFormGroup>
+              <BFormGroup
                 :label="$t('sources.team')"
                 :description="$t('sources.teamDesc')"
               >
-                <b-form-input
-                  v-model="activeTeam.name"
-                  required
-                  disabled
-                />
-              </b-form-group>
-              <b-form-group
+                <BFormInput v-model="activeTeam.name" required disabled />
+              </BFormGroup>
+              <BFormGroup
                 :label="$t('sources.uri')"
                 :description="$t('sources.uriDesc')"
               >
-                <b-form-input
-                  v-model="editSource.uri"
-                  required
-                  disabled
-                />
-              </b-form-group>
-              <b-form-group
+                <BFormInput v-model="editSource.uri" required disabled />
+              </BFormGroup>
+              <BFormGroup
                 :label="$t('sources.apiKey')"
                 :description="$t('sources.apiDesc')"
               >
-                <b-form-input v-model="editSource.api_key" />
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
-        <b-col cols="6">
-          <source-status :source="source" />
-        </b-col>
-      </b-row>
-    </b-col>
+                <BFormInput v-model="editSource.api_key" />
+              </BFormGroup>
+            </BCardText>
+          </BCard>
+        </BCol>
+        <BCol cols="6">
+          <SourceStatus :source="source" />
+        </BCol>
+      </BRow>
+    </BCol>
   </div>
 </template>
-
 <script>
 import SourceStatus from '@/components/Source/Status.vue'
 import teamContext from '@/mixins/teamContext'
 import Inspector from '@/components/Player/Inspector.vue'
-
+import {
+  BModal,
+  BRow,
+  BCol,
+  BButton,
+  BCard,
+  BCardText,
+  BFormGroup,
+  BFormInput
+} from 'bootstrap-vue-next'
 export default {
   name: 'SourceComponent',
   components: {
       SourceStatus,
-      Inspector
+      Inspector,
+      BModal,
+      BRow,
+      BCol,
+      BButton,
+      BCard,
+      BCardText,
+      BFormGroup,
+      BFormInput
   },
   mixins: [teamContext],
   props: {

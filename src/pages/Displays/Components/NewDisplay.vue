@@ -1,74 +1,50 @@
 <template>
   <div>
-    <b-breadcrumb>
-      <b-breadcrumb-item
-        :active="section === 0"
-        @click="section = 0"
-      >
+    <!-- Breadcrumb Navigation -->
+    <BBreadcrumb>
+      <BBreadcrumbItem :active="section === 0" @click="section = 0">
         Hardware Information
-      </b-breadcrumb-item>
-      <b-breadcrumb-item
-        :active="section === 1"
-        @click="section = 1"
-      >
+      </BBreadcrumbItem>
+      <BBreadcrumbItem :active="section === 1" @click="section = 1">
         Display Preferences
-      </b-breadcrumb-item>
-      <b-breadcrumb-item
-        :active="section === 2"
-        @click="section = 2"
-      >
+      </BBreadcrumbItem>
+      <BBreadcrumbItem :active="section === 2" @click="section = 2">
         Scheduling Preferences
-      </b-breadcrumb-item>
-      <b-breadcrumb-item
+      </BBreadcrumbItem>
+      <BBreadcrumbItem
         v-if="display.brightnessControl === 'scheduled'"
         :active="section === 4"
         @click="section = 4"
       >
         Brightness
-      </b-breadcrumb-item>
-      <b-breadcrumb-item
-        :active="section === 3"
-        @click="section = 3"
-      >
+      </BBreadcrumbItem>
+      <BBreadcrumbItem :active="section === 3" @click="section = 3">
         Location
-      </b-breadcrumb-item>
-    </b-breadcrumb>
+      </BBreadcrumbItem>
+    </BBreadcrumb>
 
+    <!-- Location Section -->
     <div v-if="section === 3">
       <h3>Location</h3>
-      <b-form-group
-        id="searchset"
-        label-for="search"
-      >
-        <b-input-group
-          id="search"
-          size="sm"
-        >
-          <b-form-input
+
+      <BFormGroup id="searchset" label-for="search">
+        <BInputGroup id="search" size="sm">
+          <BFormInput
             v-model="search"
             placeholder="Search for a location"
           />
-          <b-input-group-append>
-            <b-button
-              variant="primary"
-              @click="fetchLocationFromAddress"
-            >
+          <BInputGroupAppend>
+            <BButton variant="primary" @click="fetchLocationFromAddress">
               Search
-            </b-button>
-            <b-button
-              variant="secondary"
-              @click="coordShow = !coordShow"
-            >
+            </BButton>
+            <BButton variant="secondary" @click="coordShow = !coordShow">
               {{ coordShow ? "Hide" : "Show" }} Coordinates
-            </b-button>
-          </b-input-group-append>
-        </b-input-group>
-      </b-form-group>
+            </BButton>
+          </BInputGroupAppend>
+        </BInputGroup>
+      </BFormGroup>
 
-      <div
-        style="height: 300px"
-        class="mb-2 mt-2"
-      >
+      <div class="mb-2 mt-2" style="height: 300px;">
         <l-map
           :zoom="mapSettings.zoom"
           :center="mapCenter"
@@ -101,12 +77,27 @@ import axios from "axios"; // Using Vue 3 provide/inject pattern
 import { icon, latLng } from "leaflet"; 
 import { LMap, LTileLayer, LMarker } from "vue3-leaflet";
 import "leaflet/dist/leaflet.css";
-
+import {
+  BBreadcrumb,
+  BBreadcrumbItem,
+  BFormGroup,
+  BInputGroup,
+  BFormInput,
+  BInputGroupAppend,
+  BButton
+} from 'bootstrap-vue-next'
 export default defineComponent({
   components: {
     LMap,
     LTileLayer,
     LMarker,
+    BBreadcrumb,
+    BBreadcrumbItem,
+    BFormGroup,
+    BInputGroup,
+    BFormInput,
+    BInputGroupAppend,
+    BButton,
   },
   setup() {
     //const router = useRouter();//this lane is not used

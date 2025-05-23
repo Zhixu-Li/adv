@@ -22,22 +22,23 @@
       label="name"
       @input="selectCampaign"
     />
-    <b-button
+    <BButton
       variant="primary"
       class="float-right mt-2"
       @click="next"
     >
       {{ $t('buttons.next') }}
-    </b-button>
+    </BButton>
   </div>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect'
-
+import {BButton} from 'bootstrap-vue-next'
 export default {
   components: {
-    Multiselect
+    Multiselect,
+    BButton
   },
   data () {
     return {

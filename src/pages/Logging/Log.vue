@@ -1,181 +1,157 @@
 <template>
-  <b-row>
-    <b-col cols="12">
+  <BRow>
+    <BCol cols="12">
       <h2>{{ booking.campaignName }} on {{ booking.displayName }}</h2>
-      <b-table-simple
-        stacked
-        small
-      >
-        <b-tr>
-          <b-th>
-            Campaign
-          </b-th>
-          <b-td>
-            {{ booking.campaignName }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Booking Display
-          </b-th>
-          <b-td>
-            {{ booking.displayName }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Booking Team
-          </b-th>
-          <b-td>
-            {{ booking.advertiser }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Booking ID
-          </b-th>
-          <b-td>{{ booking.id }}</b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Booking Dates
-          </b-th>
-          <b-td v-if="booking.startDate === booking.endDate">
+
+      <BTableSimple stacked small>
+        <!-- Campaign -->
+        <BTr>
+          <BTh>Campaign</BTh>
+          <BTd>{{ booking.campaignName }}</BTd>
+        </BTr>
+
+        <!-- Display -->
+        <BTr>
+          <BTh>Booking Display</BTh>
+          <BTd>{{ booking.displayName }}</BTd>
+        </BTr>
+
+        <!-- Team -->
+        <BTr>
+          <BTh>Booking Team</BTh>
+          <BTd>{{ booking.advertiser }}</BTd>
+        </BTr>
+
+        <!-- ID -->
+        <BTr>
+          <BTh>Booking ID</BTh>
+          <BTd>{{ booking.id }}</BTd>
+        </BTr>
+
+        <!-- Dates -->
+        <BTr>
+          <BTh>Booking Dates</BTh>
+          <BTd v-if="booking.startDate === booking.endDate">
             {{ booking.startDate }}
-          </b-td>
-          <b-td v-else>
+          </BTd>
+          <BTd v-else>
             {{ booking.startDate }} to {{ booking.endDate }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Days Enabled
-          </b-th>
-          <b-td>
-            <b-badge 
+          </BTd>
+        </BTr>
+
+        <!-- Days Enabled -->
+        <BTr>
+          <BTh>Days Enabled</BTh>
+          <BTd>
+            <BBadge
               v-for="(box, idx) in daysOfWeek"
               :key="idx"
               :variant="box.variant"
+              class="mr-1"
             >
               {{ box.value }}
-            </b-badge>
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Skipped Weeks
-          </b-th>
-          <b-td v-if="booking.skippedWeeks == 0">
-            None skipped
-          </b-td>
-          <b-td v-else-if="booking.skippedWeeks == 1">
-            Every Second Week
-          </b-td>
-          <b-td v-else>
-            Every Third Week
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Daily Play Times
-          </b-th>
-          <b-td v-if="booking.startTime === '00:00:00' && booking.endTime === '23:59:59'">
+            </BBadge>
+          </BTd>
+        </BTr>
+
+        <!-- Skipped Weeks -->
+        <BTr>
+          <BTh>Skipped Weeks</BTh>
+          <BTd v-if="booking.skippedWeeks === 0">None skipped</BTd>
+          <BTd v-else-if="booking.skippedWeeks === 1">Every Second Week</BTd>
+          <BTd v-else>Every Third Week</BTd>
+        </BTr>
+
+        <!-- Daily Play Times -->
+        <BTr>
+          <BTh>Daily Play Times</BTh>
+          <BTd v-if="booking.startTime==='00:00:00' && booking.endTime==='23:59:59'">
             All Day
-          </b-td>
-          <b-td v-else>
+          </BTd>
+          <BTd v-else>
             {{ booking.startTime }} to {{ booking.endTime }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Campaign Duration
-          </b-th>
-          <b-td>
-            {{ booking.duration }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Booking Date
-          </b-th>
-          <b-td>
-            {{ booking.dateScheduled }}
-          </b-td>
-        </b-tr>
-        <b-tr>
-          <b-th>
-            Approval
-          </b-th>
-          <b-td v-if="booking.approval === 'pending'">
-            <b-badge>Pending Approval</b-badge>
-          </b-td>
-          <b-td v-else-if="booking.approval === 'approved'">
-            <b-badge variant="success">
-              Approved
-            </b-badge>
-          </b-td>
-          <b-td v-else-if="booking.approval === 'denied'">
-            <b-badge variant="danger">
-              Pending Denied
-            </b-badge>
-          </b-td>
-          <b-td v-else-if="booking.approval === 'cancelled'">
-            <b-badge variant="danger">
-              Cancelled
-            </b-badge>
-          </b-td>
-        </b-tr>
-        <b-tr v-if="booking.approval==='approved'">
-          <b-th>
-            Status
-          </b-th>
-          <b-td
-            v-if="(booking.endDate > date && booking.startDate < date) || (booking.endDate ===date && booking.endTime <= time ) || (booking.startDate ===date && booking.startTime >= time )"
-          >
-            <b-badge variant="success">
-              Running
-            </b-badge>
-          </b-td>
-          <b-td v-else-if="booking.endDate < date || (booking.endDate ===date && booking.endTime > time )">
-            <b-badge>Finished</b-badge>
-          </b-td>
-          <b-td v-else-if="booking.startDate > date || (booking.startDate ===date && booking.startTime < time )">
-            <b-badge variant="warning">
-              Pending
-            </b-badge>
-          </b-td>
-        </b-tr>
-        <b-tr v-if="booking.startDate <= date && booking.startTime <= time && (plays > 0 || booking.approval==='approved')">
-          <b-th>
-            Total Plays To Date
-          </b-th>
-          <b-td>{{ plays }} / {{ expectedPlays }}</b-td>
-        </b-tr>
-        <b-tr v-if="booking.startDate <= date && booking.startTime <= time && (plays > 0 || booking.approval==='approved')">
-          <b-th>
-            Play Time To Date
-          </b-th>
-          <b-td>{{ ((plays * booking.duration) /60).toFixed(2) }} / {{ ((expectedPlays * booking.duration)/60).toFixed(2) }} mins</b-td>
-        </b-tr>
-        <b-tr v-if="booking.startDate <= date && booking.startTime <= time && (plays > 0 || booking.approval==='approved')">
-          <b-th>
-            Current Playback Efficiency
-          </b-th>
-          <b-td>
-            {{ (plays/expectedPlays * 100).toFixed(0) }}%
-          </b-td>
-        </b-tr>
-      </b-table-simple>
-    </b-col>
-  </b-row>
+          </BTd>
+        </BTr>
+
+        <!-- Campaign Duration -->
+        <BTr>
+          <BTh>Campaign Duration</BTh>
+          <BTd>{{ booking.duration }}</BTd>
+        </BTr>
+
+        <!-- Booking Date -->
+        <BTr>
+          <BTh>Booking Date</BTh>
+          <BTd>{{ booking.dateScheduled }}</BTd>
+        </BTr>
+
+        <!-- Approval -->
+        <BTr>
+          <BTh>Approval</BTh>
+          <BTd v-if="booking.approval==='pending'">
+            <BBadge>Pending Approval</BBadge>
+          </BTd>
+          <BTd v-else-if="booking.approval==='approved'">
+            <BBadge variant="success">Approved</BBadge>
+          </BTd>
+          <BTd v-else-if="booking.approval==='denied'">
+            <BBadge variant="danger">Denied</BBadge>
+          </BTd>
+          <BTd v-else-if="booking.approval==='cancelled'">
+            <BBadge variant="danger">Cancelled</BBadge>
+          </BTd>
+        </BTr>
+
+        <!-- Status -->
+        <BTr v-if="booking.approval==='approved'">
+          <BTh>Status</BTh>
+          <BTd v-if="isRunning"><BBadge variant="success">Running</BBadge></BTd>
+          <BTd v-else-if="isFinished"><BBadge>Finished</BBadge></BTd>
+          <BTd v-else><BBadge variant="warning">Pending</BBadge></BTd>
+        </BTr>
+
+        <!-- Playback Efficiency -->
+        <BTr v-if="showEfficiency">
+          <BTh>Total Plays To Date</BTh>
+          <BTd>{{ plays }} / {{ expectedPlays }}</BTd>
+        </BTr>
+        <BTr v-if="showEfficiency">
+          <BTh>Play Time To Date</BTh>
+          <BTd>{{ ((plays*booking.duration)/60).toFixed(2) }} / {{ ((expectedPlays*booking.duration)/60).toFixed(2) }} mins</BTd>
+        </BTr>
+        <BTr v-if="showEfficiency">
+          <BTh>Current Playback Efficiency</BTh>
+          <BTd>{{ ((plays/expectedPlays)*100).toFixed(0) }}%</BTd>
+        </BTr>
+      </BTableSimple>
+    </BCol>
+  </BRow>
 </template>
+
+
 
 <script>
 import moment from 'moment'
-
+import {
+  BRow,
+  BCol,
+  BTableSimple,
+  BTr,
+  BTh,
+  BTd,
+  BBadge
+} from 'bootstrap-vue-next'
 export default {
   name: 'Log',
-  components: {},
+  components: {
+    BRow,
+    BCol,
+    BTableSimple,
+    BTr,
+    BTh,
+    BTd,
+    BBadge
+  },
   props: {
     booking: {
       type: Object,

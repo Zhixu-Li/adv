@@ -1,275 +1,216 @@
-<template lang="html">
-  <b-row
-    v-if="stats.status != 'offline'"
-    class="h-100 pt-3"
-  >
-    <b-col
-      sm="12"
-      md="6"
-    >
-      <div class="mb-3">
-        <b-row>
-          <b-col cols="12">
-            <preview
-              class="prev"
-              :display="displayStats"
-              :show-live="true"
-              :refresh-time="refreshRate / 60"
-            />
-          </b-col>
-        </b-row>
-      </div>
-    </b-col>
-    <b-col
-      sm="12"
-      md="6"
-    >
-      <b-row class="pt-2 pb-2 text-center">
-        <b-col>
-          <h5 class="text-center">
-            Live Stats for {{ display.name }}
-          </h5>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col
-          cols="6"
-          class="border-right"
-        >
-          <b-col>
-            <h5>{{ $t('displays.diskUsage') }}</h5>
-            <b-progress
-              variant="dark"
-              :max="100"
-              class="mb-3"
-              height="1.5rem"
-            >
-              <b-progress-bar
-                :value="disk"
-                animated
-              >
-                <strong class="progress-label">{{ disk }}%</strong>
-              </b-progress-bar>
-            </b-progress>
-          </b-col>
-          <b-col>
-            <h5>{{ $t('displays.memoryUsage') }}</h5>
-            <b-progress
-              variant="dark"
-              :max="100"
-              class="mb-3"
-              height="1.5rem"
-            >
-              <b-progress-bar
-                :value="memory"
-                animated
-              >
-                <strong class="progress-label">{{ memory }}%</strong>
-              </b-progress-bar>
-            </b-progress>
-          </b-col>
-        </b-col>
-        <b-col
-          cols="6"
-          class=""
-        >
-          <b-col>
-            <h5>{{ $t('displays.wirelessSignal') }}</h5>
-            <template v-if="stats.signal == 0">
-              <b-progress
-                variant="dark"
-                :max="100"
-                class="mb-3"
-                height="1.5rem"
-              >
-                <b-progress-bar
-                  :value="100"
-                  animated
-                >
-                  <strong class="progress-label">Plugged In</strong>
-                </b-progress-bar>
-              </b-progress>
-            </template>
-            <template v-else>
-              <b-progress
-                variant="dark"
-                :max="100"
-                class="mb-3"
-                height="1.5rem"
-              >
-                <b-progress-bar
-                  :value="signal"
-                  animated
-                >
-                  <strong class="progress-label">{{ signal }}%</strong>
-                </b-progress-bar>
-              </b-progress>
-            </template>
-          </b-col>
-          <b-col>
-            <h5>{{ $t('displays.CPULoad') }}</h5>
-            <b-progress
-              variant="dark"
-              :max="100"
-              class="mb-1"
-              height="1.5rem"
-            >
-              <b-progress-bar
-                :value="stats.load * 100"
-                animated
-              >
-                <strong class="progress-label">{{ parseInt(stats.load * 100) }}%</strong>
-              </b-progress-bar>
-            </b-progress>
-          </b-col>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="pt-1 ml-2 mr-2 border-top">
-          <h5>{{ $t('Brightness') }}</h5>
-          <b-progress
-            variant="dark"
-            :max="100"
-            class="mb-1"
-            height="1.5rem"
-          >
-            <b-progress-bar
-              :value="stats.brightness * 100"
-              animated
-            >
-              <strong class="progress-label">{{ parseInt(stats.brightness * 100) }}%</strong>
-            </b-progress-bar>
-          </b-progress>
-        </b-col>
-        <b-col class="pt-1 ml-2 mr-2 border-top">
-          <h5>{{ $t('Local Time') }}</h5>
-          <div class="">
-            <b-icon
-              icon="broadcast"
-              animation="fade"
-            />
-            <span class="dash-text pl-1">{{ computedTime }}</span>
-          </div>
-        </b-col>
-      </b-row>
-      <b-row class="">
-        <b-col class="pt-2 mt-2 ml-2 mr-2 border-top">
-          <b-button
-            v-b-toggle.advanced
-            variant="light"
-            class="border-success text-success"
-          >
-            <span class="when-open"><b-icon icon="arrow-up" /> Close Advanced</span>
-            <span class="when-closed"><b-icon icon="arrow-down" /> Open Advanced</span>
-          </b-button>
-        </b-col>
-      </b-row>
-    </b-col>
-    <b-collapse id="advanced">
-      <b-col cols="12">
-        <b-list-group class="mb-3">
-          <b-list-group-item class="d-flex justify-content-between">
-            Display Name:
-            <span class="dash-text">{{ display.name }}</span>
-          </b-list-group-item>
-          <b-list-group-item class="d-flex justify-content-between">
-            Uptime:
-            <h5>
-              <b-badge
-                v-if="stats.status != 'offline'"
-                size="lg"
-                variant="success"
-                pill
-              >
-                {{ computedUptime }} days
-              </b-badge>
-              <b-badge
-                v-else
-                variant="danger"
-                pill
-              >
-                Display Offline ({{ display.lastConnected }})
-              </b-badge>
-            </h5>
-          </b-list-group-item>
-          <b-list-group-item
-            v-if="stats.status != 'offline'"
-            class="d-flex justify-content-between"
-          >
-            Platform:
-            <span class="dash-text"><span
-              v-if="stats.platform.includes('Linux')"
-              name="linux"
-            >GNU/Linux</span><br>
-            </span>
-          </b-list-group-item>
-          <b-list-group-item class="d-flex justify-content-between">
-            Hostname:
-            <span class="dash-text pl-1">{{ stats.hostname || display.acid }}</span>
-          </b-list-group-item>
-          <b-list-group-item class="d-flex justify-content-between">
-            {{ $t('Client Version') }}:
-            <span class="dash-text">{{ stats.version }}</span>
-          </b-list-group-item>
-          <b-list-group-item class="d-flex justify-content-between">
-            {{ $t('Hardware ID') }}:
-            <span class="dash-text">{{ stats.hwid || display.hardwareId }}</span>
-          </b-list-group-item>
-          <b-list-group-item
-            v-if="stats.status != 'offline'"
-            class="d-flex justify-content-between"
-          >
-            WAN IP:
-            <span class="dash-text">{{ stats.wan_addr }}</span>
-          </b-list-group-item>
-          <b-list-group-item
-            v-if="stats.status != 'offline'"
-            class="d-flex justify-content-between"
-          >
-            LAN IP:
-            <span class="dash-text">{{ stats.lan_addr }}</span>
-          </b-list-group-item>
-          <b-list-group-item
-            v-if="stats.status != 'offline'"
-            class="d-flex justify-content-between"
-          >
-            LED Port:
-            <b-badge
-              v-if="stats.ldetect"
-              variant="success"
-              pill
-            >
-              <strong>Detected</strong>
-            </b-badge>
-            <b-badge
-              v-else
-              variant="warning"
-              pill
-            >
-              <strong>Not Detected</strong>
-            </b-badge>
-          </b-list-group-item>
-        </b-list-group>
-      </b-col>
-    </b-collapse>
-  </b-row>
-  <b-row v-else>
-    <b-alert
-      class="m-4"
-      variant="danger"
-      show
-    >
-      <h4>Display Offline (last seen: {{ display.lastConnected }})</h4>
-    </b-alert>
-  </b-row>
-</template>
+<template>
+  <div>
+    <BRow v-if="stats.status !== 'offline'" class="h-100 pt-3">
+      <BCol sm="12" md="6">
+        <div class="mb-3">
+          <BRow>
+            <BCol cols="12">
+              <Preview
+                class="prev"
+                :display="displayStats"
+                :show-live="true"
+                :refresh-time="refreshRate / 60"
+              />
+            </BCol>
+          </BRow>
+        </div>
+      </BCol>
 
+      <BCol sm="12" md="6">
+        <BRow class="pt-2 pb-2 text-center">
+          <BCol>
+            <h5>Live Stats for {{ display.name }}</h5>
+          </BCol>
+        </BRow>
+
+        <BRow>
+          <BCol cols="6" class="border-right">
+            <BCol>
+              <h5>{{ $t('displays.diskUsage') }}</h5>
+              <BProgress variant="dark" :max="100" class="mb-3" height="1.5rem">
+                <BProgressBar :value="disk" animated>
+                  <strong class="progress-label">{{ disk }}%</strong>
+                </BProgressBar>
+              </BProgress>
+            </BCol>
+            <BCol>
+              <h5>{{ $t('displays.memoryUsage') }}</h5>
+              <BProgress variant="dark" :max="100" class="mb-3" height="1.5rem">
+                <BProgressBar :value="memory" animated>
+                  <strong class="progress-label">{{ memory }}%</strong>
+                </BProgressBar>
+              </BProgress>
+            </BCol>
+          </BCol>
+
+          <BCol cols="6">
+            <BCol>
+              <h5>{{ $t('displays.wirelessSignal') }}</h5>
+              <template v-if="stats.signal === 0">
+                <BProgress variant="dark" :max="100" class="mb-3" height="1.5rem">
+                  <BProgressBar :value="100" animated>
+                    <strong class="progress-label">Plugged In</strong>
+                  </BProgressBar>
+                </BProgress>
+              </template>
+              <template v-else>
+                <BProgress variant="dark" :max="100" class="mb-3" height="1.5rem">
+                  <BProgressBar :value="signal" animated>
+                    <strong class="progress-label">{{ signal }}%</strong>
+                  </BProgressBar>
+                </BProgress>
+              </template>
+            </BCol>
+            <BCol>
+              <h5>{{ $t('displays.CPULoad') }}</h5>
+              <BProgress variant="dark" :max="100" class="mb-1" height="1.5rem">
+                <BProgressBar :value="stats.load * 100" animated>
+                  <strong class="progress-label">{{ parseInt(stats.load * 100) }}%</strong>
+                </BProgressBar>
+              </BProgress>
+            </BCol>
+          </BCol>
+        </BRow>
+
+        <BRow>
+          <BCol class="pt-1 ml-2 mr-2 border-top">
+            <h5>{{ $t('Brightness') }}</h5>
+            <BProgress variant="dark" :max="100" class="mb-1" height="1.5rem">
+              <BProgressBar :value="stats.brightness * 100" animated>
+                <strong class="progress-label">{{ parseInt(stats.brightness * 100) }}%</strong>
+              </BProgressBar>
+            </BProgress>
+          </BCol>
+          <BCol class="pt-1 ml-2 mr-2 border-top">
+            <h5>{{ $t('Local Time') }}</h5>
+            <div>
+              <BIcon icon="broadcast" animation="fade" />
+              <span class="dash-text pl-1">{{ computedTime }}</span>
+            </div>
+          </BCol>
+        </BRow>
+
+        <BRow>
+          <BCol class="pt-2 mt-2 ml-2 mr-2 border-top">
+            <BButton
+              v-b-toggle:advanced
+              variant="light"
+              class="border-success text-success"
+            >
+              <span class="when-open"><BIcon icon="arrow-up" /> Close Advanced</span>
+              <span class="when-closed"><BIcon icon="arrow-down" /> Open Advanced</span>
+            </BButton>
+          </BCol>
+        </BRow>
+      </BCol>
+
+      <BCollapse id="advanced">
+        <BCol cols="12">
+          <BListGroup class="mb-3">
+            <BListGroupItem class="d-flex justify-content-between">
+              Display Name:
+              <span class="dash-text">{{ display.name }}</span>
+            </BListGroupItem>
+            <BListGroupItem class="d-flex justify-content-between">
+              Uptime:
+              <h5>
+                <BBadge v-if="stats.status !== 'offline'" size="lg" variant="success" pill>
+                  {{ computedUptime }} days
+                </BBadge>
+                <BBadge v-else variant="danger" pill>
+                  Display Offline ({{ display.lastConnected }})
+                </BBadge>
+              </h5>
+            </BListGroupItem>
+            <BListGroupItem
+              v-if="stats.status !== 'offline'"
+              class="d-flex justify-content-between"
+            >
+              Platform:
+              <span class="dash-text">
+                <span v-if="stats.platform.includes('Linux')">GNU/Linux</span>
+              </span>
+            </BListGroupItem>
+            <BListGroupItem class="d-flex justify-content-between">
+              Hostname:
+              <span class="dash-text pl-1">{{ stats.hostname || display.acid }}</span>
+            </BListGroupItem>
+            <BListGroupItem class="d-flex justify-content-between">
+              {{ $t('Client Version') }}:
+              <span class="dash-text">{{ stats.version }}</span>
+            </BListGroupItem>
+            <BListGroupItem class="d-flex justify-content-between">
+              {{ $t('Hardware ID') }}:
+              <span class="dash-text">{{ stats.hwid || display.hardwareId }}</span>
+            </BListGroupItem>
+            <BListGroupItem
+              v-if="stats.status !== 'offline'"
+              class="d-flex justify-content-between"
+            >
+              WAN IP:
+              <span class="dash-text">{{ stats.wan_addr }}</span>
+            </BListGroupItem>
+            <BListGroupItem
+              v-if="stats.status !== 'offline'"
+              class="d-flex justify-content-between"
+            >
+              LAN IP:
+              <span class="dash-text">{{ stats.lan_addr }}</span>
+            </BListGroupItem>
+            <BListGroupItem
+              v-if="stats.status !== 'offline'"
+              class="d-flex justify-content-between"
+            >
+              LED Port:
+              <BBadge v-if="stats.ldetect" variant="success" pill>
+                <strong>Detected</strong>
+              </BBadge>
+              <BBadge v-else variant="warning" pill>
+                <strong>Not Detected</strong>
+              </BBadge>
+            </BListGroupItem>
+          </BListGroup>
+        </BCol>
+      </BCollapse>
+    </BRow>
+
+    <BRow v-else>
+      <BAlert class="m-4" variant="danger" show>
+        <h4>Display Offline (last seen: {{ display.lastConnected }})</h4>
+      </BAlert>
+    </BRow>
+  </div>
+</template>
 <script>
+import {
+  BRow,
+  BCol,
+  BProgress,
+  BProgressBar,
+  BCollapse,
+  BListGroup,
+  BListGroupItem,
+  BAlert,
+  BBadge,
+  BIcon,
+  BButton
+} from 'bootstrap-vue-next'
 import Preview from '@/pages/Dashboard/Components/DisplayPreview.vue'
 import _ from 'lodash'
 
 export default {
   components: {
+    BRow,
+    BCol,
+    BProgress,
+    BProgressBar,
+    BCollapse,
+    BListGroup,
+    BListGroupItem,
+    BAlert,
+    BBadge,
+    BIcon,
+    BButton,
     Preview,
   },
   props: {

@@ -1,292 +1,207 @@
 <template>
-  <b-container fluid>
-    <b-row
-      id="toparea"
-      no-gutters
-    >
-      <div class="">
+  <BContainer fluid>
+    <BRow id="toparea" no-gutters>
+      <div>
         <h2 class="pt-1 d-none d-sm-block">
           {{ $t('schedule.ipamTitle') }}
-          <b-button
-            v-if="loaded"
-            variant="outline-success"
-          >
+          <BButton v-if="loaded" variant="outline-success">
             {{ $t('schedule.lastUpdateText') }} {{ lastUpdate }}
-          </b-button>
-          <b-button
-            v-else-if="!loaded && !tried"
-            variant="outline-warning"
-          >
+          </BButton>
+          <BButton v-else-if="!loaded && !tried" variant="outline-warning">
             {{ $t('schedule.loading') }}
-          </b-button>
+          </BButton>
         </h2>
-        <p class="d-none d-md-block">
-          {{ $t('tutorial.schedulingExample') }}
-        </p>
+        <p class="d-none d-md-block">{{ $t('tutorial.schedulingExample') }}</p>
       </div>
 
-      <!-- at some point in time we need little spinner indicators trigger after the debounce -->
-      <b-row class="w-100 m-0 p-0">
-        <b-col
-          xl="4"
-          lg="4"
-          md="6"
-          sm="12"
-          xs="12"
-          class="p-1"
-        >
-          <b-button-group style="width: 100% !important">
-            <b-form-input
+      <BRow class="w-100 m-0 p-0">
+        <BCol xl="4" lg="4" md="6" sm="12" xs="12" class="p-1">
+          <BButtonGroup style="width: 100% !important">
+            <BFormInput
               v-model="displayFilter"
-              class=""
-              :placeholder=" $t('schedule.searchDisplay')"
+              :placeholder="$t('schedule.searchDisplay')"
             />
-            <b-dropdown
+            <BDropdown
               id="displaySort"
               variant="outline-success"
               :text="displaySortMethod ? $t('schedule.newest') : $t('schedule.oldest')"
             >
-              <b-dropdown-item @click="displaySortMethod = true">
+              <BDropdownItem @click="displaySortMethod = true">
                 {{ $t('schedule.newest') }}
-              </b-dropdown-item>
-              <b-dropdown-item @click="displaySortMethod = false">
+              </BDropdownItem>
+              <BDropdownItem @click="displaySortMethod = false">
                 {{ $t('schedule.oldest') }}
-              </b-dropdown-item>
-            </b-dropdown>
-          </b-button-group>
-        </b-col>
-        <b-col
-          xl="4"
-          lg="4"
-          md="6"
-          sm="12"
-          xs="12"
-          class="p-1"
-        >
-          <b-button-group style="width: 100% !important">
-            <b-form-input
+              </BDropdownItem>
+            </BDropdown>
+          </BButtonGroup>
+        </BCol>
+
+        <BCol xl="4" lg="4" md="6" sm="12" xs="12" class="p-1">
+          <BButtonGroup style="width: 100% !important">
+            <BFormInput
               v-model="campaignFilter"
-              class=""
               :placeholder="$t('schedule.searchCampaigns')"
             />
-            <b-dropdown
+            <BDropdown
               id="campaignSort"
               variant="outline-info"
               :text="campaignSortMethod ? $t('schedule.newest') : $t('schedule.oldest')"
             >
-              <b-dropdown-item @click="campaignSortMethod = true">
+              <BDropdownItem @click="campaignSortMethod = true">
                 {{ $t('schedule.newest') }}
-              </b-dropdown-item>
-              <b-dropdown-item @click="campaignSortMethod = false">
+              </BDropdownItem>
+              <BDropdownItem @click="campaignSortMethod = false">
                 {{ $t('schedule.oldest') }}
-              </b-dropdown-item>
-            </b-dropdown>
-          </b-button-group>
-        </b-col>
-        <b-col
-          xl="2"
-          lg="2"
-          md="6"
-          sm="12"
-          xs="12"
-          class="p-1"
-        >
-          <button
-            type="button"
-            style="width: 100%"
-            class="btn btn-outline-success"
+              </BDropdownItem>
+            </BDropdown>
+          </BButtonGroup>
+        </BCol>
+
+        <BCol xl="2" lg="2" md="6" sm="12" xs="12" class="p-1">
+          <BButton
+            block
+            variant="outline-success"
             @click="toggleActive()"
           >
-            {{ $t('schedule.active') }} {{ activeSwitch === true ? '☑' : '☐' }}
-          </button>
-        </b-col>
-        <b-col
-          xl="2"
-          lg="2"
-          md="6"
-          sm="12"
-          xs="12"
-          class="p-1"
-        >
-          <button
-            type="button"
-            style="width: 100%"
-            class="btn btn-outline-warning"
+            {{ $t('schedule.active') }} {{ activeSwitch ? '☑' : '☐' }}
+          </BButton>
+        </BCol>
+
+        <BCol xl="2" lg="2" md="6" sm="12" xs="12" class="p-1">
+          <BButton
+            block
+            variant="outline-warning"
             @click="toggleSources()"
           >
-            {{ $t('schedule.source') }} {{ sourceSwitch === true ? '☑' : '☐' }}
-          </button>
-        </b-col>
-      </b-row>
-    </b-row>
-    <b-row v-if="((displays.length < 1)||((sources.length <1)&&(campaigns.length < 1)))">
-      <b-col>
-        <div
-          v-if="displays.length < 1"
-          class="text-center"
-        >
+            {{ $t('schedule.source') }} {{ sourceSwitch ? '☑' : '☐' }}
+          </BButton>
+        </BCol>
+      </BRow>
+    </BRow>
+
+    <BRow v-if="displays.length < 1 || (sources.length < 1 && campaigns.length < 1)">
+      <BCol>
+        <div v-if="displays.length < 1" class="text-center">
           <p>{{ $t('schedule.noDisplayFound') }}</p>
-          <b-button
-            variant="primary"
-            :to="{ name: 'display' }"
-          >
+          <BButton variant="primary" :to="{ name: 'display' }">
             {{ $t('index.displays') }}
-          </b-button>
+          </BButton>
         </div>
-        <div
-          v-else
-          class="text-center"
-        >
+        <div v-else class="text-center">
           <p>{{ $t('schedule.noCampaignFound') }}</p>
-          <b-button
-            variant="primary"
-            :to="{ name: 'campaign' }"
-            class="mr-2"
-          >
+          <BButton variant="primary" class="mr-2" :to="{ name: 'campaign' }">
             {{ $t('index.campaigns') }}
-          </b-button>
-          <b-button
-            variant="primary"
-            :to="{ name: 'source' }"
-          >
+          </BButton>
+          <BButton variant="primary" :to="{ name: 'source' }">
             {{ $t('index.sources') }}
-          </b-button>
+          </BButton>
         </div>
-      </b-col>
-    </b-row>
-    <b-row
-      v-else
-      no-gutters
-    >
-      <b-table-simple
+      </BCol>
+    </BRow>
+
+    <BRow v-else no-gutters>
+      <BTableSimple
         v-if="loaded"
-        :sticky-header="tableHeight"
-        class="m-0"
         fixed
         hover
         responsive
+        :sticky-header="tableHeight"
+        class="m-0"
       >
-        <b-thead>
-          <b-tr>
-            <b-th
-              colspan="2"
-              style="vertical-align:top"
-            >
-              <b-button-group>
-                <!-- grey out button if it is the last page -->
-                <b-button
+        <BThead>
+          <BTr>
+            <BTh colspan="2" style="vertical-align: top">
+              <BButtonGroup>
+                <BButton
                   variant="outline-primary"
                   :disabled="canGoPrevious"
                   @click="previousPage"
                 >
                   {{ $t('schedule.prePage') }}
-                </b-button>
-                <b-button
+                </BButton>
+                <BButton
                   variant="outline-primary"
                   :disabled="canGoNext"
                   @click="nextPage"
                 >
                   {{ $t('schedule.nexPage') }}
-                </b-button>
-              </b-button-group>
-            </b-th>
-            <template
-              v-for="dc in headerRange"
-              :key="dc"
-            >
+                </BButton>
+              </BButtonGroup>
+            </BTh>
+
+            <template v-for="dc in headerRange" :key="dc">
               <ipam-header
                 class="align-top"
                 :display="filteredDisplays[dc]"
               />
             </template>
-          </b-tr>
-        </b-thead>
+          </BTr>
+        </BThead>
 
-        <b-tbody>
-          <b-tr
+        <BTbody>
+          <BTr
             v-for="row in campaignRange"
             :key="row"
             class="ipam-row"
           >
-            <b-th
-              v-if="filteredRows[row].campaignId"
-              colspan="2"
-            >
+            <BTh colspan="2" v-if="filteredRows[row].campaignId">
               <div class="pt-1 pb-1">
-                <div>
-                  <b-link
-                    :id="'popover-target-' + row"
-                    class="text-dark"
-                    :to="{ name: 'campaign', params: { campaignId: filteredRows[row].campaignId } }"
-                  >
-                    {{ filteredRows[row].name }}
-                  </b-link>
-                  <small>{{ getCampaignLength(filteredRows[row].media.data) }} seconds</small>
-                </div>
-                <b-popover
-                  v-if="true"
-                  custom-class="campaign-preview"
-                  :container="null"
+                <BLink
+                  :id="'popover-target-' + row"
+                  class="text-dark"
+                  :to="{ name: 'campaign', params: { campaignId: filteredRows[row].campaignId } }"
+                >
+                  {{ filteredRows[row].name }}
+                </BLink>
+                <small>{{ getCampaignLength(filteredRows[row].media.data) }} seconds</small>
+                <BPopover
                   :target="'popover-target-' + row"
                   triggers="hover"
+                  custom-class="campaign-preview"
+                  container-null
                 >
-                  <template #title>
-                    {{ filteredRows[row].name }}
-                  </template>
+                  <template #title>{{ filteredRows[row].name }}</template>
                   <prop-player
-                    :style="{ width: '20em', height: '15em' }"
+                    style="width:20em; height:15em"
                     :media="filteredRows[row].media.data"
                   />
-                </b-popover>
+                </BPopover>
               </div>
-            </b-th>
-            <b-th
-              v-else
-              colspan="2"
-            >
-              <div class="pt-1 pb-1 ">
-                <div>
-                  <b-badge variant="dark">
-                    E2V
-                  </b-badge>
-                  <b-link
-                    class="text-dark"
-                    :to="{ name: 'sources', params: { sourceId: filteredRows[row].sourceId } }"
-                  >
-                    {{ filteredRows[row].name }}
-                  </b-link>
-                </div>
+            </BTh>
+
+            <BTh colspan="2" v-else>
+              <div class="pt-1 pb-1">
+                <BBadge variant="dark">E2V</BBadge>
+                <BLink
+                  class="text-dark"
+                  :to="{ name: 'sources', params: { sourceId: filteredRows[row].sourceId } }"
+                >
+                  {{ filteredRows[row].name }}
+                </BLink>
               </div>
-            </b-th>
-            <!-- <template v-for="col in Array(displayLimit).keys()">
-              <ipam-cell @triggerModal="triggerModal" :key="col" v-bind:content="cells[row][col]"></ipam-cell>
-            </template> -->
+            </BTh>
+
             <ipam-cell
               v-for="col in Array(displayLimit).keys()"
               :key="col"
               :content="cells[row][col]"
               @trigger-modal="triggerModal"
             />
-          </b-tr>
+          </BTr>
 
-          <b-button
+          <BButton
             v-if="campaignsVisible < filteredRows.length"
-            class="mt-1 mb-4 ml-2"
             variant="primary"
+            class="mt-1 mb-4 ml-2"
             @click="loadCampaigns"
           >
             Load More
-          </b-button>
-        </b-tbody>
-      </b-table-simple>
-    </b-row>
-    <b-modal
-      id="addCampaign"
-      size="lg"
-      no-fade
-      hide-footer
-      no-stacking
-    >
+          </BButton>
+        </BTbody>
+      </BTableSimple>
+    </BRow>
+
+    <BModal id="addCampaign" size="lg" no-fade hide-footer no-stacking>
       <add-campaign
         :selected-campaign="selectedCampaign"
         :selected-display="selectedDisplay"
@@ -294,28 +209,18 @@
         :select-disabled="true"
         @done="closeAndRefresh"
       />
-    </b-modal>
-    <b-modal
-      id="manageCampaign"
-      size="lg"
-      no-fade
-      hide-footer
-      no-stacking
-    >
+    </BModal>
+
+    <BModal id="manageCampaign" size="lg" no-fade hide-footer no-stacking>
       <manage-campaigns
         :display="selectedDisplay"
         :campaign="selectedCampaign"
         @add="$bvModal.show('addCampaign')"
         @deleted="fetchDisplays"
       />
-    </b-modal>
-    <b-modal
-      id="addSource"
-      size="lg"
-      no-fade
-      hide-footer
-      no-stacking
-    >
+    </BModal>
+
+    <BModal id="addSource" size="lg" no-fade hide-footer no-stacking>
       <add-source
         :selected-source="selectedCampaign"
         :selected-display="selectedDisplay"
@@ -323,14 +228,9 @@
         :select-disabled="true"
         @done="closeAndRefresh"
       />
-    </b-modal>
-    <b-modal
-      id="manageSource"
-      size="lg"
-      no-fade
-      hide-footer
-      no-stacking
-    >
+    </BModal>
+
+    <BModal id="manageSource" size="lg" no-fade hide-footer no-stacking>
       <manage-sources
         :display="selectedDisplay"
         :source="selectedCampaign"
@@ -338,11 +238,30 @@
         @add="$bvModal.show('addSource')"
         @deleted="fetchDisplays"
       />
-    </b-modal>
-  </b-container>
+    </BModal>
+  </BContainer>
 </template>
 
 <script>
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BButton,
+  BButtonGroup,
+  BFormInput,
+  BDropdown,
+  BDropdownItem,
+  BTableSimple,
+  BThead,
+  BTbody,
+  BTr,
+  BTh,
+  BLink,
+  BPopover,
+  BModal,
+  BBadge
+} from 'bootstrap-vue-next'
 import _ from 'lodash'
 import verge from 'verge'
 import moment from 'moment'
@@ -370,6 +289,23 @@ export default {
     AddSource,
     IpamHeader,
     IpamCell,
+    BContainer,
+    BRow,
+    BCol,
+    BButton,
+    BButtonGroup,
+    BFormInput,
+    BDropdown,
+    BDropdownItem,
+    BTableSimple,
+    BThead,
+    BTbody,
+    BTr,
+    BTh,
+    BLink,
+    BPopover,
+    BModal,
+    BBadge
   },
   props: {
     activeTeam: {

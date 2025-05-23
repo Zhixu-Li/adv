@@ -1,6 +1,6 @@
 <template>
   <aside class="sidebar-wrapper">
-    <b-col
+    <BCol
       v-show="user.authenticated"
       cols="10"
       md="4"
@@ -8,13 +8,13 @@
       class="sidebar d-none d-md-block h-100"
       :class="{ visible: active }"
     >
-      <b-row class="p-0 m-0">
-        <b-col class="pt-2 m-0">
+      <BRow class="p-0 m-0">
+        <BCol class="pt-2 m-0">
           <h6 class="m-0 text-muted text-center">
             {{ $t('dashboard.headers.activeTeam') }}
           </h6>
-        </b-col>
-      </b-row>
+        </BCol>
+      </BRow>
 
       <team-selector
         :reset-teams-trigger="resetTeamsTrigger"
@@ -78,9 +78,10 @@
           </ul>
         </li>
       </ul>
-    </b-col>
+    </BCol>
   </aside>
 </template>
+
 
 <script>
 import { nextTick } from 'vue'

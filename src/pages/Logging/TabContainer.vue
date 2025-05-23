@@ -1,36 +1,41 @@
 <template>
-  <b-tabs content-class="mt-3">
-    <b-tab
+  <BTabs contentClass="mt-3">
+    <BTab
       title="Overview"
       active
-      @click="() => $router.push({ name: 'log', params: { booking: booking } })"
+      @click="() => $router.push({ name: 'log', params: { booking } })"
     >
       <router-view :booking="booking" />
-    </b-tab>
-    <b-tab title="Complete Log">
-      <b-button
+    </BTab>
+
+    <BTab title="Complete Log">
+      <BButton
         variant="primary"
-        :href="rootUrl + '/api/ext/log/' + booking.id"
+        :href="`${rootUrl}/api/ext/log/${booking.id}`"
       >
         Download Playback Log (csv format)
-      </b-button>
-    </b-tab>
-    <b-tab
+      </BButton>
+    </BTab>
+
+    <BTab
       title="Report"
-      @click="() => $router.push({ name: 'report', params: { booking: booking } })"
+      @click="() => $router.push({ name: 'report', params: { booking } })"
     >
       <router-view :booking="booking" />
-    </b-tab>
-  </b-tabs>
+    </BTab>
+  </BTabs>
 </template>
 
 <script>
 // import 'vue-awesome/icons/arrow-left'
 // import 'vue-awesome/icons/plus'
-
+import { BTabs, BTab, BButton } from 'bootstrap-vue-next'
 export default {
   name: 'TabContainer',
   components: {
+    BTabs,
+    BTab,
+    BButton
   },
   props: {
     booking: {

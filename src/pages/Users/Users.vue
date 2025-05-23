@@ -1,15 +1,15 @@
 <template>
-  <b-container fluid>
-    <b-row
+  <BContainer fluid>
+    <BRow
       id="top-area"
       class="header mt-3 pb-3 w-100"
       no-gutters
     >
-      <b-col class="d-none d-md-block">
+      <BCol class="d-none d-md-block">
         <h2>{{ $t('user.users') }}</h2>
         <p>{{ $t('tutorial.usermanagementExample') }}</p>
-      </b-col>
-      <b-col class="d-md-none">
+      </BCol>
+      <BCol class="d-md-none">
         <multiselect
           :options="filteredUsers"
           track-by="userId"
@@ -18,26 +18,20 @@
           :allow-empty="false"
           @select="selectUser"
         />
-      </b-col>
-    </b-row>
+      </BCol>
+    </BRow>
 
-    <b-row
-      v-if="loading"
-      id="content-area"
-    >
+    <BRow v-if="loading" id="content-area">
       <div class="spinner" />
-    </b-row>
+    </BRow>
 
-    <b-row
-      v-else
-      id="content-area"
-    >
-      <b-col
+    <BRow v-else id="content-area">
+      <BCol
         md="4"
         lg="2"
         class="d-none d-md-block h-100 overflow list"
       >
-        <b-form-input
+        <BFormInput
           id="search"
           v-model="search"
           class="search"
@@ -52,18 +46,15 @@
         >
           {{ user.username }}
         </div>
-      </b-col>
+      </BCol>
 
-      <b-col
+      <BCol
         cols="12"
         md="8"
         lg="10"
         class="h-100 overflow"
       >
         <transition name="fade">
-          <!-- <router-view v-if="filteredUsers.length > 0 && $route.params.userId && compSelected !== {}"
-            :user="compSelected" @delete="fetchUsers" @refresh="fetchUsers">
-          </router-view> -->
           <router-view 
             v-if="filteredUsers.length > 0 && $route.params.userId && Object.keys(compSelected).length > 0"
             :user="compSelected" 
@@ -71,9 +62,9 @@
             @refresh="fetchUsers"
           />
         </transition>
-      </b-col>
-    </b-row>
-  </b-container>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
@@ -81,11 +72,20 @@
 import _ from 'lodash'
 import verge from 'verge'
 import Multiselect from 'vue-multiselect'
-
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BFormInput
+} from 'bootstrap-vue-next'
 export default {
   name: 'Users',
   components: {
-    Multiselect
+    Multiselect,
+    BContainer,
+    BRow,
+    BCol,
+    BFormInput,
   },
   data() {
     return {

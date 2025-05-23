@@ -1,19 +1,13 @@
 <template>
   <div v-show="filteredBookings.length">
-    <b-modal
-      id="mediamodal"
-      hide-footer
-      size="md"
-    >
-      <campaign
-        :media="media"
-        class="preview"
-      />
-    </b-modal>
-    <b-card :title="$t('dashboard.common.approvalQueue')">
-      <b-card-text>
+    <BModal id="mediamodal" hide-footer size="md">
+      <campaign :media="media" class="preview" />
+    </BModal>
+
+    <BCard :title="$t('dashboard.common.approvalQueue')">
+      <BCardText>
         <div v-if="!loading">
-          <b-table
+          <BTable
             id="approvalTable"
             :items="filteredBookings"
             :per-page="perPage"
@@ -22,32 +16,33 @@
             small
           >
             <template #cell(buttons)="row">
-              <b-button-group>
-                <b-button
+              <BButtonGroup>
+                <BButton
                   variant="secondary"
                   size="sm"
                   @click="preview(row.item.campaign.data.media.data)"
                 >
                   {{ $t('common.preview') }}
-                </b-button>
-                <b-button
+                </BButton>
+                <BButton
                   variant="primary"
                   size="sm"
                   @click="approveCampaign(row.item.displayId, row.item.id)"
                 >
                   {{ $t('dashboard.approval.approve') }}
-                </b-button>
-                <b-button
+                </BButton>
+                <BButton
                   variant="danger"
                   size="sm"
                   @click="denyCampaign(row.item.displayId, row.item.id)"
                 >
                   {{ $t('dashboard.approval.deny') }}
-                </b-button>
-              </b-button-group>
+                </BButton>
+              </BButtonGroup>
             </template>
-          </b-table>
-          <b-pagination
+          </BTable>
+
+          <BPagination
             v-model="currentPage"
             size="sm"
             :total-rows="rows"
@@ -55,23 +50,38 @@
             aria-controls="approvalTable"
           />
         </div>
-        <div
-          v-else
-          class="loader"
-        >
-          <b-spinner label="Loading" />
+
+        <div v-else class="loader">
+          <BSpinner label="Loading" />
         </div>
-      </b-card-text>
-    </b-card>
+      </BCardText>
+    </BCard>
   </div>
 </template>
 
 <script>
 import Campaign from '@/components/Preview/Campaign.vue'
-
+import {
+  BModal,
+  BCard,
+  BCardText,
+  BTable,
+  BButtonGroup,
+  BButton,
+  BPagination,
+  BSpinner
+} from 'bootstrap-vue-next'
 export default {
   components: {
-    Campaign
+    Campaign,
+    BModal,
+    BCard,
+    BCardText,
+    BTable,
+    BButtonGroup,
+    BButton,
+    BPagination,
+    BSpinner,
   },
   props: {
     activeTeam: {

@@ -1,60 +1,43 @@
-<template>
+<template lang="html">
   <div class="pt-3">
-    <div
-      v-show="loading"
-      class="loader"
-    >
+    <div v-show="loading" class="loader">
       <div class="spinner" />
     </div>
-    <b-row
-      v-show="!loading"
-      class="view h-100"
-    >
-      <b-col
-        class="pb-2"
-        cols="12"
-        lg="6"
-      >
-        <user :user="user" />
-      </b-col>
-      <b-col
-        class="pb-2"
-        cols="12"
-        lg="6"
-      >
-        <teams :user-id="user.userId" />
-      </b-col>
-      <b-col
-        class="pb-2"
-        cols="12"
-        lg="6"
-      >
-        <invoices :user-id="user.userId" />
-      </b-col>
-      <b-col
-        class="pb-2"
-        cols="12"
-        lg="6"
-      >
-        <event-log :user-id="user.userId" />
-      </b-col>
-    </b-row>
+    <BRow v-show="!loading" class="view h-100">
+      <BCol class="pb-2" cols="12" lg="6">
+        <User :user="user" />
+      </BCol>
+      <BCol class="pb-2" cols="12" lg="6">
+        <Teams :user-id="user.userId" />
+      </BCol>
+      <BCol class="pb-2" cols="12" lg="6">
+        <Invoices :user-id="user.userId" />
+      </BCol>
+      <BCol class="pb-2" cols="12" lg="6">
+        <EventLog :user-id="user.userId" />
+      </BCol>
+    </BRow>
   </div>
 </template>
+
+
+
 
 <script>
 import User from '@/components/User/User.vue'
 import Teams from '@/components/User/Teams.vue'
 import Invoices from '@/components/User/Invoices.vue'
 import EventLog from '@/components/User/EventLog.vue'
-
+import { BRow, BCol } from 'bootstrap-vue-next'
 export default {
   name: 'ViewUser',
   components: {
     User,
     Teams,
     Invoices,
-    EventLog
+    EventLog,
+    BRow, 
+    BCol,
   },
   data () {
     return {

@@ -1,12 +1,10 @@
 <template>
-  <b-container class="mt-3">
-    <b-row class="mb-3">
-      <b-col
-        cols="12"
-        lg="6"
-      >
-        <b-card :header="$t('common.information')">
-          <b-card-text>
+  <BContainer class="mt-3">
+    <!-- Info & Gallery -->
+    <BRow class="mb-3">
+      <BCol cols="12" lg="6">
+        <BCard :header="$t('common.information')">
+          <BCardText>
             <dl>
               <dt>{{ $t('common.name') }}</dt>
               <dd>{{ localDisplay.name }}</dd>
@@ -19,36 +17,27 @@
                 <span v-if="localDisplay.private == 1">{{ $t('privacy.private') }}</span>
                 <span v-else>{{ $t('privacy.public') }}</span>
               </dd>
-              <dt v-if="localDisplay.private == 0">
-                {{ $t('displays.publicUrl') }}
-              </dt>
-              <dd v-if="localDisplay.private == 0">
-                {{ publicUrl }}
-              </dd>
+              <dt v-if="localDisplay.private == 0">{{ $t('displays.publicUrl') }}</dt>
+              <dd v-if="localDisplay.private == 0">{{ publicUrl }}</dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
+          </BCardText>
+        </BCard>
+      </BCol>
 
-      <b-col
-        cols="12"
-        lg="6"
-      >
-        <b-card>
-          <b-card-text>
-            <display-gallery :display-id="Number(localDisplay.displayId)" />
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
+      <BCol cols="12" lg="6">
+        <BCard>
+          <BCardText>
+            <DisplayGallery :display-id="Number(localDisplay.displayId)" />
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
 
-    <b-row class="mb-3">
-      <b-col
-        cols="12"
-        lg="6"
-      >
-        <b-card :header="$t('common.dimensions')">
-          <b-card-text>
+    <!-- Dimensions & Map -->
+    <BRow class="mb-3">
+      <BCol cols="12" lg="6">
+        <BCard :header="$t('common.dimensions')">
+          <BCardText>
             <dl>
               <dt>{{ $t('displays.physicalHeight') }}</dt>
               <dd>{{ localDisplay.physicalHeight }}</dd>
@@ -61,107 +50,77 @@
               <dt>{{ $t('displays.rotation') }}</dt>
               <dd>{{ localDisplay.rotate }}</dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
+          </BCardText>
+        </BCard>
+      </BCol>
 
-      <b-col
-        cols="12"
-        lg="6"
-      >
-        <b-card :header="$t('displays.location')">
-          <b-card-text>
-            <b-table-simple
-              small
-              borderless
-            >
-              <b-tr>
-                <b-th>{{ $t('displays.mobility') }}</b-th>
-                <b-th>{{ $t('displays.coordinates') }}</b-th>
-              </b-tr>
-              <b-tr>
-                <b-td>
+      <BCol cols="12" lg="6">
+        <BCard :header="$t('displays.location')">
+          <BCardText>
+            <BTableSimple small borderless>
+              <BTr>
+                <BTh>{{ $t('displays.mobility') }}</BTh>
+                <BTh>{{ $t('displays.coordinates') }}</BTh>
+              </BTr>
+              <BTr>
+                <BTd>
                   <span v-if="localDisplay.mobile == 1">{{ $t('displays.mobile') }}</span>
                   <span v-else>{{ $t('displays.stationary') }}</span>
-                </b-td>
-                <b-td>
+                </BTd>
+                <BTd>
                   Lat: {{ localDisplay.latitude }}, Lng: {{ localDisplay.longitude }}
-                  <b-button
-                    size="sm"
-                    variant="link"
-                    @click="externalMap"
-                  >
+                  <BButton size="sm" variant="link" @click="externalMap">
                     Find on Google
-                  </b-button>
-                </b-td>
-              </b-tr>
-            </b-table-simple>
+                  </BButton>
+                </BTd>
+              </BTr>
+            </BTableSimple>
             <div class="map">
-              <v-map
-                :zoom="13"
-                :center="[localDisplay.latitude, localDisplay.longitude]"
-              >
-                <v-tilelayer
-                  :options="{ maxZoom: 13 }"
-                  :url="mapUrl"
-                />
-                <v-marker
-                  :lat-lng="[localDisplay.latitude, localDisplay.longitude]"
-                  :icon="icon"
-                />
+              <v-map :zoom="13" :center="[localDisplay.latitude, localDisplay.longitude]">
+                <v-tilelayer :options="{ maxZoom: 13 }" :url="mapUrl" />
+                <v-marker :lat-lng="[localDisplay.latitude, localDisplay.longitude]" :icon="icon" />
               </v-map>
             </div>
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
 
-    <b-row class="mb-3">
-      <b-col
-        cols="12"
-        lg="6"
-      >
-        <b-card :header="$t('displays.timezoneCurrency')">
-          <b-card-text>
+    <!-- Timezone & Tags -->
+    <BRow class="mb-3">
+      <BCol cols="12" lg="6">
+        <BCard :header="$t('displays.timezoneCurrency')">
+          <BCardText>
             <dl>
               <dt>{{ $t('displays.timezone') }}</dt>
               <dd>{{ localDisplay.timezone }}</dd>
               <dt>{{ $t('displays.currency') }}</dt>
               <dd>{{ $t('currency.' + localDisplay.currency) }}</dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
+          </BCardText>
+        </BCard>
+      </BCol>
 
-      <b-col
-        v-if="localDisplay.tags"
-        cols="12"
-        lg="6"
-      >
-        <b-card :header="$t('common.tags')">
-          <b-card-text>
+      <BCol v-if="localDisplay.tags" cols="12" lg="6">
+        <BCard :header="$t('common.tags')">
+          <BCardText>
             <dl>
               <dd>
-                <span
-                  v-for="tagData in localDisplay.tags.data"
-                  :key="tagData.id"
-                >
-                  {{ tagData.tag }}<br>
+                <span v-for="tagData in localDisplay.tags.data" :key="tagData.id">
+                  {{ tagData.tag }}<br />
                 </span>
               </dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
 
-    <b-row class="mb-3">
-      <b-col
-        cols="12"
-        lg="12"
-      >
-        <b-card :header="$t('displays.brightness')">
-          <b-card-text>
+    <!-- Brightness -->
+    <BRow class="mb-3">
+      <BCol cols="12" lg="12">
+        <BCard :header="$t('displays.brightness')">
+          <BCardText>
             <dl>
               <dt>{{ $t('displays.brightnessControl') }}</dt>
               <dd>{{ $t('brightnessControl.' + localDisplay.brightnessControl) }}</dd>
@@ -169,25 +128,22 @@
                 {{ $t('displays.brightnessSchedule') }}
               </dt>
               <dd v-if="localDisplay.brightnessControl === 'scheduled'">
-                <curve
-                  v-if="localDisplay.brightnessControl === 'scheduled'"
+                <Curve
                   v-model="localDisplay.brightnessCurve"
                   :inputs="false"
                 />
               </dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
 
-    <b-row class="mb-3">
-      <b-col
-        cols="12"
-        lg="12"
-      >
-        <b-card :header="$t('common.admin')">
-          <b-card-text>
+    <!-- Admin -->
+    <BRow class="mb-3">
+      <BCol cols="12" lg="12">
+        <BCard :header="$t('common.admin')">
+          <BCardText>
             <dl>
               <dt>{{ $t('displays.acid') }}</dt>
               <dd><a :href="computedAcid">{{ localDisplay.acid }}</a></dd>
@@ -198,14 +154,26 @@
               <dt>{{ $t('displays.demoMode') }}</dt>
               <dd>{{ $t('truth.' + localDisplay.demoMode) }}</dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BCard,
+  BCardText,
+  BTableSimple,
+  BTr,
+  BTh,
+  BTd,
+  BButton
+} from 'bootstrap-vue-next'
 import Curve from "./Components/BrightnessCurve.vue";
 import DisplayGallery from "@/components/DisplayGallery.vue";
 import L from "leaflet";
@@ -215,7 +183,17 @@ export default {
   name: "ViewDisplay",
   components: {
     Curve,
-    DisplayGallery
+    DisplayGallery,
+    BContainer,
+    BRow,
+    BCol,
+    BCard,
+    BCardText,
+    BTableSimple,
+    BTr,
+    BTh,
+    BTd,
+    BButton,
   },
   props: {
     display: {

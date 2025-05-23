@@ -1,12 +1,11 @@
-<template xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <b-container id="verge">
-    <!-- this is the only sane way I can think of doing this -->
-    <b-row class="d-none d-md-block">
-      <b-col class="m-2 d-flex justify-content-center">
+<template lang="html">
+  <BContainer id="verge">
+    <!-- Aspect & Rotate Controls (desktop only) -->
+    <BRow class="d-none d-md-block">
+      <BCol class="m-2 d-flex justify-content-center">
         <div class="m-1">
-          <!-- <b>Aspect Ratio: </b> -->
-          <b-button-group class="m-1">
-            <b-button
+          <BButtonGroup class="m-1">
+            <BButton
               v-for="aspect in Object.keys(aspects)"
               :key="aspect"
               class="font-weight-bold"
@@ -15,87 +14,92 @@
               @click="selectedAspect = aspect"
             >
               {{ aspect }}
-            </b-button>
-          </b-button-group>
-          <b-button-group class="m-1">
-            <b-button
+            </BButton>
+          </BButtonGroup>
+          <BButtonGroup class="m-1">
+            <BButton
               class="font-weight-bold"
               size="sm"
               :variant="isRotated ? 'secondary' : 'outline-secondary'"
               @click="isRotated = !isRotated"
             >
-              Rotate <b-icon
+              Rotate
+              <BIcon
                 :icon="isRotated ? 'check-square' : 'square'"
                 :variant="isRotated ? 'light' : 'dark'"
               />
-            </b-button>
-          </b-button-group>
+            </BButton>
+          </BButtonGroup>
         </div>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
+      </BCol>
+    </BRow>
+
+    <!-- Player -->
+    <BRow>
+      <BCol>
         <prop-player
-          v-if="true"
           :no-controls="false"
           class="m-0 p-0 mx-auto mb-4"
           :style="computedAspectStyle"
           :media="computedMedia"
         />
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col
-        cols="12"
-        sm="6"
-      >
-        <b-card :header="$t('common.tags')">
-          <b-card-text>
-            <b-form-group :description="$t('campaigns.campaignTagDesc')">
+      </BCol>
+    </BRow>
+
+    <!-- Tags & Scheduled On -->
+    <BRow>
+      <BCol cols="12" sm="6">
+        <BCard :header="$t('common.tags')">
+          <BCardText>
+            <BFormGroup :description="$t('campaigns.campaignTagDesc')">
               <multiselect
                 :options="alltags"
                 :value="selected"
-                :multiple="true"
-                :taggable="true"
+                multiple
+                taggable
                 :placeholder="$t('message.addTag')"
                 @tag="addTag"
                 @select="chooseTag"
                 @remove="removeTag"
               />
-            </b-form-group>
-            <b-button
-              variant="primary"
-              @click="saveTags()"
-            >
+            </BFormGroup>
+            <BButton variant="primary" @click="saveTags()">
               {{ $t('buttons.save') }}
-            </b-button>
-          </b-card-text>
-        </b-card>
-      </b-col>
-      <b-col
-        cols="12"
-        sm="6"
-      >
-        <b-card :header="$t('campaigns.scheduledOn')">
-          <b-card-text>
+            </BButton>
+          </BCardText>
+        </BCard>
+      </BCol>
+
+      <BCol cols="12" sm="6">
+        <BCard :header="$t('campaigns.scheduledOn')">
+          <BCardText>
             <dl>
-              <dd
-                v-for="display in campaign.displays"
-                :key="display.id"
-              >
-                <b-link :to="{ name: 'display-view', params: { displayId: display.id }}">
+              <dd v-for="display in campaign.displays" :key="display.id">
+                <BLink :to="{ name: 'display-view', params: { displayId: display.id } }">
                   {{ display.name }}
-                </b-link>
+                </BLink>
               </dd>
             </dl>
-          </b-card-text>
-        </b-card>
-      </b-col>
-    </b-row>
-  </b-container>
+          </BCardText>
+        </BCard>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BButtonGroup,
+  BButton,
+  BIcon,
+  BCard,
+  BCardText,
+  BFormGroup,
+  BLink
+} from 'bootstrap-vue-next'
 import Multiselect from 'vue-multiselect'
 import PropPlayer from '@/components/Player/PropPlayer.vue'
 import teamContext from '@/mixins/teamContext'
@@ -107,6 +111,16 @@ export default {
   components: {
     Multiselect,
     PropPlayer,
+    BContainer,
+    BRow,
+    BCol,
+    BButtonGroup,
+    BButton,
+    BIcon,
+    BCard,
+    BCardText,
+    BFormGroup,
+    BLink,
   },
   mixins: [teamContext],
   props: {

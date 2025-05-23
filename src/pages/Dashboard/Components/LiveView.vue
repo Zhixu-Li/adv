@@ -1,14 +1,14 @@
 <template lang="html">
   <div class="d-flex flex-wrap justify-content-center">
     <div
-      v-for="(display) in computedDisplays"
+      v-for="display in computedDisplays"
       :key="display.displayId"
       class=""
     >
-      <b-button
+      <BButton
         v-b-modal="'display_' + display.displayId"
         variant="light"
-        class="display m-1 p-2 border border-radius"
+        class="display m-1 p-2 border rounded"
       >
         <display-preview
           class="preview"
@@ -18,8 +18,9 @@
         <div :style="{ whiteSpace: 'nowrap', textOverflow: 'ellipsis' }">
           <small>{{ display.name }}</small>
         </div>
-      </b-button>
-      <b-modal
+      </BButton>
+
+      <BModal
         :id="'display_' + display.displayId"
         size="lg"
         no-fade
@@ -29,20 +30,21 @@
         centered
       >
         <display-dashboard :display="display" />
-      </b-modal>
+      </BModal>
     </div>
   </div>
 </template>
-
 <script>
 import DisplayPreview from './DisplayPreview.vue'
 import DisplayDashboard from '@/pages/Displays/Dashboard/Dash.vue'
 import extendedViewports from '@/mixins/extendedViewports'
-
+import { BButton, BModal } from 'bootstrap-vue-next'
 export default {
   components: {
     DisplayDashboard,
-    DisplayPreview
+    DisplayPreview,
+    BButton, 
+    BModal
   },
   mixins: [extendedViewports],
   props: {

@@ -1,96 +1,78 @@
 <template>
-  <b-container fluid>
-    <b-row class="pt-3">
-      <!-- can we do this another way? -->
-
-      <!-- <b-modal id="delete-modal" :title="$t('actions.delete') + ' ' + team.name">
-      {{$t('message.teamDelete')}}
-      <p>{{$t('message.teamDeleteConfirm')}}</p>
-      <b-form-input v-model="confirmText" placeholder="Confirm Here"></b-form-input>
-      <div slot="modal-footer">
-        <b-button variant="danger" :disabled="!confirmation" class="m-1" @click="deleteTeam()">{{$t('answers.yes')}}</b-button> 
-        <b-button variant="primary" class="m-1" @click="$bvModal.hide('delete-modal'); confirmText=''">{{$t('answers.no')}}</b-button>
-      </div>
-    </b-modal> -->
-      <b-modal
-        id="delete-modal"
-        :title="$t('actions.delete') + ' ' + team.name"
-      >
+  <BContainer fluid>
+    <BRow class="pt-3">
+      <BModal id="delete-modal" :title="$t('actions.delete') + ' ' + team.name">
         {{ $t('message.teamDelete') }}
         <p>{{ $t('message.teamDeleteConfirm') }}</p>
-        <b-form-input
-          v-model="confirmText"
-          placeholder="Confirm Here"
-        />
+        <BFormInput v-model="confirmText" placeholder="Confirm Here" />
 
         <template #modal-footer>
-          <b-button
+          <BButton
             variant="danger"
             :disabled="!confirmation"
             class="m-1"
             @click="deleteTeam()"
           >
             {{ $t('answers.yes') }}
-          </b-button> 
-          <b-button
+          </BButton>
+          <BButton
             variant="primary"
             class="m-1"
             @click="$bvModal.hide('delete-modal'); confirmText=''"
           >
             {{ $t('answers.no') }}
-          </b-button>
+          </BButton>
         </template>
-      </b-modal>
-      <b-col
-        cols="12"
-        class="team-nav"
-      >
+      </BModal>
+
+      <BCol cols="12" class="team-nav">
         <div class="d-flex pl-3 justify-content-between align-items-center">
           <h1>{{ team.name }}</h1>
-          <div
-            class="btn btn-danger"
-            @click="$bvModal.show('delete-modal')"
-          >
-            <a>{{ $t('buttons.delete') }}</a>
-          </div>
+          <BButton variant="danger" @click="$bvModal.show('delete-modal')">
+            {{ $t('buttons.delete') }}
+          </BButton>
         </div>
-      </b-col>
-      <b-col
-        cols="12"
-        class="h-100 team-main"
-      >
-        <div
-          v-if="errors.length > 0"
-          class="mt-2 mb-2 alert alert-danger"
-        >
+      </BCol>
+
+      <BCol cols="12" class="h-100 team-main">
+        <div v-if="errors.length" class="mt-2 mb-2 alert alert-danger">
           <ul>
-            <li
-              v-for="(error, index) in errors"
-              :key="index"
-            >
-              {{ error }}
-            </li>
+            <li v-for="(error, idx) in errors" :key="idx">{{ error }}</li>
           </ul>
         </div>
         <transition name="fade">
-          <team-view
+          <TeamView
             :team-id="team.teamId"
             :show-displays="true"
             :show-campaigns="true"
           />
         </transition>
-      </b-col>
-    </b-row>
-  </b-container>
+      </BCol>
+    </BRow>
+  </BContainer>
 </template>
 
 <script>
 import TeamView from '@/components/User/Team.vue'
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BModal,
+  BFormInput,
+  BButton
+} from 'bootstrap-vue-next'
 
 export default {
   name: 'Team',
   components: {
-    TeamView
+    TeamView,
+    BContainer,
+    BRow,
+    BCol,
+    BModal,
+    BFormInput,
+    BButton,
   },
   props: {
     team: {

@@ -1,57 +1,46 @@
 <template lang="html">
   <div v-if="displays.length > 0">
-    <b-container>
-      <b-row>
-        <b-col>
-          <h4>{{ $t('dashboard.metrics.displayMetrics') }}</h4>
-        </b-col> 
-        <b-col>
-          <p
-            class="text-right"
-            style="font-size: 0.75em;"
-          >
+    <BContainer>
+      <!-- Header -->
+      <BRow>
+        <BCol><h4>{{ $t('dashboard.metrics.displayMetrics') }}</h4></BCol>
+        <BCol>
+          <p class="text-right" style="font-size:0.75em;">
             {{ $t('schedule.lastUpdateText') }} {{ count }} {{ $t('schedule.updateUnit') }}
           </p>
-        </b-col>
-      </b-row>
-      <b-row align-h="end">
-        <b-button-group
-          size="sm"
-          class="pb-3"
-        >
-          <b-button
+        </BCol>
+      </BRow>
+
+      <!-- Range Buttons -->
+      <BRow align-h="end">
+        <BButtonGroup size="sm" class="pb-3">
+          <BButton
             variant="outline-primary"
             :class="getActiveClass('hour')"
             @click="range('hour'); activeButton='hour'"
-          >
-            1H
-          </b-button>
-          <b-button
+          >1H</BButton>
+          <BButton
             variant="outline-primary"
             :class="getActiveClass('day')"
             @click="range('day'); activeButton='day'"
-          >
-            1D
-          </b-button>
-          <b-button
+          >1D</BButton>
+          <BButton
             variant="outline-primary"
             :class="getActiveClass('week')"
             @click="range('week'); activeButton='week'"
-          >
-            1W
-          </b-button>
-          <b-button
+          >1W</BButton>
+          <BButton
             variant="outline-primary"
             :class="getActiveClass('reset')"
             @click="range(); activeButton='reset'"
-          >
-            Reset
-          </b-button>
-        </b-button-group>
-      </b-row>
-      <b-row>
-        <b-col>
-          <graph
+          >Reset</BButton>
+        </BButtonGroup>
+      </BRow>
+
+      <!-- Metrics Graphs -->
+      <BRow>
+        <BCol>
+          <Graph
             ref="memory"
             width="105%"
             height="200"
@@ -59,9 +48,9 @@
             :options="chartOptions"
             :series="series.orz_memory"
           />
-        </b-col>
-        <b-col>
-          <graph
+        </BCol>
+        <BCol>
+          <Graph
             ref="disk"
             width="105%"
             height="200"
@@ -69,11 +58,11 @@
             :options="chartOptions"
             :series="series.orz_disk"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
-          <graph
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol>
+          <Graph
             ref="load"
             width="105%"
             height="200"
@@ -81,9 +70,9 @@
             :options="chartOptions"
             :series="series.orz_load"
           />
-        </b-col>
-        <b-col>
-          <graph
+        </BCol>
+        <BCol>
+          <Graph
             ref="signal"
             width="105%"
             height="200"
@@ -91,77 +80,75 @@
             :options="chartOptions"
             :series="series.orz_signal"
           />
-        </b-col>
-      </b-row>
-      <!-- Uncomment the below code and add 'orz_thermal' to the metric arrays found in fetchPromData() and range() for a CPU temperature graph-->
-      <!-- <b-row>
-        <graph ref="thermal" width="105%" height="200" type="line" :options="chartOptions" :series="series.orz_thermal"/>
-      </b-row> -->
-      <b-col>
-        <b-row>
-          <b-col>
-            <h4>{{ $t('dashboard.campaigns.lastPlayed') }}</h4>
-          </b-col>
-          <b-col>
-            <p
-              class="text-right"
-              style="font-size: 0.75em;"
-            >
-              {{ $t('dashboard.campaigns.updateTime') }}
-            </p>
-          </b-col>
-        </b-row>
-        <b-row align-h="end">
-          <b-col class="text-right">
-            {{ campaignTable.paused }}
-          </b-col>
-          <b-button
-            variant="primary"
-            size="sm"
-            @click="pause()"
-          >
-            {{ $t('dashboard.campaigns.pause') }}
-          </b-button>
-        </b-row>
-        <br>
-        <b-row>
-          <b-table
-            class="my-table"
-            small
-            bordered
-            responsive
-            head-variant="dark"
-            :fields="campaignTable.fields"
-            :items="campaignTable.items"
-          />
-        </b-row>
-        <br>
-        <b-row>
-          <b-col>
-            <h4>{{ $t('dashboard.campaigns.clientUptime') }}</h4>
-          </b-col>
-          <b-table
-            class="my-table"
-            responsive
-            bordered
-            head-variant="dark"
-            :items="upTable.items"
-            :fields="upTable.fields"
-            :sort-by="upTable.sort"
-          />
-        </b-row>
-      </b-col>
-    </b-container>
+        </BCol>
+      </BRow>
+
+      <!-- Campaigns Last Played -->
+      <BRow>
+        <BCol><h4>{{ $t('dashboard.campaigns.lastPlayed') }}</h4></BCol>
+        <BCol>
+          <p class="text-right" style="font-size:0.75em;">
+            {{ $t('dashboard.campaigns.updateTime') }}
+          </p>
+        </BCol>
+      </BRow>
+      <BRow align-h="end">
+        <BCol class="text-right">{{ campaignTable.paused }}</BCol>
+        <BButton variant="primary" size="sm" @click="pause()">
+          {{ $t('dashboard.campaigns.pause') }}
+        </BButton>
+      </BRow>
+      <br>
+      <BRow>
+        <BTable
+          class="my-table"
+          small
+          bordered
+          responsive
+          head-variant="dark"
+          :fields="campaignTable.fields"
+          :items="campaignTable.items"
+        />
+      </BRow>
+      <br>
+      <BRow>
+        <BCol><h4>{{ $t('dashboard.campaigns.clientUptime') }}</h4></BCol>
+        <BTable
+          class="my-table"
+          responsive
+          bordered
+          head-variant="dark"
+          :items="upTable.items"
+          :fields="upTable.fields"
+          :sort-by="upTable.sort"
+        />
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
+
 <script>
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BButtonGroup,
+  BButton,
+  BTable
+} from 'bootstrap-vue-next'
 import Graph from 'vue3-apexcharts'
 import moment from 'moment'
 
 export default {
   components: {
-    Graph
+    Graph,
+    BContainer,
+    BRow,
+    BCol,
+    BButtonGroup,
+    BButton,
+    BTable,
     },
   props: {
     displays: {

@@ -1,8 +1,8 @@
 <template lang="html">
-  <b-row class="mt-2 mr-2">
-    <b-col cols="12">
-      <b-card>
-        <b-card-text>
+  <BRow class="mt-2 mr-2">
+    <BCol cols="12">
+      <BCard>
+        <BCardText>
           <h4>{{ $t('dashboard.common.news') }}</h4>
           <div v-if="loaded">
             <div
@@ -10,21 +10,18 @@
               :key="news.title"
               class="news"
             >
-              <hr>
+              <hr />
               <div>
-                <span style="font-size: 1.5em;">{{ news.title }}</span> <span
-                  class="float-right"
-                  style="font-size: 0.75em;"
-                >{{ (news.postedDate.substring(0, 10)) }}</span> <!-- -->
+                <span style="font-size:1.5em;">{{ news.title }}</span>
+                <span class="float-right" style="font-size:0.75em;">
+                  {{ news.postedDate.substring(0,10) }}
+                </span>
               </div>
-              <br>
-              <div style="white-space: pre-wrap;">
+              <br />
+              <div style="white-space:pre-wrap;">
                 <span v-html="news.content" />
               </div>
-              <div
-                class="text-right"
-                style="font-size: 0.75em;"
-              >
+              <div class="text-right" style="font-size:0.75em;">
                 {{ $t('news.postedBy') }}{{ news.author }}
               </div>
             </div>
@@ -32,15 +29,22 @@
           <div v-else>
             {{ $t('dashboard.common.loading') }}
           </div>
-        </b-card-text>
-      </b-card>
-    </b-col>
-  </b-row>
+        </BCardText>
+      </BCard>
+    </BCol>
+  </BRow>
 </template>
 
-<script>
 
+<script>
+import { BRow, BCol, BCard, BCardText } from 'bootstrap-vue-next'
 export default {
+  components:{
+    BRow,
+    BCol,
+    BCard,
+    BCardText
+  },
   data () {
     return {
       news: [],

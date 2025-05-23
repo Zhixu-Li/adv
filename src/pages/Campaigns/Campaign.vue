@@ -1,130 +1,117 @@
-<template>
-  <b-row>
-    <b-modal
-      id="delete-modal"
-      :title="$t('actions.delete') + ' ' + localCampaign.name"
-    >
+<template lang="html">
+  <BRow>
+    <!-- Delete Confirmation Modal -->
+    <BModal id="delete-modal" :title="$t('actions.delete') + ' ' + localCampaign.name">
       {{ $t('message.campaignDelete') }}
       <template #modal-footer>
-        <button
+        <BButton
           type="button"
-          class="btn delete-button btn-primary left"
+          variant="danger"
+          class="mr-3"
           @click="deleteCampaign(); $bvModal.hide('delete-modal')"
         >
           {{ $t('answers.yes') }}
-        </button>
-        <button
+        </BButton>
+        <BButton
           type="button"
-          class="btn delete-button btn-primary right"
+          variant="secondary"
           @click="$bvModal.hide('delete-modal')"
         >
           {{ $t('answers.no') }}
-        </button>
+        </BButton>
       </template>
-    </b-modal>
+    </BModal>
 
-    <b-modal
-      id="edit-modal"
-      no-close-on-backdrop
-      size="xl"
-      hide-footer
-    >
+    <!-- Edit Campaign Modal -->
+    <BModal id="edit-modal" no-close-on-backdrop size="xl" hide-footer>
       <template #modal-title>
         <input
           v-model="localCampaign.name"
           class="form-control w-50"
           placeholder="Campaign Name"
-        >
+        />
       </template>
-      <div
-        v-if="errors.length > 0"
-        class="alert alert-danger"
-      >
+
+      <div v-if="errors.length > 0" class="alert alert-danger">
         <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
-            {{ error }}
-          </li>
+          <li v-for="(error, idx) in errors" :key="idx">{{ error }}</li>
         </ul>
       </div>
-      <campaign-editor
-        v-if="Object.keys(localCampaign).length > 0"
+
+      <CampaignEditor
+        v-if="localCampaign && Object.keys(localCampaign).length"
         :active-team="activeTeam"
         :campaign="localCampaign"
         @saved="$emit('close')"
       />
-    </b-modal>
+    </BModal>
 
-    <b-col
-      cols="12"
-      class="campaign-nav w-100"
-    >
+    <!-- Header / Toolbar -->
+    <BCol cols="12" class="campaign-nav w-100">
       <div class="d-flex justify-content-center align-items-center">
-        <h1 class="campaign-name d-none d-md-block">
-          {{ localCampaign.name }}
-        </h1>
-        <b-button-toolbar>
-          <b-button
+        <h1 class="campaign-name d-none d-md-block">{{ localCampaign.name }}</h1>
+        <BButtonToolbar>
+          <BButton
             v-b-modal.edit-modal
-            class="m-1 border-primary text-primary"
-            variant="light"
+            variant="outline-primary"
+            class="m-1"
           >
-            <font-awesome-icon
-              icon="list"
-              class="me-2"
-            />Edit Campaign
-          </b-button>
-          <b-button
+            <font-awesome-icon icon="list" class="me-2" />
+            Edit Campaign
+          </BButton>
+          <BButton
             v-b-modal.delete-modal
-            class="m-1 border-danger text-danger"
-            variant="light"
+            variant="outline-danger"
+            class="m-1"
           >
-            <font-awesome-icon icon="circle-xmark" />{{ $t('buttons.delete') }}
-          </b-button>
-        </b-button-toolbar>
+            <font-awesome-icon icon="circle-xmark" />
+            {{ $t('buttons.delete') }}
+          </BButton>
+        </BButtonToolbar>
       </div>
-    </b-col>
+    </BCol>
 
-    <b-col
-      cols="12"
-      class="h-100 campaign-main"
-    >
-      <div
-        v-if="errors.length > 0"
-        class="mt-2 mb-2 alert alert-danger"
-      >
+    <!-- Main Editor -->
+    <BCol cols="12" class="h-100 campaign-main">
+      <div v-if="errors.length > 0" class="mt-2 mb-2 alert alert-danger">
         <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
-            {{ error }}
-          </li>
+          <li v-for="(error, idx) in errors" :key="idx">{{ error }}</li>
         </ul>
       </div>
       <transition name="fade">
-        <edit-campaign
+        <EditCampaign
           :active-team="activeTeam"
           :campaign="localCampaign"
           @update="$emit('update', localCampaign)"
         />
       </transition>
-    </b-col>
-  </b-row>
+    </BCol>
+  </BRow>
 </template>
+
 
 <script>
 import EditCampaign from './EditCampaign.vue'
 import CampaignEditor from '@/components/CampaignEditor/CampaignEditor.vue'
 import teamContext from '@/mixins/teamContext'
-
+import {
+  BRow,
+  BCol,
+  BModal,
+  BButtonToolbar,
+  BButton
+} from 'bootstrap-vue-next'
 export default {
   name: 'Campaign',
   components: {
     EditCampaign,
-    CampaignEditor
+    CampaignEditor,
+     BRow,
+    BCol,
+    BModal,
+    BButtonToolbar,
+    BButton,
+  
   },
   mixins: [teamContext],
   props: {

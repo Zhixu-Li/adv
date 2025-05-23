@@ -1,66 +1,68 @@
 <template lang="html">
   <div>
-    <h4>{{ source.name }} {{ $t('article.on') }} {{ localDisplay.name }} {{ localDisplay.status }}</h4>
-    <b-table-simple
-      striped
-      responsive
-    >
-      <b-thead>
-        <b-tr>
-          <b-th>{{ $t('dateTime.runDates') }}</b-th>
-          <b-th>{{ $t('dateTime.dailyTimes') }}</b-th>
-          <b-th>{{ $t('dashboard.approval.status') }}</b-th>
-          <b-th />
-        </b-tr>
-      </b-thead>
-      <b-tbody>
-        <template
-          v-for="booking in filteredSources"
-          :key="booking.id"
-        >
-          <b-tr>
-            <b-td v-if="booking.startDate === booking.endDate">
+    <h4>
+      {{ source.name }}
+      {{ $t('article.on') }}
+      {{ localDisplay.name }}
+      {{ localDisplay.status }}
+    </h4>
+
+    <BTableSimple striped responsive>
+      <BThead>
+        <BTr>
+          <BTh>{{ $t('dateTime.runDates') }}</BTh>
+          <BTh>{{ $t('dateTime.dailyTimes') }}</BTh>
+          <BTh>{{ $t('dashboard.approval.status') }}</BTh>
+          <BTh />
+        </BTr>
+      </BThead>
+
+      <BTbody>
+        <template v-for="booking in filteredSources" :key="booking.id">
+          <BTr>
+            <BTd v-if="booking.startDate === booking.endDate">
               {{ booking.startDate }}
-            </b-td>
-            <b-td v-else-if="booking.endDate >= '2037-01-01'">
+            </BTd>
+            <BTd v-else-if="booking.endDate >= '2037-01-01'">
               {{ booking.startDate }}, no end date
-            </b-td>
-            <b-td v-else>
+            </BTd>
+            <BTd v-else>
               {{ booking.startDate }} to {{ booking.endDate }}
-            </b-td>
+            </BTd>
 
-            <b-td v-if="booking.startTime === '00:00:00' && booking.endTime === '23:59:59'">
+            <BTd
+              v-if="booking.startTime === '00:00:00' && booking.endTime === '23:59:59'"
+            >
               All Day
-            </b-td>
-            <b-td v-else>
+            </BTd>
+            <BTd v-else>
               {{ booking.startTime }} to {{ booking.endTime }}
-            </b-td>
+            </BTd>
 
-            <b-td v-if="booking.endDate >= date && booking.startDate <= date && booking.endTime >= time && booking.startTime <= time">
-              <b-badge variant="success">
-                Running
-              </b-badge>
-            </b-td>
-            <b-td v-else>
-              <b-badge variant="warning">
-                Booked
-              </b-badge>
-            </b-td>
+            <BTd
+              v-if="
+                booking.endDate >= date &&
+                booking.startDate <= date &&
+                booking.endTime >= time &&
+                booking.startTime <= time
+              "
+            >
+              <BBadge variant="success">Running</BBadge>
+            </BTd>
+            <BTd v-else>
+              <BBadge variant="warning">Booked</BBadge>
+            </BTd>
 
-            <b-td>
-              <b-button
-                size="sm"
-                variant="danger"
-                @click="removeSource(booking)"
-              >
+            <BTd>
+              <BButton size="sm" variant="danger" @click="removeSource(booking)">
                 {{ $t('buttons.remove') }}
-              </b-button>
-            </b-td>
-          </b-tr>
+              </BButton>
+            </BTd>
+          </BTr>
 
-          <b-tr>
-            <b-td colspan="4">
-              <b-aspect
+          <BTr>
+            <BTd colspan="4">
+              <BAspect
                 :aspect="computedAspect"
                 style="width: 50%; height: 250px"
                 class="mx-auto"
@@ -69,33 +71,50 @@
                   :key="booking.id"
                   :params="JSON.parse(booking.parameters)"
                   :uri="sources.find(s => s.sourceId === booking.sourceId)?.uri"
-                  :width="'100%'"
-                  :height="'100%'"
+                  width="100%"
+                  height="100%"
                 />
-              </b-aspect>
-            </b-td>
-          </b-tr>
+              </BAspect>
+            </BTd>
+          </BTr>
         </template>
-      </b-tbody>
-    </b-table-simple>
+      </BTbody>
+    </BTableSimple>
 
-    <b-button
-      variant="primary"
-      @click="$emit('add')"
-    >
+    <BButton variant="primary" @click="$emit('add')">
       {{ $t('buttons.add') }}
-    </b-button>
+    </BButton>
   </div>
 </template>
-
 <script>
+import {
+  BTableSimple,
+  BThead,
+  BTr,
+  BTh,
+  BTbody,
+  BTd,
+  BBadge,
+  BButton,
+  BAspect
+} from 'bootstrap-vue-next';
 import moment from 'moment'
 import SchedulePlayer from '@/components/Player/SchedulePlayer.vue'
 import aspectRatio from '@/mixins/aspectRatio'
 
 export default {
   components: {
-    SchedulePlayer
+    SchedulePlayer,
+    BTableSimple,
+    BThead,
+    BTr,
+    BTh,
+    BTbody,
+    BTd,
+    BBadge,
+    BButton,
+    BAspect
+
   },
   mixins: [aspectRatio],
   props: {

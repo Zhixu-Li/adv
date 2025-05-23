@@ -1,6 +1,6 @@
-<template lang="html">
-  <b-row>
-    <b-col
+<template>
+  <BRow>
+    <BCol
       v-if="errors.length > 0"
       cols="12"
       class="alert alert-danger"
@@ -13,34 +13,29 @@
           {{ error }}
         </li>
       </ul>
-    </b-col>
-    <b-col cols="12">
+    </BCol>
+
+    <BCol cols="12">
       <h4>{{ $t('common.schedule') }} {{ campaign.name }} {{ $t('article.on') }} {{ display.name }} </h4>
-    </b-col>
-    <b-col md="6">
-      <b-card
-        class="mb-3"
-        header="Booking Duration"
-      >
-        <b-card-text>
-          <b-form-group
-            :label="$t('dateTime.sDate')"
-            label-for="startDate"
-          >
-            <flatpickr
+    </BCol>
+
+    <!-- Booking Duration -->
+    <BCol md="6">
+      <BCard class="mb-3" header="Booking Duration">
+        <BCardText>
+          <BFormGroup :label="$t('dateTime.sDate')" label-for="startDate">
+            <Flatpickr
               id="startDate"
               v-model="bookingData.startDate"
               :config="flatpickrConfig"
               :options="startDateOptions"
               :placeholder="$t('dateTime.date')"
             />
-          </b-form-group>
-          <b-form-group
-            :label="$t('dateTime.eDate')"
-            label-for="endDate"
-          >
-            <b-input-group>
-              <flatpickr
+          </BFormGroup>
+
+          <BFormGroup :label="$t('dateTime.eDate')" label-for="endDate">
+            <BInputGroup>
+              <Flatpickr
                 id="endDate"
                 v-model="bookingData.endDate"
                 :disabled="forever"
@@ -48,38 +43,32 @@
                 :options="endDateOptions"
                 :placeholder="$t('dateTime.date')"
               />
-              <b-input-group-append
-                id="foreverBox"
-                is-text
-              >
-                <b-form-checkbox
+              <template #append>
+                <BFormCheckbox
                   id="forever"
                   v-model="forever"
                   name="forever"
                   :value="true"
                   :unchecked-value="false"
                 >
-                  <b-icon-arrow-repeat />
-                </b-form-checkbox>
-              </b-input-group-append>
-            </b-input-group>
-          </b-form-group>
-          <b-popover
-            target="foreverBox"
-            triggers="hover focus"
-          >
+                  <BIconArrowRepeat />
+                </BFormCheckbox>
+              </template>
+            </BInputGroup>
+          </BFormGroup>
+
+          <BPopover target="forever" triggers="hover focus">
             {{ $t('popover.forever') }}
-          </b-popover>
-          <br>
+          </BPopover>
+
+          <br />
           <p class="warning">
             {{ dayOfWeekStatus }}
           </p>
-          <b-button-group
-            size="sm"
-            class="pb-3"
-          >
-            //have not used v-model yet, i have to use @click="btn.state = !btn.state" to manually change instead of .async
-            <b-button 
+
+          <BButtonGroup size="sm" class="pb-3">
+            <!-- have not used v-model yet, i have to use @click to toggle -->
+            <BButton
               v-for="(btn, idx) in buttons"
               v-show="btn.visible"
               :key="idx"
@@ -91,42 +80,38 @@
               @mouseleave="hover(false, btn)"
             >
               {{ btn.value }}
-            </b-button>
-          </b-button-group>
+            </BButton>
+          </BButtonGroup>
           <p><small>{{ dayCount ? dayCount : 'No' }} days selected.</small></p>
-          <b-form-group>
+
+          <BFormGroup>
             {{ $t('dateTime.weekSkip') }}
-            <b-dropdown
+            <BDropdown
               size="sm"
               variant="outline-primary"
               :text="bookingData.skippedWeeks"
             >
-              <b-dropdown-item @click="bookingData.skippedWeeks = 'Do Not Skip'">
+              <BDropdownItem @click="bookingData.skippedWeeks = 'Do Not Skip'">
                 Do Not Skip
-              </b-dropdown-item>
-              <b-dropdown-item @click="bookingData.skippedWeeks = 'Second Week'">
+              </BDropdownItem>
+              <BDropdownItem @click="bookingData.skippedWeeks = 'Second Week'">
                 Second Week
-              </b-dropdown-item>
-              <b-dropdown-item @click="bookingData.skippedWeeks = 'Third Week'">
+              </BDropdownItem>
+              <BDropdownItem @click="bookingData.skippedWeeks = 'Third Week'">
                 Third Week
-              </b-dropdown-item>
-            </b-dropdown>
-          </b-form-group>
-        </b-card-text>
-      </b-card>
-    </b-col>
-    <b-col md="6">
-      <b-card
-        class="mb-3"
-        header="Daily Run Times"
-      >
-        <b-card-text>
-          <b-form-group
-            :label="$t('dateTime.sTime')"
-            label-for="startTime"
-          >
-            <!-- <b-form-input class="text-left" v-model="bookingData.startTime"></b-form-input> -->
-            <b-dropdown
+              </BDropdownItem>
+            </BDropdown>
+          </BFormGroup>
+        </BCardText>
+      </BCard>
+    </BCol>
+
+    <!-- Daily Run Times -->
+    <BCol md="6">
+      <BCard class="mb-3" header="Daily Run Times">
+        <BCardText>
+          <BFormGroup :label="$t('dateTime.sTime')" label-for="startTime">
+            <BDropdown
               id="startTime"
               ref="startDropdown"
               no-caret
@@ -138,29 +123,22 @@
                   {{ bookingData.startTime }}
                 </div>
               </template>
-              <b-button-group
-                v-for="n in 4"
-                :key="n.id"
-                size="sm"
-                class="ml-2 mr-2"
-              >
-                <b-button
+
+              <BButtonGroup v-for="n in 4" :key="n" size="sm" class="ml-2 mr-2">
+                <BButton
                   v-for="i in 6"
-                  :key="i.id"
+                  :key="i"
                   class="timebutton"
-                  @click="bookingData.startTime=(((n-1)*6)+(i-1)).toString().padStart(2,'0')+':00:00';$refs.startDropdown.hide(true)"
+                  @click="bookingData.startTime = (((n - 1) * 6) + (i - 1)).toString().padStart(2, '0') + ':00:00'; $refs.startDropdown.hide(true)"
                 >
-                  {{ ((n-1)*6)+(i-1) }}:00
-                </b-button>
-              </b-button-group>
-            </b-dropdown>
-          </b-form-group>
-          <b-form-group
-            :label="$t('dateTime.eTime')"
-            label-for="endTime"
-          >
-            <!-- <b-form-input class="text-left" v-model="bookingData.endTime"></b-form-input> -->
-            <b-dropdown
+                  {{ ((n - 1) * 6) + (i - 1) }}:00
+                </BButton>
+              </BButtonGroup>
+            </BDropdown>
+          </BFormGroup>
+
+          <BFormGroup :label="$t('dateTime.eTime')" label-for="endTime">
+            <BDropdown
               id="endTime"
               ref="endDropdown"
               no-caret
@@ -170,33 +148,28 @@
               <template #button-content>
                 <div class="text-left">
                   {{ bookingData.endTime }}
-                </div>              
+                </div>
               </template>
-              <b-button-group
-                v-for="m in 4"
-                :key="m.id"
-                size="sm"
-                class="ml-2 mr-2"
-              >
-                <b-button
+
+              <BButtonGroup v-for="m in 4" :key="m" size="sm" class="ml-2 mr-2">
+                <BButton
                   v-for="o in 6"
-                  :key="o.id"
+                  :key="o"
                   class="timebutton"
-                  @click="bookingData.endTime=(((m-1)*6)+(o)).toString().padStart(2,'0')+':00:00';$refs.endDropdown.hide(true)"
+                  @click="bookingData.endTime = (((m - 1) * 6) + o).toString().padStart(2, '0') + ':00:00'; $refs.endDropdown.hide(true)"
                 >
-                  {{ ((m-1)*6)+(o) }}:00
-                </b-button>
-              </b-button-group>
-            </b-dropdown>
-          </b-form-group>
-        </b-card-text>
-      </b-card>
-    </b-col>
-    <b-col
-      cols="12"
-      class="pb-2"
-    >
-      <b-card header="Display Utilization">
+                  {{ ((m - 1) * 6) + o }}:00
+                </BButton>
+              </BButtonGroup>
+            </BDropdown>
+          </BFormGroup>
+        </BCardText>
+      </BCard>
+    </BCol>
+
+    <!-- Display Utilization -->
+    <BCol cols="12" class="pb-2">
+      <BCard header="Display Utilization">
         <div v-if="timeRemaining !== -1">
           <div v-if="campaignDuration > display.blockTime">
             <p class="text-danger">
@@ -205,64 +178,55 @@
             </p>
             <p>
               <small>
-                Campaign Length: {{ campaignDuration }} sec <br> Display Block Limit: {{ display.blockTime }} sec</small>
+                Campaign Length: {{ campaignDuration }} sec <br /> Display Block Limit: {{ display.blockTime }} sec
+              </small>
             </p>
           </div>
           <div v-else>
-            <b-progress
-              :max="display.blockTime"
-              height="2rem"
-            >
-              <b-progress-bar
-                variant="primary"
-                :value="display.blockTime - timeRemaining"
-              >
+            <BProgress :max="display.blockTime" height="2rem">
+              <BProgressBar variant="primary" :value="display.blockTime - timeRemaining">
                 <span><strong>{{ display.blockTime - timeRemaining }} sec used</strong></span>
-              </b-progress-bar>
-              <b-progress-bar
-                animated
-                variant="success"
-                :value="timeRemaining < campaignDuration ? 0 : campaignDuration"
-              >
+              </BProgressBar>
+              <BProgressBar animated variant="success" :value="timeRemaining < campaignDuration ? 0 : campaignDuration">
                 <span><strong>Booking</strong></span>
-              </b-progress-bar>
-              <b-progress-bar
-                :variant="(timeRemaining < campaignDuration) ? 'danger' : 'light'"
-                :animated="(timeRemaining < campaignDuration) ? true : false"
-                :value="timeRemaining < campaignDuration ? (timeRemaining) : (timeRemaining - campaignDuration)"
+              </BProgressBar>
+              <BProgressBar
+                :variant="timeRemaining < campaignDuration ? 'danger' : 'light'"
+                :animated="timeRemaining < campaignDuration"
+                :value="timeRemaining < campaignDuration ? timeRemaining : timeRemaining - campaignDuration"
               >
                 <span v-if="timeRemaining < campaignDuration"><strong>Insufficient Space</strong></span>
-              </b-progress-bar>
-            </b-progress>
+              </BProgressBar>
+            </BProgress>
             <small>
-              <span :class="{'text-danger': timeRemaining < campaignDuration}">
+              <span :class="{ 'text-danger': timeRemaining < campaignDuration }">
                 Total Available Time: {{ timeRemaining }}/{{ display.blockTime }} {{ $t('dateTime.seconds') }}
               </span>
-              <br>
-              <span :class="{'text-danger': campaignDuration <= 0}">
+              <br />
+              <span :class="{ 'text-danger': campaignDuration <= 0 }">
                 {{ $t('schedule.campaignDuration') }}: {{ campaignDuration }} {{ $t('dateTime.seconds') }}
               </span>
             </small>
           </div>
         </div>
-        <div
-          v-else
-          class="d-flex justify-content-center mb-3"
-        >
-          <b-spinner label="Loading..." />
+        <div v-else class="d-flex justify-content-center mb-3">
+          <BSpinner label="Loading..." />
         </div>
-      </b-card>
-    </b-col>
-    <b-col cols="12">
-      <b-button
+      </BCard>
+    </BCol>
+
+    <!-- Action Buttons -->
+    <BCol cols="12">
+      <BButton
         v-if="!selectDisabled"
         variant="primary"
         class="float-left btn btn-primary"
         @click="back"
       >
         {{ $t('buttons.back') }}
-      </b-button>
-      <b-button
+      </BButton>
+
+      <BButton
         id="schedule"
         variant="primary"
         class="float-right btn btn-primary"
@@ -270,19 +234,39 @@
         @click="schedule()"
       >
         {{ $t('buttons.schedule') }}
-      </b-button>
-    </b-col>
-  </b-row>
+      </BButton>
+    </BCol>
+  </BRow>
 </template>
 
+
 <script>
-import Flatpickr from '@/components/Flatpickr.vue'
+import {BRow, BCol, BCard, BCardText, BFormGroup, BInputGroup, BFormCheckbox, BButton, BButtonGroup, BDropdown, BDropdownItem, BPopover, BProgress, BProgressBar, BSpinner, BIconArrowRepeat} from 'bootstrap-vue-next'
+
+import flatpickr from '@/components/Flatpickr.vue'
 import moment from 'moment'
 import _ from 'lodash'
 
 export default {
   components: {
-    Flatpickr
+    flatpickr,
+    BRow, 
+    BCol, 
+    BCard, 
+    BCardText, 
+    BFormGroup, 
+    BInputGroup, 
+    BFormCheckbox, 
+    BButton, 
+    BButtonGroup, 
+    BDropdown, 
+    BDropdownItem, 
+    BPopover, 
+    BProgress, 
+    BProgressBar, 
+    BSpinner, 
+    BIconArrowRepeat
+
   },
   props: {
     selectDisabled: {

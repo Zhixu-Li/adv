@@ -1,6 +1,6 @@
 <template>
-  <b-row>
-    <b-modal
+  <BRow>
+    <BModal
       id="deleteuser"
       size="lg"
       :title="$t('actions.delete')"
@@ -22,55 +22,46 @@
           {{ $t('answers.no') }}
         </button>
       </template>
-    </b-modal>
+    </BModal>
 
-    <b-col
-      cols="12"
-      class="user-nav"
-    >
+    <BCol cols="12" class="user-nav">
       <div class="d-flex justify-content-between align-items-center">
         <h1>{{ localUser.username }}</h1>
         <div>
-          <b-button
+          <BButton
             v-if="!localUser.verified"
             variant="primary"
             class="ml-2"
             @click="verify"
           >
             {{ $t('buttons.verify') }}
-          </b-button>
-          <b-button
+          </BButton>
+          <BButton
             v-else
             disabled
             variant="primary"
             class="ml-2"
           >
             verified
-          </b-button>
-          <b-button
+          </BButton>
+          <BButton
             variant="danger"
             class="ml-2"
             @click="$bvModal.show('deleteuser')"
           >
             {{ $t('actions.delete') }}
-          </b-button>
+          </BButton>
         </div>
       </div>
-    </b-col>
+    </BCol>
 
-    <b-col
-      cols="12"
-      class="h-100 user-main"
-    >
+    <BCol cols="12" class="h-100 user-main">
       <div
         v-if="errors.length > 0"
         class="mt-2 mb-2 alert alert-danger"
       >
         <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
+          <li v-for="(error, index) in errors" :key="index">
             {{ error }}
           </li>
         </ul>
@@ -79,12 +70,24 @@
       <transition name="fade">
         <router-view :user="localUser" />
       </transition>
-    </b-col>
-  </b-row>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
+import {
+  BRow,
+  BCol,
+  BModal,
+  BButton
+} from 'bootstrap-vue-next'
 export default {
+  components: {
+    BRow,
+    BCol,
+    BModal,
+    BButton
+  },
   name: 'User',
   props: {
     user: {

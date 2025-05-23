@@ -1,74 +1,67 @@
-<template lang="html">
+<template>
   <div>
-    <div
-      v-if="errors.length > 0"
-      class="alert alert-danger"
+    <BAlert
+      v-if="errors.length"
+      variant="danger"
+      show
     >
       <ul>
-        <li
-          v-for="(error, index) in errors"
-          :key="index"
-        >
-          {{ error }}
-        </li>
+        <li v-for="(error, i) in errors" :key="i">{{ error }}</li>
       </ul>
-    </div>
-    <b-form-group
+    </BAlert>
+
+    <BFormGroup
       :label="$t('displayCoupon.code')"
       label-for="couponCode"
     >
-      <b-form-input
+      <BFormInput
         id="couponCode"
         v-model="editCoupon.code"
       />
-    </b-form-group>
-    <b-form-group
+    </BFormGroup>
+
+    <BFormGroup
       id="value"
       :label="$t('displayCoupon.value')"
       label-for="value"
     >
-      <b-form-radio
-        id="price"
-        v-model="picked"
-        value="price"
-      >
+      <BFormRadio id="price" v-model="picked" value="price">
         {{ $t('displayCoupon.price') }}
-      </b-form-radio>
-      <b-form-radio
-        id="percent"
-        v-model="picked"
-        value="percent"
-      >
+      </BFormRadio>
+      <BFormRadio id="percent" v-model="picked" value="percent">
         {{ $t('displayCoupon.percentage') }}
-      </b-form-radio>
-    </b-form-group>
-    <b-form-group
-      v-if="picked == 'price'"
+      </BFormRadio>
+    </BFormGroup>
+
+    <BFormGroup
+      v-if="picked === 'price'"
       :label="$t('displayCoupon.price')"
       label-for="price"
     >
-      <b-form-input
+      <BFormInput
         id="price"
         v-model.number="editCoupon.price"
         type="number"
         min="0"
         step="1"
       />
-    </b-form-group>
-    <b-form-group
-      v-else-if="picked == 'percent'"
+    </BFormGroup>
+
+    <BFormGroup
+      v-else-if="picked === 'percent'"
       :label="$t('displayCoupon.percentage')"
       label-for="percent"
     >
-      <b-form-input
+      <BFormInput
         id="percent"
-        v-model.number="percentage"
+        v-model.number="editCoupon.percent"
         type="number"
         min="0"
         max="100"
       />
-    </b-form-group>
-    <div>
+    </BFormGroup>
+
+    <div class="mb-3">
       <label for="expiry">{{ $t('displayCoupon.expiry') }}</label>
       <flatpickr
         id="expiry"
@@ -78,38 +71,47 @@
         :options="expiryOptions"
       />
     </div>
-    <b-form-group
+
+    <BFormGroup
       :label="$t('displayCoupon.quantity')"
       label-for="quantity"
     >
-      <b-form-input
+      <BFormInput
         id="quantity"
         v-model="editCoupon.quantity"
         type="number"
         :disabled="editCoupon.unlimited"
       />
-      <b-form-checkbox
-        id="unlimited"
-        v-model="editCoupon.unlimited"
-        value="true"
-      >
+      <BFormCheckbox id="unlimited" v-model="editCoupon.unlimited">
         {{ $t('displayCoupon.unlimited') }}
-      </b-form-checkbox>
-    </b-form-group>
-    <b-button
-      variant="primary"
-      @click="save()"
-    >
+      </BFormCheckbox>
+    </BFormGroup>
+
+    <BButton variant="primary" @click="save">
       Save
-    </b-button>
+    </BButton>
   </div>
 </template>
 
 <script>
+import {
+  BAlert,
+  BFormGroup,
+  BFormInput,
+  BFormRadio,
+  BFormCheckbox,
+  BButton
+} from 'bootstrap-vue-next'
 import Flatpickr from '@/components/Flatpickr'
 export default {
   components: {
-    Flatpickr
+    Flatpickr,
+    BAlert,
+    BFormGroup,
+    BFormInput,
+    BFormRadio,
+    BFormCheckbox,
+    BButton
   },
   props: {
     coupon: {

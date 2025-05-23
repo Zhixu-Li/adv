@@ -1,20 +1,16 @@
 <template lang="html">
   <div>
     <h2>{{ $t('schedule.selectSource') }}</h2>
-    <div
-      v-if="errors.length > 0"
-      class="alert alert-danger"
-    >
+
+    <BAlert v-if="errors.length > 0" variant="danger" show>
       <ul>
-        <li
-          v-for="(error, index) in errors"
-          :key="index"
-        >
+        <li v-for="(error, index) in errors" :key="index">
           {{ error }}
         </li>
       </ul>
-    </div>
-    <multiselect
+    </BAlert>
+
+    <Multiselect
       v-model="source"
       :options="filteredSources"
       :searchable="true"
@@ -22,22 +18,26 @@
       label="name"
       @input="selectSource"
     />
-    <b-button
+
+    <BButton
       variant="primary"
       class="float-right mt-2"
       @click="next"
     >
       {{ $t('buttons.next') }}
-    </b-button>
+    </BButton>
   </div>
 </template>
 
 <script>
+import { BAlert, BButton } from 'bootstrap-vue-next'
 import Multiselect from 'vue-multiselect'
 
 export default {
   components: {
-    Multiselect
+    Multiselect,
+    BAlert,
+    BButton
   },
   data () {
     return {

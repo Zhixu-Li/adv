@@ -1,139 +1,108 @@
 <template>
-  <b-row class="pt-3">
-    <b-col cols="12">
-      <b-button
-        variant="primary"
-        @click="$bvModal.show('create-modal')"
-      >
+  <BRow class="pt-3">
+    <BCol cols="12">
+      <BButton variant="primary" @click="$bvModal.show('create-modal')">
         {{ $t('buttons.create') }}
-      </b-button>
-    </b-col>
-    <b-col cols="12 pt-3">
-      <b-table-simple>
-        <b-thead>
-          <b-tr>
-            <b-th>{{ $t('displayCoupon.code') }}</b-th>
-            <b-th>{{ $t('displayCoupon.expiry') }}</b-th>
-            <b-th class="hidden-sm-down">
-              {{ $t('displayCoupon.price') }}
-            </b-th>
-            <b-th class="hidden-sm-down">
-              {{ $t('displayCoupon.percentage') }}
-            </b-th>
-            <b-th class="hidden-sm-down">
-              {{ $t('displayCoupon.quantity') }}
-            </b-th>
-            <b-th>{{ $t('actions.actions') }}</b-th>
-          </b-tr>
-        </b-thead>
-        <b-tbody>
-          <b-tr
-            v-for="coupon in coupons"
-            :key="coupon.code"
-          >
-            <b-td>{{ coupon.code }}</b-td>
-            <b-td>{{ coupon.expiry }}</b-td>
-            <b-td
-              v-if="coupon.price !== undefined"
-              class="hidden-sm-down"
-            >
+      </BButton>
+    </BCol>
+
+    <BCol cols="12" class="pt-3">
+      <BTableSimple>
+        <BThead>
+          <BTr>
+            <BTh>{{ $t('displayCoupon.code') }}</BTh>
+            <BTh>{{ $t('displayCoupon.expiry') }}</BTh>
+            <BTh class="hidden-sm-down">{{ $t('displayCoupon.price') }}</BTh>
+            <BTh class="hidden-sm-down">{{ $t('displayCoupon.percentage') }}</BTh>
+            <BTh class="hidden-sm-down">{{ $t('displayCoupon.quantity') }}</BTh>
+            <BTh>{{ $t('actions.actions') }}</BTh>
+          </BTr>
+        </BThead>
+        <BTbody>
+          <BTr v-for="coupon in coupons" :key="coupon.code">
+            <BTd>{{ coupon.code }}</BTd>
+            <BTd>{{ coupon.expiry }}</BTd>
+            <BTd v-if="coupon.price !== undefined" class="hidden-sm-down">
               {{ '$' + (coupon.price / 100) }}
-            </b-td>
-            <b-td
-              v-else
-              class="hidden-sm-down"
-            />
-            <b-td
-              v-if="coupon.percent !== undefined"
-              class="hidden-sm-down"
-            >
-              {{ Math.round(coupon.percent * 100, 2) + '%' }}
-            </b-td>
-            <b-td
-              v-else
-              class="hidden-sm-down"
-            />
-            <b-td
-              v-if="coupon.unlimited"
-              class="hidden-sm-down"
-            >
+            </BTd>
+            <BTd v-else class="hidden-sm-down" />
+            <BTd v-if="coupon.percent !== undefined" class="hidden-sm-down">
+              {{ Math.round(coupon.percent * 100) + '%' }}
+            </BTd>
+            <BTd v-else class="hidden-sm-down" />
+            <BTd v-if="coupon.unlimited" class="hidden-sm-down">
               {{ $t('displayCoupon.unlimited') }}
-            </b-td>
-            <b-td
-              v-else
-              class="hidden-sm-down"
-            >
+            </BTd>
+            <BTd v-else class="hidden-sm-down">
               {{ coupon.quantity }}
-            </b-td>
-            <b-td class="actions">
-              <b-button
-                class="padbuttons"
-                variant="primary"
-                @click="editCoupon(coupon)"
-              >
+            </BTd>
+            <BTd class="actions">
+              <BButton class="padbuttons" variant="primary" @click="editCoupon(coupon)">
                 {{ $t('buttons.edit') }}
-              </b-button>
-              <b-button
-                class="padbuttons"
-                variant="danger"
-                @click="showDeleteModal(coupon)"
-              >
+              </BButton>
+              <BButton class="padbuttons" variant="danger" @click="showDeleteModal(coupon)">
                 {{ $t('buttons.delete') }}
-              </b-button>
-            </b-td>
-          </b-tr>
-        </b-tbody>
-      </b-table-simple>
-    </b-col>
-    <b-modal id="delete-coupon-modal">
+              </BButton>
+            </BTd>
+          </BTr>
+        </BTbody>
+      </BTableSimple>
+    </BCol>
+
+    <BModal id="delete-coupon-modal">
       <h3>Are you sure you want to delete this coupon?</h3>
       <template #modal-footer>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="$bvModal.hide('delete-coupon-modal')"
-        >
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="deleteCoupon(selected)"
-        >
-          Delete
-        </button>
+        <BButton variant="secondary" @click="$bvModal.hide('delete-coupon-modal')">
+          {{ $t('buttons.cancel') }}
+        </BButton>
+        <BButton variant="danger" @click="deleteCoupon(selected)">
+          {{ $t('buttons.delete') }}
+        </BButton>
       </template>
-    </b-modal>
-    <b-modal
-      id="create-modal"
-      :title="$t('displayCoupon.new')"
-      size="lg"
-      hide-footer
-    >
-      <create-coupon @update="fetchCoupons();$bvModal.hide('create-modal')" />
-    </b-modal>
-    <b-modal
-      id="edit-modal"
-      :title="$t('common.edit')"
-      size="lg"
-      hide-footer
-    >
-      <edit-coupon
+    </BModal>
+
+    <BModal id="create-modal" :title="$t('displayCoupon.new')" size="lg" hide-footer>
+      <CreateCoupon @update="fetchCoupons(); $bvModal.hide('create-modal')" />
+    </BModal>
+
+    <BModal id="edit-modal" :title="$t('common.edit')" size="lg" hide-footer>
+      <EditCoupon
         :coupon="selected"
-        @update="fetchCoupons();$bvModal.hide('edit-modal')"
+        @update="fetchCoupons(); $bvModal.hide('edit-modal')"
       />
-    </b-modal>
-  </b-row>
+    </BModal>
+  </BRow>
 </template>
 
 <script>
 import CreateCoupon from './CreateCoupon.vue'
 import EditCoupon from './EditCoupon.vue'
-
+import {
+  BRow,
+  BCol,
+  BButton,
+  BTableSimple,
+  BThead,
+  BTr,
+  BTh,
+  BTbody,
+  BTd,
+  BModal
+} from 'bootstrap-vue-next'
 export default{
   components: {
     CreateCoupon,
-    EditCoupon
+    EditCoupon,
+     BRow,
+    BCol,
+    BButton,
+    BTableSimple,
+    BThead,
+    BTr,
+    BTh,
+    BTbody,
+    BTd,
+    BModal,
   },
   data () {
     return {

@@ -1,97 +1,119 @@
 <template lang="html">
   <div>
-    <h4>{{ campaign.name }} {{ $t('article.on') }} {{ localDisplay.name }} {{ localDisplay.status }}</h4>
-    <b-aspect
+    <h4>
+      {{ campaign.name }}
+      {{ $t('article.on') }}
+      {{ localDisplay.name }}
+      {{ localDisplay.status }}
+    </h4>
+
+    <BAspect
       :aspect="getAspect(campaign.media)"
       style="width: 50%"
       class="mx-auto"
     >
-      <campaign
+      <Campaign
         style="height: 100%"
         :media="campaign.media.data"
       />
-    </b-aspect>
+    </BAspect>
 
-    <b-table-simple responsive>
-      <b-thead>
-        <b-tr>
-          <b-th>{{ $t('dateTime.runDates') }}</b-th>
-          <b-th>{{ $t('dateTime.dailyTimes') }}</b-th>
-          <b-th>{{ $t('dashboard.approval.status') }}</b-th>
-          <b-th />
-        </b-tr>
-      </b-thead>
-      <b-tbody>
-        <b-tr
+    <BTableSimple responsive>
+      <BThead>
+        <BTr>
+          <BTh>{{ $t('dateTime.runDates') }}</BTh>
+          <BTh>{{ $t('dateTime.dailyTimes') }}</BTh>
+          <BTh>{{ $t('dashboard.approval.status') }}</BTh>
+          <BTh />
+        </BTr>
+      </BThead>
+      <BTbody>
+        <BTr
           v-for="booking in filteredCampaigns"
           :key="booking.id"
         >
-          <b-td v-if="booking.startDate === booking.endDate">
+          <BTd v-if="booking.startDate === booking.endDate">
             {{ booking.startDate }}
-          </b-td>
-          <b-td v-else-if="booking.endDate >= '2037-01-01'">
+          </BTd>
+          <BTd v-else-if="booking.endDate >= '2037-01-01'">
             {{ booking.startDate }}, no end date
-          </b-td>
-          <b-td v-else>
+          </BTd>
+          <BTd v-else>
             {{ booking.startDate }} to {{ booking.endDate }}
-          </b-td>
+          </BTd>
 
-          <b-td v-if="booking.startTime === '00:00:00' && booking.endTime === '23:59:59'">
+          <BTd
+            v-if="booking.startTime === '00:00:00' && booking.endTime === '23:59:59'"
+          >
             All Day
-          </b-td>
-          <b-td v-else>
+          </BTd>
+          <BTd v-else>
             {{ booking.startTime }} to {{ booking.endTime }}
-          </b-td>
+          </BTd>
 
-          <b-td v-if="booking.approval === 'pending'">
-            <b-badge>Pending Approval</b-badge>
-          </b-td>
-          <b-td v-else-if="booking.approval === 'approved' && booking.endDate >= date && booking.startDate <= date && booking.endTime >= time && booking.startTime <= time">
-            <b-badge variant="success">
-              Running
-            </b-badge>
-          </b-td>
-          <b-td v-else-if="booking.approval === 'approved'">
-            <b-badge variant="warning">
-              Booked
-            </b-badge>
-          </b-td>
-          <b-td v-else-if="booking.approval === 'denied'">
-            <b-badge variant="danger">
-              Pending Denied
-            </b-badge>
-          </b-td>
+          <BTd v-if="booking.approval === 'pending'">
+            <BBadge>Pending Approval</BBadge>
+          </BTd>
+          <BTd
+            v-else-if="
+              booking.approval === 'approved' &&
+              booking.endDate >= date &&
+              booking.startDate <= date &&
+              booking.endTime >= time &&
+              booking.startTime <= time
+            "
+          >
+            <BBadge variant="success">Running</BBadge>
+          </BTd>
+          <BTd v-else-if="booking.approval === 'approved'">
+            <BBadge variant="warning">Booked</BBadge>
+          </BTd>
+          <BTd v-else-if="booking.approval === 'denied'">
+            <BBadge variant="danger">Pending Denied</BBadge>
+          </BTd>
 
-          <b-td>
-            <b-button
-              size="sm"
-              variant="danger"
-              @click="removeCampaign(booking)"
-            >
+          <BTd>
+            <BButton size="sm" variant="danger" @click="removeCampaign(booking)">
               {{ $t('buttons.remove') }}
-            </b-button>
-          </b-td>
-        </b-tr>
-      </b-tbody>
-    </b-table-simple>
+            </BButton>
+          </BTd>
+        </BTr>
+      </BTbody>
+    </BTableSimple>
 
-    <b-button
-      variant="primary"
-      @click="$emit('add')"
-    >
+    <BButton variant="primary" @click="$emit('add')">
       {{ $t('buttons.add') }}
-    </b-button>
+    </BButton>
   </div>
 </template>
-
 <script>
+import {
+  BAspect,
+  BTableSimple,
+  BThead,
+  BTr,
+  BTh,
+  BTbody,
+  BTd,
+  BBadge,
+  BButton
+} from 'bootstrap-vue-next'
 import moment from 'moment'
 import Campaign from '@/components/Player/PropPlayer.vue'
 import aspectRatio from '@/mixins/aspectRatio'
 
 export default {
   components: {
-    Campaign
+    Campaign,
+      BAspect,
+      BTableSimple,
+      BThead,
+      BTr,
+      BTh,
+      BTbody,
+      BTd,
+      BBadge,
+      BButton,
   },
   mixins: [aspectRatio],
   props: {

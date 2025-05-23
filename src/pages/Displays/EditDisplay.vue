@@ -1,239 +1,225 @@
-<template xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<template lang="html">
   <div>
     <div
       v-if="errors.length > 0"
       class="alert alert-danger"
     >
       <ul>
-        <li
-          v-for="(error, index) in errors"
-          :key="index"
-        >
+        <li v-for="(error, index) in errors" :key="index">
           {{ error }}
         </li>
       </ul>
     </div>
-    <b-container class="mt-3">
-      <b-row class="mb-3">
-        <b-col
-          cols="12"
-          lg="6"
-        >
-          <b-card :header="$t('common.information')">
-            <b-card-text>
-              <b-form-group
+
+    <BContainer class="mt-3">
+      <!-- Row 1: Info & Gallery -->
+      <BRow class="mb-3">
+        <BCol cols="12" lg="6">
+          <BCard :header="$t('common.information')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('common.name')"
                 label-for="name"
               >
-                <b-form-input
+                <BFormInput
                   id="name"
                   v-model="editDisplay.name"
                   :placeholder="$t('common.name')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('common.description')"
                 label-for="description"
               >
-                <b-form-input
+                <BFormInput
                   id="description"
                   v-model="editDisplay.description"
-                  :placeholder="$t('common.description')"
                   type="text"
+                  :placeholder="$t('common.description')"
                 />
-              </b-form-group>
-              <b-form-group
+              </BFormGroup>
+
+              <BFormGroup
                 :label="$t('displays.type')"
                 label-for="display-type"
               >
-                <b-form-select
+                <BFormSelect
                   id="display-type"
                   v-model="editDisplay.type"
                   :options="options.types"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('privacy.private')"
                 label-for="private"
               >
-                <b-form-checkbox
+                <BFormCheckbox
                   id="private"
                   v-model="editDisplay.private"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
-                v-if="editDisplay.private == 0"
+              <BFormGroup
+                v-if="!editDisplay.private"
                 :label="$t('displays.publicUrl')"
                 label-for="slug"
               >
                 <p>https:{{ publicUrl }}</p>
-
-                <b-form-input
+                <BFormInput
                   id="slug"
                   v-model="editDisplay.slug"
                   :placeholder="$t('Enter public URL here')"
                 />
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
+              </BFormGroup>
+            </BCardText>
+          </BCard>
+        </BCol>
 
-        <b-col
-          cols="12"
-          lg="6"
-        >
-          <b-card>
-            <b-card-text>
-              <display-gallery
+        <BCol cols="12" lg="6">
+          <BCard>
+            <BCardText>
+              <DisplayGallery
                 :display-id="Number(editDisplay.displayId)"
                 :edit="true"
               />
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row class="mb-3">
-        <b-col
-          cols="12"
-          lg="6"
-        >
-          <b-card :header="$t('common.dimensions')">
-            <b-card-text>
-              <b-form-group
+            </BCardText>
+          </BCard>
+        </BCol>
+      </BRow>
+
+      <!-- Row 2: Dimensions & Location -->
+      <BRow class="mb-3">
+        <BCol cols="12" lg="6">
+          <BCard :header="$t('common.dimensions')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('displays.physicalWidth')"
                 label-for="physical-width"
               >
-                <b-form-input
+                <BFormInput
                   id="physical-width"
                   v-model="editDisplay.physicalWidth"
                   :placeholder="$t('displays.physicalWidth')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.physicalHeight')"
                 label-for="physical-height"
               >
-                <b-form-input
+                <BFormInput
                   id="physical-height"
                   v-model="editDisplay.physicalHeight"
                   :placeholder="$t('displays.physicalHeight')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.pixelWidth')"
                 label-for="pixel-width"
               >
-                <b-form-input
+                <BFormInput
                   id="pixel-width"
                   v-model="editDisplay.pixelWidth"
                   :placeholder="$t('displays.pixelWidth')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.pixelHeight')"
                 label-for="pixel-height"
               >
-                <b-form-input
+                <BFormInput
                   id="pixel-height"
                   v-model="editDisplay.pixelHeight"
                   :placeholder="$t('displays.pixelHeight')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.rotation')"
                 label-for="rotation"
               >
-                <b-form-select
+                <BFormSelect
                   id="rotation"
                   v-model="editDisplay.rotate"
                   :options="options.rotations"
                 />
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
+              </BFormGroup>
+            </BCardText>
+          </BCard>
+        </BCol>
 
-        <b-col
-          cols="12"
-          lg="6"
-        >
-          <b-card :header="$t('displays.location')">
-            <b-card-text>
-              <b-form-group
+        <BCol cols="12" lg="6">
+          <BCard :header="$t('displays.location')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('displays.mobile')"
                 label-for="mobile"
               >
-                <b-form-checkbox
+                <BFormCheckbox
                   id="mobile"
                   v-model="editDisplay.mobile"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 id="location"
                 :label="$t('displays.location')"
                 label-for="location"
               >
-                <b-form-radio
+                <BFormRadio
                   id="displayAddress"
                   v-model="locationSelect"
                   value="Address"
                 >
                   {{ $t('displays.byAdd') }}
-                </b-form-radio>
-                <b-form-radio
+                </BFormRadio>
+                <BFormRadio
                   id="displayLatLong"
                   v-model="locationSelect"
                   value="LatLong"
                 >
                   {{ $t('displays.byLatLn') }}
-                </b-form-radio>
-              </b-form-group>
+                </BFormRadio>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 v-if="locationSelect === 'Address'"
                 :label="$t('displays.address')"
-                label-for="physical-height"
+                label-for="address"
               >
-                <b-form-input
+                <BFormInput
                   id="address"
                   v-model="address"
                 />
-                <b-button
-                  name="button"
-                  @click="fetchLocationFromAddress"
-                >
+                <BButton @click="fetchLocationFromAddress">
                   Search
-                </b-button>
-              </b-form-group>
+                </BButton>
+              </BFormGroup>
 
-              <b-form-group v-else>
-                <b-form-group
+              <div v-else>
+                <BFormGroup
                   :label="$t('displays.latitude')"
                   label-for="latitude"
                 >
-                  <b-form-input
+                  <BFormInput
                     id="latitude"
                     v-model.number="coords.latitude"
                   />
-                </b-form-group>
-                <b-form-group
+                </BFormGroup>
+                <BFormGroup
                   :label="$t('displays.longitude')"
                   label-for="longitude"
                 >
-                  <b-form-input
+                  <BFormInput
                     id="longitude"
                     v-model.number="coords.longitude"
                   />
-                </b-form-group>
-              </b-form-group>
+                </BFormGroup>
+              </div>
 
               <div class="map">
                 <v-map
@@ -254,50 +240,45 @@
                   />
                 </v-map>
               </div>
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
+            </BCardText>
+          </BCard>
+        </BCol>
+      </BRow>
 
-      <b-row class="mb-3">
-        <b-col
-          cols="12"
-          lg="6"
-        >
-          <b-card :header="$t('displays.timezoneCurrency')">
-            <b-card-text>
-              <b-form-group
+      <!-- Row 3: Timezone & Tags -->
+      <BRow class="mb-3">
+        <BCol cols="12" lg="6">
+          <BCard :header="$t('displays.timezoneCurrency')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('displays.timezone')"
                 label-for="timezone"
               >
-                <b-form-select
+                <BFormSelect
                   id="timezone"
                   v-model="editDisplay.timezone"
                   :options="options.timezones"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.currency')"
                 label-for="currency"
               >
-                <b-form-select
+                <BFormSelect
                   id="currency"
                   v-model="editDisplay.currency"
                   :options="options.currencies"
                 />
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
+              </BFormGroup>
+            </BCardText>
+          </BCard>
+        </BCol>
 
-        <b-col
-          cols="12"
-          lg="6"
-        >
-          <b-card :header="$t('common.tags')">
-            <b-card-text>
-              <multiselect
+        <BCol cols="12" lg="6">
+          <BCard :header="$t('common.tags')">
+            <BCardText>
+              <Multiselect
                 :options="alltags"
                 :value="selected"
                 :multiple="true"
@@ -307,99 +288,84 @@
                 @select="chooseTag"
                 @remove="removeTag"
               />
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row class="mb-3">
-        <b-col
-          cols="12"
-          lg="12"
-        >
-          <b-card :header="$t('displays.brightness')">
-            <b-card-text>
-              <b-form-group
+            </BCardText>
+          </BCard>
+        </BCol>
+      </BRow>
+
+      <!-- Row 4: Brightness -->
+      <BRow class="mb-3">
+        <BCol cols="12">
+          <BCard :header="$t('displays.brightness')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('displays.brightnessControl')"
                 label-for="brightness-control"
               >
-                <b-form-select
+                <BFormSelect
                   id="brightness-control"
                   v-model="editDisplay.brightnessControl"
                   :options="options.brightnessControls"
                 />
-              </b-form-group>
+              </BFormGroup>
 
               <div v-if="editDisplay.brightnessControl === 'scheduled'">
                 <label for="timed-brightness">{{ $t('displays.brightnessCurve') }}</label>
-                <curve
+                <Curve
                   id="curve"
                   v-model="editDisplay.brightnessCurve"
                 />
               </div>
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row class="mb-3">
-        <b-col
-          v-if="$auth.user.admin"
-          cols="12"
-          lg="12"
-        >
-          <b-card :header="$t('common.admin')">
-            <b-card-text>
-              <b-form-group
+            </BCardText>
+          </BCard>
+        </BCol>
+      </BRow>
+
+      <!-- Row 5: Admin Settings -->
+      <BRow class="mb-3" v-if="$auth.user.admin">
+        <BCol cols="12">
+          <BCard :header="$t('common.admin')">
+            <BCardText>
+              <BFormGroup
                 :label="$t('displays.acid')"
                 label-for="acid"
               >
-                <b-form-input
+                <BFormInput
                   id="acid"
                   v-model.trim="editDisplay.acid"
                   :placeholder="$t('displays.acid')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.hwid')"
                 label-for="hwid"
               >
-                <b-form-input
+                <BFormInput
                   id="hwid"
                   v-model.trim="editDisplay.hardwareId"
                   :placeholder="$t('displays.hwid')"
                 />
-              </b-form-group>
+              </BFormGroup>
 
-              <b-form-group
+              <BFormGroup
                 id="approval"
                 :label="$t('common.approval')"
                 label-for="approval"
               >
-                <b-form-radio
-                  id="pending"
-                  v-model="editDisplay.approval"
-                  value="pending"
-                >
+                <BFormRadio id="pending"   v-model="editDisplay.approval" value="pending">
                   {{ $t('approval.pending') }}
-                </b-form-radio>
-                <b-form-radio
-                  id="approved"
-                  v-model="editDisplay.approval"
-                  value="approved"
-                >
+                </BFormRadio>
+                <BFormRadio id="approved"  v-model="editDisplay.approval" value="approved">
                   {{ $t('approval.approved') }}
-                </b-form-radio>
-                <b-form-radio
-                  id="denied"
-                  v-model="editDisplay.approval"
-                  value="denied"
-                >
+                </BFormRadio>
+                <BFormRadio id="denied"    v-model="editDisplay.approval" value="denied">
                   {{ $t('approval.denied') }}
-                </b-form-radio>
-              </b-form-group>
+                </BFormRadio>
+              </BFormGroup>
 
               <label for="team">{{ $t('common.team') }}</label>
-              <multiselect
+              <Multiselect
                 v-model="selectedTeam"
                 :options="multiselectTeams"
                 track-by="teamId"
@@ -408,37 +374,45 @@
                 @input="setTeamID"
               />
 
-              <b-form-group
+              <BFormGroup
                 :label="$t('displays.demoMode')"
                 label-for="demo"
               >
-                <b-form-checkbox
+                <BFormCheckbox
                   id="demo"
                   v-model="editDisplay.demoMode"
                 />
-                <!-- Demo: {{editDisplay.demoMode ? $t('answers.yes') : $t('answers.no')}} -->
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
-      <div
-        id="displayCreateButton"
-        class="form-group save"
-      >
-        <button
-          type="button"
-          class="btn btn-primary"
-          @click="updateDisplay()"
-        >
-          Save
-        </button>
+              </BFormGroup>
+            </BCardText>
+          </BCard>
+        </BCol>
+      </BRow>
+
+      <!-- Save Button -->
+      <div id="displayCreateButton" class="form-group save">
+        <BButton variant="primary" @click="updateDisplay()">
+          {{ $t('buttons.save') }}
+        </BButton>
       </div>
-    </b-container>
+    </BContainer>
   </div>
 </template>
 
+
 <script>
+import {
+  BContainer,
+  BRow,
+  BCol,
+  BCard,
+  BCardText,
+  BFormGroup,
+  BFormInput,
+  BFormSelect,
+  BFormCheckbox,
+  BFormRadio,
+  BButton
+} from 'bootstrap-vue-next'
 import moment from "moment-timezone";
 import Curve from "./Components/BrightnessCurve.vue";
 import Multiselect from "vue-multiselect";
@@ -452,7 +426,18 @@ export default {
   components: {
     Curve,
     Multiselect,
-    DisplayGallery
+    DisplayGallery,
+      BContainer,
+    BRow,
+    BCol,
+    BCard,
+    BCardText,
+    BFormGroup,
+    BFormInput,
+    BFormSelect,
+    BFormCheckbox,
+    BFormRadio,
+    BButton,
   },
   mixins: [teamContext],
   props: {

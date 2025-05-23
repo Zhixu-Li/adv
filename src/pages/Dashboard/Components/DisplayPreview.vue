@@ -4,7 +4,7 @@
       <div class="live">
         ⏺ live <small>(+{{ time }}s)</small>
       </div>
-      <b-img
+      <BImg
         fluid-grow
         block
         class="preview"
@@ -14,7 +14,7 @@
       />
     </template>
     <template v-else>
-      <b-img
+      <BImg
         fluid-grow
         block
         class="preview"
@@ -27,7 +27,11 @@
 </template>
 
 <script>
+import { BImg } from 'bootstrap-vue-next'
 export default {
+  components:{
+    BImg,  
+},
   props: {
     display: {
       type: Object,

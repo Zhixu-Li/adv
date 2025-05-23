@@ -1,7 +1,7 @@
 <template>
   <div class="centered">
-    <b-card :header="$t('account.passwordReset')">
-      <b-card-text>
+    <BCard :header="$t('account.passwordReset')">
+      <BCardText>
         <div
           v-if="errors.length > 0"
           class="alert alert-danger"
@@ -15,63 +15,83 @@
             </li>
           </ul>
         </div>
-        <b-form
+        <BForm
           v-if="!sent"
-          @submit.prevent="submit()"
+          @submit.prevent="submit"
         >
           <p>
             {{ $t('message.resetPasswordDo') }}
-          </P>
-          <b-row class="p-2">
-            <b-col cols="6">
-              <b-form-group
+          </p>
+          <BRow class="p-2">
+            <BCol cols="6">
+              <BFormGroup
                 label="Password:"
                 description="Must be at least 8 characters."
               >
-                <b-form-input
+                <BFormInput
                   v-model="password"
                   type="password"
                   class="mb-1"
                   :placeholder="$t('user.newPassword')"
                   :state="password ? password.length >= 8 : null"
                 />
-              </b-form-group>
-            </b-col>
-            <b-col cols="6">
-              <b-form-group
+              </BFormGroup>
+            </BCol>
+            <BCol cols="6">
+              <BFormGroup
                 label="Confirm Password:"
                 description="Re-type the password."
               >
-                <b-form-input
+                <BFormInput
                   v-model="confirmPassword"
                   type="password"
                   class="mb-1"
                   :placeholder="$t('user.confirmPassword')"
-                  :state="password && confirmPassword && password.length >= 8 ? confirmPassword===password : null"
+                  :state="password && confirmPassword && password.length >= 8 ? confirmPassword === password : null"
                 />
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-button
+              </BFormGroup>
+            </BCol>
+          </BRow>
+          <BButton
             class="mb-3 float-right"
             variant="primary"
             type="submit"
           >
             {{ $t('account.resetPassword') }}
-          </b-button>
-        </b-form>
-        <p v-if="sent && success">
+          </BButton>
+        </BForm>
+        <p v-else-if="sent && success">
           {{ $t('notifications.passwordSuccess') }}
         </p>
-        <p v-if="sent && !success">
+        <p v-else-if="sent && !success">
           {{ $t('notifications.passwordFailure') }}
         </p>
-      </b-card-text>
-    </b-card>
+      </BCardText>
+    </BCard>
   </div>
 </template>
 <script>
+import {
+  BCard,
+  BCardText,
+  BForm,
+  BFormGroup,
+  BFormInput,
+  BRow,
+  BCol,
+  BButton
+} from 'bootstrap-vue-next'
 export default {
+   components: {
+    BCard,
+    BCardText,
+    BForm,
+    BFormGroup,
+    BFormInput,
+    BRow,
+    BCol,
+    BButton
+  },
   data () {
     return {
       errors: '',

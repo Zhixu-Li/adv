@@ -1,90 +1,95 @@
 <template lang="html">
-  <b-row>
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-link :to="{ name: 'media', params: {} }">
-            <b-icon
+  <BRow>
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BLink :to="{ name: 'media', params: {} }">
+            <BIcon
               class="border rounded-circle p-2 bg-light"
               variant="dark"
               icon="image"
               font-scale="3"
             />
-          </b-link>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ images.total }}</b>
+          </BLink>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ images.total }}</strong>
           {{ $tc('dashboard.mediaStats.image', images.total) }}
-        </b-col>
-      </b-row>
-    </b-col>
+        </BCol>
+      </BRow>
+    </BCol>
 
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-link :to="{ name: 'media', params: {} }">
-            <b-icon
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BLink :to="{ name: 'media', params: {} }">
+            <BIcon
               class="border rounded-circle p-2 bg-light"
               variant="dark"
               icon="film"
               font-scale="3"
             />
-          </b-link>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ videos.total }}</b>
-          {{ $tc('dashboard.mediaStats.video', images.total) }}
-        </b-col>
-      </b-row>
-    </b-col>
+          </BLink>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ videos.total }}</strong>
+          {{ $tc('dashboard.mediaStats.video', videos.total) }}
+        </BCol>
+      </BRow>
+    </BCol>
 
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-icon
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BIcon
             class="border rounded-circle p-2 bg-light"
             variant="dark"
             icon="soundwave"
             font-scale="3"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ audio.total }}</b>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ audio.total }}</strong>
           {{ $t('dashboard.mediaStats.audio') }}
-        </b-col>
-      </b-row>
-    </b-col>
+        </BCol>
+      </BRow>
+    </BCol>
 
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-icon
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BIcon
             class="border rounded-circle p-2 bg-light"
             variant="dark"
             icon="hdd"
             font-scale="3"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <!-- <b>{{totalUsage | humanFileSize}}</b> -->
-          <b>{{ humanFileSize(totalUsage) }}</b>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ humanFileSize(totalUsage) }}</strong>
           {{ $t('dashboard.mediaStats.used') }}
-        </b-col>
-      </b-row>
-    </b-col>
-  </b-row>
+        </BCol>
+      </BRow>
+    </BCol>
+  </BRow>
 </template>
-
 <script>
+import { BRow, BCol, BLink, BIcon } from 'bootstrap-vue-next'
 export default {
+  components:{
+    BRow,
+    BCol,
+    BLink,
+    BIcon
+  },
   props: {
     refreshTime: {
       type: Number,

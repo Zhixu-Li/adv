@@ -1,40 +1,41 @@
 <template>
-  <b-row class="pt-3">
-    <b-col
+  <BRow class="pt-3">
+    <BCol
       class="pb-2"
       cols="12"
       lg="6"
     >
-      <user :user="user" />
-    </b-col>
-    <b-col
+      <User :user="user" />
+    </BCol>
+    <BCol
       class="pb-2"
       cols="12"
       lg="6"
     >
-      <teams
+      <Teams
         :user-id="user.userId"
         :show-create="false"
       />
-    </b-col>
-    <b-col
+    </BCol>
+    <BCol
       class="pb-2"
       cols="12"
       lg="6"
     >
-      <invoices :user-id="user.userId" />
-    </b-col>
-    <b-col
+      <Invoices :user-id="user.userId" />
+    </BCol>
+    <BCol
       class="pb-2"
       cols="12"
       lg="6"
     >
-      <event-log :user-id="user.userId" />
-    </b-col>
-  </b-row>
+      <EventLog :user-id="user.userId" />
+    </BCol>
+  </BRow>
 </template>
 
 <script>
+import { BRow, BCol } from 'bootstrap-vue-next'
 import User from '@/components/User/User.vue'
 import Teams from '@/components/User/Teams.vue'
 import Invoices from '@/components/User/Invoices.vue'
@@ -46,7 +47,9 @@ export default {
     User,
     Teams,
     Invoices,
-    EventLog
+    EventLog,
+    BRow,
+    BCol,
   },
   props: {
     user: {

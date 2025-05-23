@@ -1,6 +1,6 @@
 <template lang="html">
-  <b-row class="p-0 m-0">
-    <b-col class="m-2">
+  <BRow class="p-0 m-0">
+    <BCol class="m-2">
       <multiselect
         v-model="selectedTeam"
         :placeholder="'🔍 ' + $t('type to search')"
@@ -10,16 +10,18 @@
         :allow-empty="false"
         @input="getTeamID"
       />
-    </b-col>
-  </b-row>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect'
-
+import { BCol, BRow } from 'bootstrap-vue-next'
 export default {
   components: {
     Multiselect,
+    BCol,
+    BRow,
   },
   props: {
     resetTeamsTrigger: {

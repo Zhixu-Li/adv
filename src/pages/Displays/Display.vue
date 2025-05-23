@@ -1,100 +1,100 @@
 <template>
-  <b-container
-    fluid
-    text-center
-  >
-    <b-modal
+  <BContainer fluid class="text-center">
+    <!-- Delete Confirmation Modal -->
+    <BModal
       id="delete-modal"
       :title="$t('actions.delete') + ' ' + display.name"
+      hide-footer
     >
       {{ $t('message.displayDelete') }}
       <template #modal-footer>
-        <button
-          type="button"
-          class="btn delete-button btn-primary left"
-          @click="deleteDisplay()"
-        >
+        <BButton variant="danger" class="me-2" @click="deleteDisplay">
           {{ $t('answers.yes') }}
-        </button>
-        <button
-          type="button"
-          class="btn delete-button btn-primary right"
-          @click="$bvModal.hide('delete-modal')"
-        >
+        </BButton>
+        <BButton variant="secondary" @click="$bvModal.hide('delete-modal')">
           {{ $t('answers.no') }}
-        </button>
+        </BButton>
       </template>
-    </b-modal>
+    </BModal>
 
-    <b-col class="d-none d-md-block">
+    <!-- Desktop Header with Toolbar -->
+    <BCol class="d-none d-md-block">
       <div class="d-flex p-1 justify-content-between border-bottom">
         <h2>{{ display.name }}</h2>
-        <b-button-toolbar>
-          <b-button-group class="delete-button">
-            <b-button
-              v-for="button in buttons"
-              :key="button.route"
-              :disabled="$router.currentRoute.name === button.route"
-              :variant="$router.currentRoute.name === button.route ? 'primary' : 'outline-primary'"
-              :to="{ name: button.route, params: { displayId: display.displayId } }"
+        <BButtonToolbar>
+          <BButtonGroup>
+            <BButton
+              v-for="btn in buttons"
+              :key="btn.route"
+              :to="{ name: btn.route, params: { displayId: display.displayId } }"
+              :variant="isActive(btn.route) ? 'primary' : 'outline-primary'"
+              :disabled="isActive(btn.route)"
             >
-              {{ $t(button.label) }}
-            </b-button>
-            <b-button
-              variant="danger"
-              @click="$bvModal.show('delete-modal')"
-            >
+              {{ $t(btn.label) }}
+            </BButton>
+            <BButton variant="danger" @click="$bvModal.show('delete-modal')">
               {{ $t('actions.delete') }}
-            </b-button>
-          </b-button-group>
-        </b-button-toolbar>
+            </BButton>
+          </BButtonGroup>
+        </BButtonToolbar>
       </div>
-    </b-col>
-    <!-- For mobile viewing -->
-    <b-col class="d-md-none">
+    </BCol>
+
+    <!-- Mobile Header with Dropdown -->
+    <BCol class="d-md-none">
       <div class="d-flex p-1 justify-content-between border-bottom">
         <h3>{{ display.name }}</h3>
-        <b-dropdown
-          id="dropdown-1"
-          :text="$t('actions.actions')"
-          class="m-2"
-          variant="outline-dark"
-          size="lg"
-        >
-          <b-dropdown-item
-            v-for="button in buttons"
-            :key="button.route"
-            :to="{ name: button.route, params: { displayId: display.displayId } }"
+        <BDropdown id="mobile-actions" variant="outline-dark" size="lg" text="⠇">
+          <BDropdownItem
+            v-for="btn in buttons"
+            :key="btn.route"
+            :to="{ name: btn.route, params: { displayId: display.displayId } }"
           >
-            <h5>{{ $t(button.label) }}</h5>
-          </b-dropdown-item>
-          <b-dropdown-item @click="$bvModal.show('delete-modal')">
-            <h5>{{ $t('actions.delete') }}</h5>
-          </b-dropdown-item>
-        </b-dropdown>
+            {{ $t(btn.label) }}
+          </BDropdownItem>
+          <BDropdownItem @click="$bvModal.show('delete-modal')">
+            {{ $t('actions.delete') }}
+          </BDropdownItem>
+        </BDropdown>
       </div>
-    </b-col>
+    </BCol>
 
-    <b-col
-      cols="12"
-      class="h-100 display-main"
-    >
+    <!-- Main Content -->
+    <BCol cols="12" class="h-100 display-main">
       <transition name="fade">
         <router-view
-          v-if="display !== {}"
+          v-if="display"
           :active-team="activeTeam"
-          :display="{...display}"
+          :display="{ ...display }"
           @refresh-displays="$emit('refreshDisplays')"
         />
       </transition>
-    </b-col>
-  </b-container>
+    </BCol>
+  </BContainer>
 </template>
-
 <script>
 import teamContext from '@/mixins/teamContext'
-
+import {
+  BContainer,
+  BCol,
+  BModal,
+  BButton,
+  BButtonToolbar,
+  BButtonGroup,
+  BDropdown,
+  BDropdownItem
+} from 'bootstrap-vue-next'
 export default {
+  components:{
+      BContainer,
+    BCol,
+    BModal,
+    BButton,
+    BButtonToolbar,
+    BButtonGroup,
+    BDropdown,
+    BDropdownItem
+  },
   name: 'Display',
   mixins: [teamContext],
   props: {

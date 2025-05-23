@@ -1,26 +1,18 @@
 <template lang="html">
   <div>
-    <b-card>
-      <b-card-text>
-        <b-row>
-          <b-col>
-            <h4>{{ $t('dashboard.common.network') }}</h4>
-          </b-col>
-          <b-col class="text-right">
+    <BCard>
+      <BCardText>
+        <BRow>
+          <BCol><h4>{{ $t('dashboard.common.network') }}</h4></BCol>
+          <BCol class="text-right">
             <small class="text-muted">{{ $t('dashboard.common.lastUpdated') }}</small>
-          </b-col>
-        </b-row>
-        <b-row v-if="displays.length > 0">
-          <b-col
-            cols="12"
-            xl="8"
-            class="mx-auto"
-          >
-            <b-row class="">
-              <b-col
-                cols="4"
-                class="pb-0 mb-0"
-              >
+          </BCol>
+        </BRow>
+
+        <BRow v-if="displays.length > 0">
+          <BCol cols="12" xl="8" class="mx-auto">
+            <BRow>
+              <BCol cols="4" class="pb-0 mb-0">
                 <VueApexCharts
                   id="online"
                   height="150"
@@ -28,7 +20,7 @@
                   :series="onlineSeries"
                   :options="onlineOptions"
                 />
-                <b-tooltip
+                <BTooltip
                   v-if="onlineDisplays"
                   placement="bottom"
                   variant="success"
@@ -40,14 +32,12 @@
                     :key="d.name"
                     class="text-left"
                   >
-                    <b>{{ d.name }}</b>
+                    <strong>{{ d.name }}</strong>
                   </div>
-                </b-tooltip>
-              </b-col>
-              <b-col
-                cols="4"
-                class="pb-0 mb-0"
-              >
+                </BTooltip>
+              </BCol>
+
+              <BCol cols="4" class="pb-0 mb-0">
                 <VueApexCharts
                   id="passive"
                   height="150"
@@ -55,7 +45,7 @@
                   :series="passiveSeries"
                   :options="passiveOptions"
                 />
-                <b-tooltip
+                <BTooltip
                   v-if="passiveDisplays"
                   placement="bottom"
                   variant="warning"
@@ -67,14 +57,13 @@
                     :key="d.name"
                     class="text-left pb-1"
                   >
-                    <div><b>{{ d.name }}</b></div><div>{{ d.lastConnected }}</div>
+                    <div><strong>{{ d.name }}</strong></div>
+                    <div>{{ d.lastConnected }}</div>
                   </div>
-                </b-tooltip>
-              </b-col>
-              <b-col
-                cols="4"
-                class="pb-0 mb-0"
-              >
+                </BTooltip>
+              </BCol>
+
+              <BCol cols="4" class="pb-0 mb-0">
                 <VueApexCharts
                   id="offline"
                   height="150"
@@ -82,7 +71,7 @@
                   :series="offlineSeries"
                   :options="offlineOptions"
                 />
-                <b-tooltip
+                <BTooltip
                   v-if="offlineDisplays"
                   placement="bottom"
                   variant="danger"
@@ -94,24 +83,24 @@
                     :key="d.name"
                     class="text-left pb-1"
                   >
-                    <div><b>{{ d.name }}</b></div><div>{{ d.lastConnected }}</div>
+                    <div><strong>{{ d.name }}</strong></div>
+                    <div>{{ d.lastConnected }}</div>
                   </div>
-                </b-tooltip>
-              </b-col>
-            </b-row>
-          </b-col>
-          <b-col
-            cols="12"
-            class="m-0 p-0 text-center"
-          >
+                </BTooltip>
+              </BCol>
+            </BRow>
+          </BCol>
+
+          <BCol cols="12" class="m-0 p-0 text-center">
             <em class="text-muted">Hover for more information.</em>
-          </b-col>
-        </b-row>
-        <b-row v-else>
-          <b-col>{{ $t('dashboard.common.noTeamDisplay') }}</b-col>
-        </b-row>
-      </b-card-text>
-    </b-card>
+          </BCol>
+        </BRow>
+
+        <BRow v-else>
+          <BCol>{{ $t('dashboard.common.noTeamDisplay') }}</BCol>
+        </BRow>
+      </BCardText>
+    </BCard>
   </div>
 </template>
 
@@ -120,10 +109,21 @@ import moment from 'moment'
 //import 'vue-awesome/icons/circle'
 import VueApexCharts from 'vue3-apexcharts'
 import teamContext from '@/mixins/teamContext'
-
+import {
+  BCard,
+  BCardText,
+  BRow,
+  BCol,
+  BTooltip
+} from 'bootstrap-vue-next'
 export default {
   components: {
-    VueApexCharts
+    VueApexCharts,
+    BCard,
+    BCardText,
+    BRow,
+    BCol,
+    BTooltip,
   },
   mixins: [teamContext],
   props: {

@@ -1,95 +1,113 @@
 <template lang="html">
   <div>
-    <b-modal id="pricecalc" hide-footer size="lg" title="Pricing Calculator">
-      <pricing-calculator
+    <!-- Pricing Calculator Modal -->
+    <BModal id="pricecalc" hide-footer size="lg" title="Pricing Calculator">
+      <PricingCalculator
         v-model="localSchedule.pricePerSecond"
-        :blockTime="localDisplay.blockTime"
-        :maxTimePurchasable="localDisplay.maxTimePurchasable"
-        showButton
+        :block-time="localDisplay.blockTime"
+        :max-time-purchasable="localDisplay.maxTimePurchasable"
+        show-button
         @close="$bvModal.hide('pricecalc')"
       />
-    </b-modal>
+    </BModal>
 
-    <div class="alert alert-danger" v-if="errors.length > 0">
+    <!-- Error Alert -->
+    <div v-if="errors.length" class="alert alert-danger">
       <ul>
-        <li v-for="(error, index) in errors" :key="index">
-          {{ error }}
-        </li>
+        <li v-for="(err, idx) in errors" :key="idx">{{ err }}</li>
       </ul>
     </div>
 
-    <b-container class="mt-3">
-      <b-row class="h-100">
-        <b-col cols="12" lg="3" v-if="Object.keys(selected).length === 0">
-          <b-row class="mb-3">
-            <b-card :header="$t('displayPricing.default')">
-              <b-card-text>
+    <BContainer class="mt-3">
+      <BRow class="h-100">
+        <!-- Default & Options Panel -->
+        <BCol cols="12" lg="3" v-if="!selected.schedule">
+          <BRow class="mb-3">
+            <BCard :header="$t('displayPricing.default')">
+              <BCardText>
                 <div @keyup.enter.prevent.stop="saveDefault">
-                  <b-form-group :label="$t('common.name')" label-for="defaultName">
-                    <b-form-input id="defaultName" v-model="localSchedule.scheduleName" />
-                  </b-form-group>
-                  <b-form-group :label="$t('displayPricing.pps')" label-for="price">
-                    <b-form-input id="price" v-model.number="localSchedule.pricePerSecond" />
-                  </b-form-group>
+                  <BFormGroup :label="$t('common.name')" label-for="defaultName">
+                    <BFormInput id="defaultName" v-model="localSchedule.scheduleName" />
+                  </BFormGroup>
+                  <BFormGroup :label="$t('displayPricing.pps')" label-for="price">
+                    <BFormInput id="price" v-model.number="localSchedule.pricePerSecond" />
+                  </BFormGroup>
                 </div>
-                <b-button class="float-left mt-1" @click="$bvModal.show('pricecalc')" variant="primary">
-                  Pricing Calculator
-                </b-button>
-                <b-button class="float-right mt-1" variant="primary" @click="saveDefault">
-                  {{$t('buttons.save')}}
-                </b-button>
-              </b-card-text>
-            </b-card>
-          </b-row>
-
-          <b-row class="mb-3">
-            <b-card :header="$t('displayPricing.options')">
-              <b-card-text>
-                <div @keyup.enter.prevent.stop="saveDefault">
-                  <b-form-group :label="$t('displays.loop')" label-for="loop-time">
-                    <b-form-input id="loop-time" v-model.number="localDisplay.blockTime" />
-                  </b-form-group>
-                  <b-form-group :label="$t('displays.maxTimePurchasable')" label-for="max-time">
-                    <b-form-input id="max-time" v-model.number="localDisplay.maxTimePurchasable" />
-                  </b-form-group>
-                  <b-button class="float-right mt-1" variant="primary" @click="updateDisplay">
-                    {{$t('buttons.save')}}
-                  </b-button>
+                <div class="d-flex justify-content-between">
+                  <BButton variant="primary" @click="$bvModal.show('pricecalc')">
+                    {{ $t('buttons.pricingCal') }}
+                  </BButton>
+                  <BButton variant="primary" @click="saveDefault">
+                    {{ $t('buttons.save') }}
+                  </BButton>
                 </div>
-              </b-card-text>
-            </b-card>
-          </b-row>
-        </b-col>
+              </BCardText>
+            </BCard>
+          </BRow>
+          <BRow class="mb-3">
+            <BCard :header="$t('displayPricing.options')">
+              <BCardText>
+                <div @keyup.enter.prevent.stop="updateDisplay">
+                  <BFormGroup :label="$t('displays.loop')" label-for="loop-time">
+                    <BFormInput id="loop-time" v-model.number="localDisplay.blockTime" />
+                  </BFormGroup>
+                  <BFormGroup :label="$t('displays.maxTimePurchasable')" label-for="max-time">
+                    <BFormInput id="max-time" v-model.number="localDisplay.maxTimePurchasable" />
+                  </BFormGroup>
+                </div>
+                <div class="text-end">
+                  <BButton variant="primary" @click="updateDisplay">
+                    {{ $t('buttons.save') }}
+                  </BButton>
+                </div>
+              </BCardText>
+            </BCard>
+          </BRow>
+        </BCol>
 
-        <b-col cols="12" lg="9" v-if="Object.keys(selected).length === 0">
-          <calendar
+        <!-- Calendar View -->
+        <BCol cols="12" lg="9" v-if="!selected.schedule">
+          <Calendar
             class="m-2"
-            :pricingSchedules="pricingSchedules"
+            :pricing-schedules="pricingSchedules"
             :display="localDisplay"
-            :defaultSchedule="localSchedule"
-            :defaultDate="defaultDate"
+            :default-schedule="localSchedule"
+            :default-date="defaultDate"
             @selected="selected = $event"
             @refresh="fetchPricingSchedules"
           />
-        </b-col>
+        </BCol>
 
-        <b-col cols="12" v-if="Object.keys(selected).length !== 0">
-          <day-schedule
+        <!-- Day Schedule View -->
+        <BCol cols="12" v-else>
+          <DaySchedule
             class="m-2"
-            :pricingSchedules="pricingSchedules"
+            :pricing-schedules="pricingSchedules"
             :display="localDisplay"
-            :defaultSchedule="localSchedule"
+            :default-schedule="localSchedule"
             :date="selected"
             @finished="finish"
             @refresh="fetchPricingSchedules"
           />
-        </b-col>
-      </b-row>
-    </b-container>
+        </BCol>
+      </BRow>
+    </BContainer>
   </div>
 </template>
 
 <script>
+
+import {
+  BModal,
+  BContainer,
+  BRow,
+  BCol,
+  BCard,
+  BCardText,
+  BFormGroup,
+  BFormInput,
+  BButton
+} from 'bootstrap-vue-next'
 import moment from "moment";
 import Calendar from "./Pricing/Calendar.vue";
 import DaySchedule from "./Pricing/DaySchedule.vue";
@@ -106,7 +124,16 @@ export default {
   components: {
     Calendar,
     DaySchedule,
-    PricingCalculator
+    PricingCalculator,
+    BModal,
+    BContainer,
+    BRow,
+    BCol,
+    BCard,
+    BCardText,
+    BFormGroup,
+    BFormInput,
+    BButton,
   },
   data() {
     return {

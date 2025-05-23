@@ -1,91 +1,87 @@
 <template lang="html">
-  <b-row>
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-link :to="{ name: 'campaigns', params: {} }">
-            <!-- <b-icon class="border rounded-circle p-2 bg-light" variant="danger" icon="aspect-ratio" font-scale="3" ></b-icon> -->
-
+  <BRow>
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BLink :to="{ name: 'campaigns', params: {} }">
             <font-awesome-icon
               icon="expand-alt"
               class="border rounded-circle p-2 bg-light text-danger"
               style="font-size: 2rem;"
             />
-          </b-link>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ stats.total }}</b>
+          </BLink>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ stats.total }}</strong>
           {{ $t('dashboard.campaignStats.campaigns') }}
-        </b-col>
-      </b-row>
-    </b-col>
+        </BCol>
+      </BRow>
+    </BCol>
 
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-link :to="{ name: 'IPAM', params: {} }">
-            <!-- <b-icon class="border rounded-circle p-2 bg-light" variant="success" icon="play-btn" font-scale="3" ></b-icon> -->
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BLink :to="{ name: 'IPAM', params: {} }">
             <font-awesome-icon
               icon="play"
               class="border rounded-circle p-2 bg-light text-success"
               style="font-size: 2rem;"
             />
-          </b-link>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ stats.playing }}</b>
+          </BLink>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ stats.playing }}</strong>
           {{ $t('dashboard.campaignStats.playingCampaigns') }}
-        </b-col>
-      </b-row>
-    </b-col>
+        </BCol>
+      </BRow>
+    </BCol>
 
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b-link :to="{ name: 'IPAM', params: {} }">
-            <!-- <b-icon class="border rounded-circle p-2 bg-light" variant="primary" icon="calendar-check" font-scale="3" ></b-icon> -->
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
+          <BLink :to="{ name: 'IPAM', params: {} }">
             <font-awesome-icon
               icon="calendar-check"
               class="border rounded-circle p-2 bg-light text-primary"
               style="font-size: 2rem;"
             />
-          </b-link>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ stats.scheduled }}</b>
+          </BLink>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ stats.scheduled }}</strong>
           {{ $t('dashboard.campaignStats.schedCampaigns') }}
-        </b-col>
-      </b-row>
-    </b-col>
+        </BCol>
+      </BRow>
+    </BCol>
 
-    <b-col class="text-center align-middle">
-      <b-row>
-        <b-col class="m-0 p-1">
-          <!-- 0 -->
+    <BCol class="text-center align-middle">
+      <BRow>
+        <BCol class="m-0 p-1">
           <font-awesome-icon
             icon="calendar-days"
             class="border rounded-circle p-2 bg-light text-warning"
             style="font-size: 2rem;"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col class="m-0 p-1">
-          <b>{{ stats.pending }}</b>
+        </BCol>
+      </BRow>
+      <BRow>
+        <BCol class="m-0 p-1">
+          <strong>{{ stats.pending }}</strong>
           {{ $t('dashboard.campaignStats.waitApproval') }}
-        </b-col>
-      </b-row>
-    </b-col>
-  </b-row>
+        </BCol>
+      </BRow>
+    </BCol>
+  </BRow>
 </template>
 
 <script>
+import { BRow, BCol, BLink } from 'bootstrap-vue-next'
 // import 'vue-awesome/icons/film'
 // import 'vue-awesome/icons/play'
 // import 'vue-awesome/icons/calendar-check'
@@ -96,6 +92,11 @@
 // import 'vue-awesome/icons/hdd'
 
 export default {
+  components:{
+    BRow,
+    BCol,
+    BLink,
+  },
   props: {
     refreshTime: {
       type: Number,

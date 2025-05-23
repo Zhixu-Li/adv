@@ -1,91 +1,97 @@
 <template xmlns:v-bind="http://www.w3.org/1999/xhtml">
-  <b-row>
-    <b-col cols="12">
+  <BRow>
+    <BCol cols="12">
       <h4>{{ $t('user.update') }}</h4>
-      <div
-        v-if="errors.length > 0"
-        class="col-12 alert alert-danger"
-      >
+
+      <div v-if="errors.length > 0" class="col-12 alert alert-danger">
         <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-          >
+          <li v-for="(error, index) in errors" :key="index">
             {{ error }}
           </li>
         </ul>
       </div>
-      <b-form-group
-        :label="$t('user.username')"
-        label-for="username"
-      >
-        <b-form-input
-          id="username"
-          v-model="update.username"
-        />
-      </b-form-group>
-      <b-form-group
-        :label="$t('user.email')"
-        label-for="email"
-      >
-        <b-form-input
-          id="email"
-          v-model="update.email"
-        />
-      </b-form-group>
-      <b-form-group
+
+      <BFormGroup :label="$t('user.username')" label-for="username">
+        <BFormInput id="username" v-model="update.username" />
+      </BFormGroup>
+
+      <BFormGroup :label="$t('user.email')" label-for="email">
+        <BFormInput id="email" v-model="update.email" />
+      </BFormGroup>
+
+      <BFormGroup
         v-if="!$auth.user.admin"
         :label="$t('user.currentPassword')"
         label-for="current-password"
       >
-        <b-form-input
+        <BFormInput
           id="current-password"
           v-model="update.password"
           type="password"
         />
-      </b-form-group>
-      <b-row>
-        <b-col cols="6">
-          <b-form-group
+      </BFormGroup>
+
+      <BRow>
+        <BCol cols="6">
+          <BFormGroup
             :label="$t('user.newPassword')"
             description="Must be at least 8 characters."
             label-for="new-password"
           >
-            <b-form-input
+            <BFormInput
               id="new-password"
               v-model="update.newPassword"
               type="password"
               :state="update.newPassword ? update.newPassword.length >= 8 : null"
             />
-          </b-form-group>
-        </b-col>
-        <b-col cols="6">
-          <b-form-group
+          </BFormGroup>
+        </BCol>
+
+        <BCol cols="6">
+          <BFormGroup
             :label="$t('user.confirmPassword')"
             description="Re-type the password."
             label-for="confirm-password"
           >
-            <b-form-input
+            <BFormInput
               id="confirm-password"
               v-model="update.confirmPassword"
               type="password"
-              :state="update.newPassword && update.confirmPassword && update.newPassword.length >= 8 ? update.confirmPassword===update.newPassword : null"
+              :state="update.newPassword && update.confirmPassword && update.newPassword.length >= 8
+                ? update.confirmPassword === update.newPassword
+                : null"
             />
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-button
+          </BFormGroup>
+        </BCol>
+      </BRow>
+
+      <BButton
         class="mt-3 float-right"
         variant="primary"
         @click="updateAccount()"
       >
         {{ $t('buttons.update') }}
-      </b-button>
-    </b-col>
-  </b-row>
+      </BButton>
+    </BCol>
+  </BRow>
 </template>
+
 <script>
+import {
+  BRow,
+  BCol,
+  BFormGroup,
+  BFormInput,
+  BButton
+} from 'bootstrap-vue-next'
 export default{
+    components: {
+    BRow,
+    BCol,
+    BFormGroup,
+    BFormInput,
+    BButton
+  },
   name: 'EditUser',
   props: {
     user: {
