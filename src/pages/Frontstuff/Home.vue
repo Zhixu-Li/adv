@@ -326,7 +326,7 @@ export default {
         .float-middle {
             top: 40%;
             transform: translate(0, -40%);
-            position: relative;
+            position: absolute;
         }
 
         .top-margin {

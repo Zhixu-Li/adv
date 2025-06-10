@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <aside class="sidebar-wrapper">
     <BCol
       v-show="user.authenticated"
@@ -80,8 +80,60 @@
       </ul>
     </BCol>
   </aside>
-</template>
+</template> -->
+<template lang="html">
+  <BCol cols="10" md="4" lg="2" class="sidebar d-none d-md-block h-100" v-bind:class="{visible: active}" v-if="user.authenticated">
+    <BRow class="p-0 m-0">
+      <BCol class="pt-2 m-0">
+        <h6 class="m-0 text-muted text-center">{{$t('dashboard.headers.activeTeam')}}</h6>
+      </BCol>
+    </BRow>
+    <team-selector @updateTeam="$emit('updateTeam', $event)" :resetTeamsTrigger="resetTeamsTrigger" />
+    <ul class="accordion-menu pl-2">
+      <li v-for="(link, index) in filterLinks" :key="index" :class="{'has-children': link.children}">
+        <input v-if="link.children" type="checkbox" :name="'group-'+index" :id="'group-'+index">
+        <label v-if="link.children" :for="'group-'+index" class="sidebar-link ">
+          <font-awesome-icon :icon="['fas', link.icon]" class="icon mr-2" />
+          <span>{{ $t(link.key) }}</span>
+        </label>
 
+            <ul v-if="link.children">
+        <li
+          v-for="(child, childIndex) in link.children"
+          :key="childIndex"
+          @click="$emit('hide')"
+        >
+          <router-link custom :to="child.uri" v-slot="{ navigate, isActive }">
+            <div
+              class="sidebar-link child-link"
+              :class="{ active: isActive }"
+              @click="navigate"
+            >
+              <v-icon :name="child.icon" scale="1" class="icon mr-2" />
+              <span>{{ $t(child.key) }}</span>
+            </div>
+          </router-link>
+        </li>
+      </ul>
+
+      <ul v-else>
+        <li @click="$emit('hide')">
+          <router-link custom :to="link.uri" v-slot="{ navigate, isActive }">
+            <div
+              class="sidebar-link"
+              :class="{ active: isActive }"
+              @click="navigate"
+            >
+              <v-icon :name="link.icon" scale="1" class="icon mr-2" shape-rendering="geometricPrecision" />
+              <span>{{ $t(link.key) }}</span>
+            </div>
+          </router-link>
+        </li>
+      </ul>
+      </li>
+    </ul>
+  </BCol>
+</template>
 
 <script>
 import { nextTick } from 'vue'
