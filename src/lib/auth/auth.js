@@ -121,6 +121,7 @@ export default {
     // 5) Route guards
     if (router) {
       router.beforeEach((to, from, next) => {
+        console.log('[GUARD] going to', to.path, 'auth?', auth.user.authenticated)
         if (to.meta.admin && !(auth.user?.admin)) {
           return next({ path: '/', query: { redirect: to.fullPath } })
         }

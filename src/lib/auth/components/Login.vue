@@ -246,6 +246,13 @@ export default {
       payload.username = this.credentials.username
     }
     this.$auth.login(this, payload, '/dashboard')
+      
+    setTimeout(() => {
+      // this.$router.go();
+      // this.$router.push({ path: '/dashboard' });
+       window.location.href = '/dashboard';
+    
+    }, 1000)
   },
   forgotPassword() {
     this.$axios

@@ -200,14 +200,17 @@ Auth.prototype.login = function (context, credentials, redirect) {
   _Vue.config.globalProperties.$axios.post('auth/authorise', credentials).then(
     (response) => {
       this.user = new User(response.data.accessToken, response.data.refreshToken, response.data.teams)
+      this.user.authenticated = true
       this.initInterval()
       context.$bvModal.hide('login')
       context.$emit('resetTeams')
       if (redirect) {
-        if (redirect === _router.currentRoute.path) {
+        if (redirect === _router.currentRoute.value.path) {
+            _router.push(redirect || '/dashboard')
           _router.go() // same path! don't redirect!
         } else {
-          _router.push(redirect)
+          _router.push(redirect || '/dashboard')
+          console.log('login pushedhhh to router:', redirect)
         }
       }
     }).catch(function (error) {
@@ -217,6 +220,7 @@ Auth.prototype.login = function (context, credentials, redirect) {
         context.errors.push(error.response.data.message)
       }
     })
+    console.log('login successful', this,user)
 }
 
 Auth.prototype.logout = function (redirect) {
@@ -232,7 +236,7 @@ Auth.prototype.logout = function (redirect) {
   this.user = new User()
 
   if (redirect) {
-    if (redirect === _router.currentRoute.path) {
+    if (redirect === _router.currentRoute.value.path) {
       _router.go() // same path! don't redirect!
     } else {
       _router.push(redirect)

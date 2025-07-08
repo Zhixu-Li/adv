@@ -116,3 +116,10 @@ app.component('font-awesome-icon', FontAwesomeIcon)
 
 // Mount
 app.mount('#app')
+const observer = new MutationObserver(() => {
+  document.querySelectorAll('.modal-footer').forEach(footer => {
+    footer.remove();
+  });
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
