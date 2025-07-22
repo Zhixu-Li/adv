@@ -170,7 +170,7 @@
 // }
 
 // export default Auth
-import jwtDecode from 'jwt-decode'
+// import jwtDecode from 'jwt-decode'
 import User from './user.js'
 import moment from 'moment'
 
@@ -194,7 +194,7 @@ function Auth (Vue, options) {
   }
 }
 
-Auth.prototype.user = user
+// Auth.prototype.user = user
 
 Auth.prototype.login = function (context, credentials, redirect) {
   _Vue.config.globalProperties.$axios.post('auth/authorise', credentials).then(
@@ -222,27 +222,61 @@ Auth.prototype.login = function (context, credentials, redirect) {
     })
     console.log('login successful', this,user)
 }
-
 Auth.prototype.logout = function (redirect) {
-  if (this.user.getRefreshToken()) {
-    let decodedToken = jwtDecode(this.user.getRefreshToken())
-    _Vue.config.globalProperties.$axios.delete('v1/users/' + decodedToken.userId + '/tokens/' + decodedToken.tokenId)
-  }
-
+  // Just clear tokens — do NOT send delete request
   this.user.removeRefreshToken()
   this.user.removeToken()
   this.user.removeTeams()
+  
+  // Optional: clear any intervals/timeouts if you have them
   clearTimeout(this.interval)
+
+  // Reset user object
   this.user = new User()
 
+  // Handle redirect if specified
   if (redirect) {
     if (redirect === _router.currentRoute.value.path) {
-      _router.go() // same path! don't redirect!
+      _router.go() // Same path, reload
     } else {
-      _router.push(redirect)
+      _router.push(redirect) // Different path, navigate
     }
   }
 }
+
+// Auth.prototype.logout = function (redirect) {
+//   let p
+//   if (this.user.getRefreshToken()) {
+//     let decodedToken = jwtDecode(this.user.getRefreshToken())
+//     p = _Vue.config.globalProperties.$axios.delete('v1/users/' + decodedToken.userId + '/tokens/' + decodedToken.tokenId)
+//       .catch(err => {
+//         if (err.response && err.response.status === 401) {
+//           console.warn('Token already expired, ignore 401.')
+//         } else {
+//           throw err
+//         }
+//       })
+//   } else {
+//     p = Promise.resolve()
+//   }
+
+//   p.finally(() => {
+//     this.user.removeRefreshToken()
+//     this.user.removeToken()
+//     this.user.removeTeams()
+//     clearTimeout(this.interval)
+//     this.user = new User()
+
+//     if (redirect) {
+//       if (redirect === _router.currentRoute.value.path) {
+//         _router.go()
+//       } else {
+//         _router.push(redirect)
+//       }
+//     }
+//   })
+// }
+
 
 Auth.prototype.register = function (context, credentials) {
   let promise = new Promise(function (resolve, reject) {
