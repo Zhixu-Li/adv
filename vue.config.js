@@ -25,7 +25,12 @@ module.exports = {
         jQuery: "jquery",
         "window.jQuery": "jquery",
         Popper: ['@popperjs/core', 'default'], // ✅ Updated for Bootstrap 5
-      })
+      }),
+      new webpack.DefinePlugin({
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
+        __VUE_OPTIONS_API__: JSON.stringify(true),
+        __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
+})
     ],
     resolve: {
       alias: {
@@ -38,11 +43,12 @@ module.exports = {
     config.resolve.alias.set("vue$", "vue/dist/vue.esm-bundler.js"); // ✅ Vue 3 build
   },
   css: {
-    sourceMap: true
+      loaderOptions: {
+      scss: {
+        sassOptions: {
+          quietDeps: true, // Suppress deprecation warnings from Bootstrap
+        },
+      },
+    },
   }
 };
-new webpack.DefinePlugin({
-  __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false),
-  __VUE_OPTIONS_API__: JSON.stringify(true),
-  __VUE_PROD_DEVTOOLS__: JSON.stringify(false)
-})

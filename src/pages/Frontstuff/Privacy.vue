@@ -33,8 +33,9 @@
         company name, address, email address, payment method and telephone number.
       </p>
       <h3>How we use your information</h3>
+      <div>
       <p>
-        We use the information we collect in various ways, including to:
+        We use the information we collect in various ways, including to:</p>
         <ul>
           <li>Provide, operate, and maintain your account and information</li>
           <li>Improve, personalize, and expand our website</li>
@@ -48,7 +49,7 @@
           <li>Send you emails</li>
           <li>Find and prevent fraud</li>
         </ul>
-      </p>
+      </div>
       <h3>Log Files</h3>
       <p>
         Adverpost follows a standard procedure of using log files. These files log visitors when they visit websites.
@@ -91,8 +92,9 @@
         about cookie management with specific web browsers, it can be found at the browsers' respective websites.
       </p>
       <h3>CCPA Privacy Rights (Do Not Sell My Personal Information)</h3>
+      <div>>
       <p>
-        Under the CCPA, among other rights, California consumers have the right to:
+        Under the CCPA, among other rights, California consumers have the right to:</p>
         <ul>
           <li>
             Request that a business that collects a consumer's personal data disclose the categories and specific
@@ -101,15 +103,16 @@
           <li>Request that a business delete any personal data about the consumer that a business has collected.</li>
           <li>Request that a business that sells a consumer's personal data, not sell the consumer's personal data.</li>
         </ul>
-      </p>
+      </div>
       <p>
         If you make a request, we have one month to respond to you. If you would like to exercise any of these rights,
         please contact us.
       </p>
       <h3>GDPR Data Protection Rights</h3>
+      <div>
       <p>
         We would like to make sure you are fully aware of all of your data protection rights. Every user is entitled to
-        the following:
+        the following:</p>
         <ul>
           <li>
             The right to access – You have the right to request copies of your personal data. We may charge you a
@@ -136,7 +139,7 @@
             collected to another organization, or directly to you, under certain conditions.
           </li>
         </ul>
-      </p>
+      </div>
       <p>
         If you make a request, we have one month to respond to you. If you would like to exercise any of these rights,
         please contact us.

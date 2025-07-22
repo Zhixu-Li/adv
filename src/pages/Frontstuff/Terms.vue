@@ -38,8 +38,10 @@
         on Adverpost. All intellectual property rights are reserved. You may access this from Adverpost for your own
         personal use subjected to restrictions set in these terms and conditions.
       </p>
+      <div>
       <p>
         You must not:
+        </p>
         <ul>
           <li>Violate others Intellectual Property</li>
           <li>Republish material from Adverpost</li>
@@ -51,7 +53,7 @@
             </ul>
           </li>
         </ul>
-      </p>
+      </div>
       <p>
         This Agreement shall begin on the date hereof. Our Terms and Conditions were created with the help of the Terms
         And Conditions Template.
@@ -69,8 +71,9 @@
         Adverpost reserves the right to monitor all Media, Campaigns and Comments (Contents) and to remove any Contents
         which can be considered inappropriate, offensive or causes breach of these Terms and Conditions.
       </p>
+      <div>
       <p>
-        You warrant and represent that:
+        You warrant and represent that:</p>
         <ul>
           <li>
             You are authorized and entitled to post the Contents on Adverpost and accept all liabilities for your
@@ -89,7 +92,7 @@
             unlawful activity.
           </li>
         </ul>
-      </p>
+      </div>
       <p>
         You hereby grant Adverpost a non-exclusive license to use, reproduce, edit and authorize others to use,
         reproduce and edit any of your Contents in any and all forms, formats or media.
@@ -97,8 +100,10 @@
       <h3>
         Hyperlinking to our Content
       </h3>
+      <div>
       <p>
         The following organizations may link to our Website without prior written approval:
+        </p>
         <ul>
           <li>Government agencies;</li>
           <li>Search engines;</li>
@@ -112,14 +117,15 @@
             charity fundraising groups which may not hyperlink to our Web site.
           </li>
         </ul>
-      </p>
+      </div>
       <p>
         These organizations may link to our home page, to publications or to other Website information so long as the
         link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement or approval of the
         linking party and its products and/or services; and (c) fits within the context of the linking party’s site.
       </p>
+      <div>
       <p>
-        We may consider and approve other link requests from the following types of organizations:
+        We may consider and approve other link requests from the following types of organizations:</p>
         <ul>
           <li>
             commonly-known consumer and/or business information sources;
@@ -131,7 +137,7 @@
           <li>accounting, law and consulting firms; and</li>
           <li>educational institutions and trade associations.</li>
         </ul>
-      </p>
+      </div>
       <p>
         We will approve link requests or contents reuse from these organizations if we decide that: (a) the link would
         not make us look unfavorably to ourselves or to our accredited businesses; (b) the organization does not have
@@ -150,8 +156,9 @@
         intend to link to our Website, and a list of the URLs on our site to which you would like to link. Wait 2-3
         weeks for a response.
       </p>
+      <div>
       <p>
-        Approved organizations may hyperlink to our Website as follows:
+        Approved organizations may hyperlink to our Website as follows:</p>
         <ul>
           <li>By use of our corporate name; or</li>
           <li>By use of the uniform resource locator being linked to; or</li>
@@ -160,7 +167,7 @@
             format of content on the linking party’s site.
           </li>
         </ul>
-      </p>
+      </div>
       <p>
         No use of Adverpost's logo or other artwork will be allowed for linking absent a trademark license agreement.
       </p>
@@ -198,16 +205,17 @@
         date.
       </p>
       <h3>Disclaimer</h3>
+      <div>
       <p>
         To the maximum extent permitted by applicable law, we exclude all representations, warranties and conditions
-        relating to our website and the use of this website and Adverpost. Nothing in this disclaimer will:
+        relating to our website and the use of this website and Adverpost. Nothing in this disclaimer will:</p>
         <ul>
           <li>limit or exclude your liability for death or personal injury;</li>
           <li>limit or exclude your liability for fraud or fraudulent misrepresentation;</li>
           <li>limit any of your liabilities in any way that is not permitted under applicable law; or</li>
           <li>exclude any of your liabilities that may not be excluded under applicable law.</li>
         </ul>
-      </p>
+      </div>
       <p>
         The limitations and prohibitions of liability set in this Section and elsewhere in this disclaimer: (a) are
         subject to the preceding paragraph; and (b) govern all liabilities arising under the disclaimer, including

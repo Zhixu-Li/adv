@@ -7,16 +7,21 @@
       {{ localDisplay.status }}
     </h4>
 
-    <BAspect
+    <!-- <b-aspect
       :aspect="getAspect(campaign.media)"
       style="width: 50%"
       class="mx-auto"
+    > -->
+    <div 
+    :style="`aspect-ratio: ${getAspect(campaign.media)}; width:50%;`"
+    class = "mx-auto"
     >
       <Campaign
-        style="height: 100%"
+        style="height: 100%; width: 100%;"
         :media="campaign.media.data"
       />
-    </BAspect>
+   
+    </div>
 
     <BTableSimple responsive>
       <BThead>
@@ -55,14 +60,8 @@
             <BBadge>Pending Approval</BBadge>
           </BTd>
           <BTd
-            v-else-if="
-              booking.approval === 'approved' &&
-              booking.endDate >= date &&
-              booking.startDate <= date &&
-              booking.endTime >= time &&
-              booking.startTime <= time
-            "
-          >
+                v-else-if=" booking.approval === 'approved'&& booking.endDate >=date&& booking.startDate <= date && booking.endTime >= time && booking.startTime <= time"
+              >
             <BBadge variant="success">Running</BBadge>
           </BTd>
           <BTd v-else-if="booking.approval === 'approved'">
@@ -88,7 +87,7 @@
 </template>
 <script>
 import {
-  BAspect,
+  // BAspect,
   BTableSimple,
   BThead,
   BTr,
@@ -105,7 +104,7 @@ import aspectRatio from '@/mixins/aspectRatio'
 export default {
   components: {
     Campaign,
-      BAspect,
+      // BAspect,
       BTableSimple,
       BThead,
       BTr,

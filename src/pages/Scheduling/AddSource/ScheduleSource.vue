@@ -43,17 +43,20 @@
                     :options="endDateOptions"
                     :placeholder="$t('dateTime.date')"
                   />
-                  <BInputGroupAppend id="foreverBox" is-text>
+                  <!-- <BInputGroupAppend id="foreverBox" is-text> -->
+                    <BInputGroupText id="foreverBox">>
                     <BFormCheckbox
                       id="forever"
                       v-model="forever"
                       name="forever"
                       :value="true"
                       :unchecked-value="false"
+                      switch
                     >
-                      <BIconArrowRepeat />
+                      <!-- <BIconArrowRepeat /> -->
+                       <font-awesome-icon icon="arrow-repeat" />
                     </BFormCheckbox>
-                  </BInputGroupAppend>
+                  </BInputGroupText>
                 </BInputGroup>
               </BFormGroup>
 
@@ -178,7 +181,7 @@ import {
   BFormGroup,
   BFormInput,
   BInputGroup,
-  BInputGroupAppend,
+  // BInputGroupAppend,
   BPopover,
   BRow
 } from 'bootstrap-vue-next';
@@ -196,7 +199,7 @@ export default {
     BFormGroup,
     BFormInput,
     BInputGroup,
-    BInputGroupAppend,
+    // BInputGroupAppend,
     BPopover,
     BRow
     // Multiselect

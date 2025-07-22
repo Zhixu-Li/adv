@@ -2,7 +2,11 @@
   <div>
     <h2>{{ $t('schedule.selectSource') }}</h2>
 
-    <BAlert v-if="errors.length > 0" variant="danger" show>
+    <BAlert 
+    v-if="errors.length > 0" 
+      variant="danger" 
+      show
+      >
       <ul>
         <li v-for="(error, index) in errors" :key="index">
           {{ error }}

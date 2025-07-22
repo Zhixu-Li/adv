@@ -111,9 +111,6 @@ import {
   BFormInput,
   BFormInvalidFeedback
 } from 'bootstrap-vue-next'
-/* eslint-disable no-unused-vars */
-/* eslint-disable vue/no-unused-components */
-/* eslint-disable no-mixed-spaces-and-tabs */
 
 import axios from 'axios'
 import { debounce } from 'lodash'

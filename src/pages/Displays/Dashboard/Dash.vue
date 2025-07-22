@@ -84,7 +84,7 @@
           <BCol class="pt-1 ml-2 mr-2 border-top">
             <h5>{{ $t('Local Time') }}</h5>
             <div>
-              <BIcon icon="broadcast" animation="fade" />
+              <font-awesome-icon icon="broadcast" animation="fade" />
               <span class="dash-text pl-1">{{ computedTime }}</span>
             </div>
           </BCol>
@@ -97,8 +97,8 @@
               variant="light"
               class="border-success text-success"
             >
-              <span class="when-open"><BIcon icon="arrow-up" /> Close Advanced</span>
-              <span class="when-closed"><BIcon icon="arrow-down" /> Open Advanced</span>
+              <span class="when-open"><font-awesome-icon icon="arrow-up" /> Close Advanced</span>
+              <span class="when-closed"><font-awesome-icon icon="arrow-down" /> Open Advanced</span>
             </BButton>
           </BCol>
         </BRow>
@@ -192,7 +192,7 @@ import {
   BListGroupItem,
   BAlert,
   BBadge,
-  BIcon,
+  // BIcon,
   BButton
 } from 'bootstrap-vue-next'
 import Preview from '@/pages/Dashboard/Components/DisplayPreview.vue'
@@ -209,7 +209,7 @@ export default {
     BListGroupItem,
     BAlert,
     BBadge,
-    BIcon,
+    // BIcon,
     BButton,
     Preview,
   },

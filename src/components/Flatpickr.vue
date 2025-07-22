@@ -17,12 +17,13 @@
 require('../../node_modules/flatpickr/dist/flatpickr.min.css')
 import Flatpickr from 'flatpickr'
 import {zh} from 'flatpickr/dist/l10n/zh.js'
-import Vue from 'vue'
+// import Vue from 'vue'
+import { createApp } from 'vue' // ✅ Vue 3 正确写法
 
 const locales = {
   'zh': zh
 }
-
+const app = createApp({}) // ✅ Vue 3 正确写法
 export default {
   props: {
     placeholder: {
@@ -50,11 +51,11 @@ export default {
   },
   computed: {
     defaultOptions () {
-      if (Vue.config.lang === 'en') {
+      if (app.config.lang === 'en') {
         return Object.assign({}, this.default)
       } else {
         return Object.assign({
-          locale: locales[Vue.config.lang]
+          locale: locales[app.config.lang]
         }, this.default)
       }
     }

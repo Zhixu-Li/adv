@@ -323,9 +323,9 @@ export default {
       this.$cart.store = []
       this.$auth.logout()       // clear tokens, etc.
       this.navigate({ path: '/' }) // then navigate home
-    //     setTimeout(() => {
-    //   this.$router.go();
-    // }, 1000)
+        setTimeout(() => {
+      this.$router.go();
+    }, 100)
     },
     openLoginModal() {
       this.showLogin = true

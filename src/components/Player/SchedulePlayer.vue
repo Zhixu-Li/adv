@@ -48,9 +48,7 @@
 
 
 <script>
-/* eslint-disable no-unused-vars */
-/* eslint-disable vue/no-unused-components */
-/* eslint-disable no-mixed-spaces-and-tabs */
+
 import { BButtonGroup, BBadge } from 'bootstrap-vue-next'
 import axios from 'axios'
 import moment from 'moment'

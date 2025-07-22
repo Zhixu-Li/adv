@@ -106,11 +106,21 @@
               <BTd v-if="!booking.validCoupon">
                 <BInputGroup size="sm">
                   <BFormInput v-model="booking.coupon" placeholder="Coupon" />
-                  <BInputGroupAppend>
+                  <BInputGroup>
+                    <BFormInput v-model="inputValue" />
+                    <BinputGroupText>
                     <BButton variant="primary" @click="fetchQuote(booking)">
                       Add
                     </BButton>
-                  </BInputGroupAppend>
+                  </BInputGroupText>
+                </BInputGroup>
+                    <!-- <BButton
+                      variant="danger"
+                      @click="deleteCoupon(booking)"
+                      v-if="booking.coupon"
+                    >
+                      <v-icon name="close" scale="1.5" />
+                    </BButton> -->
                 </BInputGroup>
               </BTd>
               <BTd v-else>
@@ -276,7 +286,7 @@ import {
   BTd,
   BInputGroup,
   BFormInput,
-  BInputGroupAppend,
+  // BInputGroupAppend,
   BBadge,
   BAlert
 } from 'bootstrap-vue-next'
@@ -301,7 +311,7 @@ export default {
     BTd,
     BInputGroup,
     BFormInput,
-    BInputGroupAppend,
+    // BInputGroupAppend,
     BBadge,
     BAlert,
   },

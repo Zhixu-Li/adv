@@ -82,19 +82,19 @@
           <!-- Quick-Links Buttons -->
           <BCol class="text-center">
             <BButton v-b-modal.liveview class="m-1 border-danger text-danger" variant="light">
-              <span><BIcon icon="grid-3x3-gap-fill" /> {{ $t('dashboard.links.liveView') }}</span>
+              <span><font-awesome-icon icon="grid-3x3-gap-fill" /> {{ $t('dashboard.links.liveView') }}</span>
             </BButton>
 
             <BButton v-b-modal.upload class="m-1 border-primary text-primary" variant="light">
-              <span><BIcon icon="upload" /> {{ $t('dashboard.links.upload') }}</span>
+              <span><font-awesome-icon icon="upload" /> {{ $t('dashboard.links.upload') }}</span>
             </BButton>
 
             <BButton v-b-modal.campaign class="m-1 border-success text-success" variant="light">
-              <span><BIcon icon="film" /> {{ $t('dashboard.links.newCampaign') }}</span>
+              <span><font-awesome-icon icon="film" /> {{ $t('dashboard.links.newCampaign') }}</span>
             </BButton>
 
             <BButton class="m-1 border-info text-info" variant="light" @click="newDisplay">
-              <span><BIcon icon="display" /> {{ $t('dashboard.links.newDisplay') }}</span>
+              <span><font-awesome-icon icon="display" /> {{ $t('dashboard.links.newDisplay') }}</span>
             </BButton>
           </BCol>
         </BCardText>
@@ -117,7 +117,7 @@ import {
   BCardText,
   BModal,
   BButton,
-  BIcon,
+  // BIcon,
   BAlert
 } from 'bootstrap-vue-next'
 
@@ -133,7 +133,7 @@ export default {
     BCardText,
     BModal,
     BButton,
-    BIcon,
+    // BIcon,
     BAlert,
   },
   mixins: [teamContext],

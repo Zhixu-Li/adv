@@ -4,7 +4,7 @@
       <BRow>
         <BCol class="m-0 p-1">
           <BLink :to="{ name: 'media', params: {} }">
-            <BIcon
+            <font-awesome-icon
               class="border rounded-circle p-2 bg-light"
               variant="dark"
               icon="image"
@@ -25,7 +25,7 @@
       <BRow>
         <BCol class="m-0 p-1">
           <BLink :to="{ name: 'media', params: {} }">
-            <BIcon
+            <font-awesome-icon
               class="border rounded-circle p-2 bg-light"
               variant="dark"
               icon="film"
@@ -45,7 +45,7 @@
     <BCol class="text-center align-middle">
       <BRow>
         <BCol class="m-0 p-1">
-          <BIcon
+          <font-awesome-icon
             class="border rounded-circle p-2 bg-light"
             variant="dark"
             icon="soundwave"
@@ -64,7 +64,7 @@
     <BCol class="text-center align-middle">
       <BRow>
         <BCol class="m-0 p-1">
-          <BIcon
+          <font-awesome-icon
             class="border rounded-circle p-2 bg-light"
             variant="dark"
             icon="hdd"
@@ -82,13 +82,13 @@
   </BRow>
 </template>
 <script>
-import { BRow, BCol, BLink, BIcon } from 'bootstrap-vue-next'
+import { BRow, BCol, BLink } from 'bootstrap-vue-next'
 export default {
   components:{
     BRow,
     BCol,
     BLink,
-    BIcon
+
   },
   props: {
     refreshTime: {

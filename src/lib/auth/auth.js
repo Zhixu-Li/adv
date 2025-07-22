@@ -149,6 +149,8 @@ export default {
         if (auth.user.tokenExpired()) {
           try {
             await auth.refresh(false)
+             request.headers['Authorization'] = auth.getAuthHeader()
+            console.log('[AuthPluin] Token refreshed')
           } catch {
             auth.logout('/')
             // prevent the original request from going out
@@ -158,6 +160,7 @@ export default {
         // attach Bearer header
         if (auth.user.id) {
           request.headers['Authorization'] = auth.getAuthHeader()
+          console.log('Auth Header:', auth.getAuthHeader())
         }
       }
 

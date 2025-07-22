@@ -33,14 +33,14 @@
             v-model="search"
             placeholder="Search for a location"
           />
-          <BInputGroupAppend>
+          <BInputGroupText>
             <BButton variant="primary" @click="fetchLocationFromAddress">
               Search
             </BButton>
             <BButton variant="secondary" @click="coordShow = !coordShow">
               {{ coordShow ? "Hide" : "Show" }} Coordinates
             </BButton>
-          </BInputGroupAppend>
+          </BInputGroupText>
         </BInputGroup>
       </BFormGroup>
 
@@ -83,7 +83,7 @@ import {
   BFormGroup,
   BInputGroup,
   BFormInput,
-  BInputGroupAppend,
+  // BInputGroupAppend,
   BButton
 } from 'bootstrap-vue-next'
 export default defineComponent({
@@ -96,7 +96,7 @@ export default defineComponent({
     BFormGroup,
     BInputGroup,
     BFormInput,
-    BInputGroupAppend,
+    // BInputGroupAppend,
     BButton,
   },
   setup() {

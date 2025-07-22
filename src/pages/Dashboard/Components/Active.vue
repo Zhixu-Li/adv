@@ -27,7 +27,8 @@
                   class="border border-muted text-dark"
                   @click="row.toggleDetails"
                 >
-                  <BIcon :icon="row.detailsShowing ? 'arrow-up' : 'arrow-down'" />
+                  <!-- <BIcon :icon="row.detailsShowing ? 'arrow-up' : 'arrow-down'" /> -->
+                  <font-awesome-icon :icon="row.detailsShowing ? 'arrow-up' : 'arrow-down'" />
                   {{ row.detailsShowing ? 'Close' : 'Expand' }}
                 </BButton>
               </template>
@@ -62,7 +63,8 @@
               <!-- End Date Column -->
               <template #cell(endDate)="booking">
                 <p v-if="booking.item.endDate >= '2037-01-01'">
-                  <BIcon icon="arrow-repeat" /> No End Date
+                  <!-- <BIcon icon="arrow-repeat" /> No End Date -->
+                   <font-awesome-icon icon="arrow-repeat" /> No End Date
                 </p>
                 <p v-else>{{ booking.item.endDate }}</p>
               </template>
@@ -257,7 +259,7 @@ import {
   BTd,
   BButton,
   BLink,
-  BIcon,
+  // BIcon,
   BPagination,
   BSpinner,
   BTableSimple,
@@ -283,7 +285,7 @@ export default {
     BTd,
     BButton,
     BLink,
-    BIcon,
+    // BIcon,
     BPagination,
     BSpinner,
     BTableSimple,

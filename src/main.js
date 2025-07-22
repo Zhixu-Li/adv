@@ -1,4 +1,5 @@
 // src/main.js
+/* eslint-disable */
 import { createApp } from 'vue'
 import App           from './App.vue'
 import router        from './router'
@@ -12,7 +13,8 @@ import Notifications           from '@kyvg/vue3-notification'
 import CartPlugin              from './lib/cart/src/cart.js'
 import authPlugin              from './lib/auth/auth.js'
 
-import { BootstrapVueNext, BVModalPlugin } from 'bootstrap-vue-next'
+// import { BootstrapVueNext, BVModalPlugin } from 'bootstrap-vue-next'
+// import { BootstrapVueNext } from 'bootstrap-vue-next'
 import {createBootstrap} from 'bootstrap-vue-next'
 
 
@@ -27,22 +29,22 @@ import L from 'leaflet'
 import VueLazyload      from 'vue-lazyload'
 import axios            from 'axios'
 
-import { library }      from '@fortawesome/fontawesome-svg-core'
+//import { library }      from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import {
-  faHome, faQuestionCircle, faTrash, faFaceSmile, faFaceFrown,
-  faUser, faSignInAlt, faUserPlus, faGlobe, faCogs,
-  faCalendar, faTable, faMap, faFilm, faCodeBranch,
-  faShoppingCart, faClipboardList, faStickyNote, faPhotoVideo,
-  faDesktop, faArrowCircleLeft, faCloudArrowUp, faArrowRotateRight,
-  faCircleXmark, faExpandAlt, faPlay, faCalendarCheck, faCalendarDays,
-  faPlus
-} from '@fortawesome/free-solid-svg-icons'
-import {
-  faCcVisa, faCcMastercard, faCcDiscover, faCcApplePay,
-  faCcDinersClub, faCcPaypal, faCcAmex, faCcAmazonPay,
-  faCcJcb, faCcStripe
-} from '@fortawesome/free-brands-svg-icons'
+// import {
+//   faHome, faQuestionCircle, faTrash, faFaceSmile, faFaceFrown,
+//   faUser, faSignInAlt, faUserPlus, faGlobe, faCogs,
+//   faCalendar, faTable, faMap, faFilm, faCodeBranch,
+//   faShoppingCart, faClipboardList, faStickyNote, faPhotoVideo,
+//   faDesktop, faArrowCircleLeft, faCloudArrowUp, faArrowRotateRight,
+//   faCircleXmark, faExpandAlt, faPlay, faCalendarCheck, faCalendarDays,
+//   faPlus
+// } from '@fortawesome/free-solid-svg-icons'
+// import {
+//   faCcVisa, faCcMastercard, faCcDiscover, faCcApplePay,
+//   faCcDinersClub, faCcPaypal, faCcAmex, faCcAmazonPay,
+//   faCcJcb, faCcStripe
+// } from '@fortawesome/free-brands-svg-icons'
 
 import messages from '@/lang'
 import moment   from 'moment'
@@ -67,18 +69,18 @@ L.Icon.Default.mergeOptions({
 })
 
 // FontAwesome setup
-library.add(
-  faHome, faQuestionCircle, faTrash, faFaceSmile, faFaceFrown,
-  faUser, faSignInAlt, faUserPlus, faGlobe, faCogs,
-  faCalendar, faTable, faMap, faFilm, faCodeBranch,
-  faShoppingCart, faClipboardList, faStickyNote, faPhotoVideo,
-  faDesktop, faArrowCircleLeft, faCloudArrowUp, faArrowRotateRight,
-  faCircleXmark, faExpandAlt, faPlay, faCalendarCheck, faCalendarDays,
-  faPlus,
-  faCcVisa, faCcMastercard, faCcDiscover, faCcApplePay,
-  faCcDinersClub, faCcPaypal, faCcAmex, faCcAmazonPay,
-  faCcJcb, faCcStripe
-)
+// library.add(
+//   faHome, faQuestionCircle, faTrash, faFaceSmile, faFaceFrown,
+//   faUser, faSignInAlt, faUserPlus, faGlobe, faCogs,
+//   faCalendar, faTable, faMap, faFilm, faCodeBranch,
+//   faShoppingCart, faClipboardList, faStickyNote, faPhotoVideo,
+//   faDesktop, faArrowCircleLeft, faCloudArrowUp, faArrowRotateRight,
+//   faCircleXmark, faExpandAlt, faPlay, faCalendarCheck, faCalendarDays,
+//   faPlus,
+//   faCcVisa, faCcMastercard, faCcDiscover, faCcApplePay,
+//   faCcDinersClub, faCcPaypal, faCcAmex, faCcAmazonPay,
+//   faCcJcb, faCcStripe
+// )
 
 // Create Vue app
 const app = createApp(App)
@@ -98,8 +100,8 @@ app.config.compatConfig={
 // Install plugins
 app.use(router)
 app.use(createBootstrap())
-app.use(BootstrapVueNext)
-app.use(BVModalPlugin) // ✅ This fixes injection for BModal
+// app.use(BootstrapVueNext)
+//app.use(BVModalPlugin) // ✅ This fixes injection for BModal
 app.use(authPlugin, { router })
 app.use(i18n)
 app.use(VueLazyload)

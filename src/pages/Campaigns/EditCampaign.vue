@@ -24,10 +24,15 @@
               @click="isRotated = !isRotated"
             >
               Rotate
-              <BIcon
+              <!-- <BIcon
                 :icon="isRotated ? 'check-square' : 'square'"
                 :variant="isRotated ? 'light' : 'dark'"
-              />
+              /> -->
+              <font-awesome-icon
+                :icon="isRotated ? 'check-square' : 'square'"
+                  :class="isRotated ? 'text-light' : 'text-dark'"
+                :size="'lg'"
+                />
             </BButton>
           </BButtonGroup>
         </div>
@@ -94,7 +99,7 @@ import {
   BCol,
   BButtonGroup,
   BButton,
-  BIcon,
+  // BIcon,
   BCard,
   BCardText,
   BFormGroup,
@@ -116,7 +121,7 @@ export default {
     BCol,
     BButtonGroup,
     BButton,
-    BIcon,
+    // BIcon,
     BCard,
     BCardText,
     BFormGroup,

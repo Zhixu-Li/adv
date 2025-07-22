@@ -51,7 +51,8 @@
                   :value="true"
                   :unchecked-value="false"
                 >
-                  <BIconArrowRepeat />
+                  <!-- <BIconArrowRepeat /> // below is the check-->
+                  <font-awesome-icon icon="arrow-repeat" />
                 </BFormCheckbox>
               </template>
             </BInputGroup>
@@ -241,7 +242,7 @@
 
 
 <script>
-import {BRow, BCol, BCard, BCardText, BFormGroup, BInputGroup, BFormCheckbox, BButton, BButtonGroup, BDropdown, BDropdownItem, BPopover, BProgress, BProgressBar, BSpinner, BIconArrowRepeat} from 'bootstrap-vue-next'
+import {BRow, BCol, BCard, BCardText, BFormGroup, BInputGroup, BFormCheckbox, BButton, BButtonGroup, BDropdown, BDropdownItem, BPopover, BProgress, BProgressBar, BSpinner} from 'bootstrap-vue-next'
 
 import flatpickr from '@/components/Flatpickr.vue'
 import moment from 'moment'
@@ -265,7 +266,7 @@ export default {
     BProgress, 
     BProgressBar, 
     BSpinner, 
-    BIconArrowRepeat
+    // BIconArrowRepeat
 
   },
   props: {

@@ -62,11 +62,15 @@
 
           <BTr>
             <BTd colspan="4">
-              <BAspect
+              <!-- <BAspect
                 :aspect="computedAspect"
                 style="width: 50%; height: 250px"
                 class="mx-auto"
-              >
+              > -->
+              <div
+                class = "mx-auto"
+                :style="`aspect-ratio: ${computedAspect}; width:50%; height:250px;`"
+                >
                 <schedule-player
                   :key="booking.id"
                   :params="JSON.parse(booking.parameters)"
@@ -74,7 +78,8 @@
                   width="100%"
                   height="100%"
                 />
-              </BAspect>
+              <!-- </BAspect> -->
+               </div>
             </BTd>
           </BTr>
         </template>
@@ -96,7 +101,7 @@ import {
   BTd,
   BBadge,
   BButton,
-  BAspect
+  // BAspect
 } from 'bootstrap-vue-next';
 import moment from 'moment'
 import SchedulePlayer from '@/components/Player/SchedulePlayer.vue'
@@ -113,7 +118,7 @@ export default {
     BTd,
     BBadge,
     BButton,
-    BAspect
+    // BAspect
 
   },
   mixins: [aspectRatio],

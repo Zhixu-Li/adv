@@ -204,8 +204,7 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
-/* eslint-disable vue/no-unused-components */
+
 import {
   BRow,
   BCol,
